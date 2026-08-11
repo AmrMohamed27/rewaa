@@ -136,3 +136,82 @@ export const sessionColumns: ColumnDef<SessionInfo>[] = [
     header: "Sessions",
   },
 ];
+
+// Redesigned Dashboard Mock Data
+export const dashboardMockData = {
+  students: {
+    total: 12480,
+    activeToday: 3150,
+    newToday: 142,
+  },
+  educationalContent: {
+    courses: 48,
+    lectures: 320,
+    questions: 4250,
+    exams: 185,
+  },
+  classesDistribution: [
+    { key: "firstSecondary", students: 3800, percentage: 30.4 },
+    { key: "secondSecondary", students: 4200, percentage: 33.7 },
+    { key: "thirdSecondary", students: 4480, percentage: 35.9 },
+  ],
+  examActivityToday: {
+    successRate: 78.5,
+    studentsCount: 1420,
+    averageGrade: "84.2%",
+    chartData: [
+      { label: "Passed", value: 78.5 },
+      { label: "Failed", value: 21.5 },
+    ],
+  },
+  billingRequests: [
+    {
+      id: "INV-2026-001",
+      studentKey: "student1",
+      amountValue: 150,
+      paymentMethodKey: "vodafoneCash",
+      date: "2026-08-11",
+      statusKey: "statusPending",
+    },
+    {
+      id: "INV-2026-002",
+      studentKey: "student2",
+      amountValue: 220,
+      paymentMethodKey: "creditCard",
+      date: "2026-08-11",
+      statusKey: "statusPending",
+    },
+    {
+      id: "INV-2026-003",
+      studentKey: "student3",
+      amountValue: 180,
+      paymentMethodKey: "fawry",
+      date: "2026-08-11",
+      statusKey: "statusPending",
+    },
+    {
+      id: "INV-2026-004",
+      studentKey: "student4",
+      amountValue: 150,
+      paymentMethodKey: "instaPay",
+      date: "2026-08-10",
+      statusKey: "statusPending",
+    },
+    {
+      id: "INV-2026-005",
+      studentKey: "student5",
+      amountValue: 300,
+      paymentMethodKey: "creditCard",
+      date: "2026-08-10",
+      statusKey: "statusPending",
+    },
+  ],
+  governorates: [
+    { key: "cairo", percentage: 32, count: 3993 },
+    { key: "giza", percentage: 24, count: 2995 },
+    { key: "alexandria", percentage: 18, count: 2246 },
+    { key: "dakahlia", percentage: 10, count: 1248 },
+    { key: "sharqia", percentage: 8, count: 998 },
+    { key: "others", percentage: 8, count: 1000 },
+  ],
+};
