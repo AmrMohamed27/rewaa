@@ -14,49 +14,71 @@ import { Button } from "@/components/ui/button";
 import { useAuthControllerRegister, GOOGLE_AUTH_URL } from "@/hooks/use-auth";
 import { getErrorMessage } from "@/lib/api-utils";
 import { Loader2 } from "lucide-react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { Link, useRouter } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
 import * as z from "zod";
 
-const registerSchema = z.object({
-  email: z.email("Invalid email address"),
-  password: z.string().min(8, "Password must be at least 8 characters").max(32),
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
-});
+import { useMemo } from "react";
 
-type RegisterFormValues = z.infer<typeof registerSchema>;
+type RegisterFormValues = {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+};
 
 export default function RegisterPage() {
+  const t = useTranslations("auth");
+  const tVal = useTranslations("validation");
+  const tCommon = useTranslations("common");
+
+  const registerSchema = useMemo(
+    () =>
+      z.object({
+        email: z.string().email(tVal("invalidEmail")),
+        password: z.string().min(8, tVal("passwordMinLength")).max(32),
+        firstName: z.string().min(1, tVal("firstNameRequired")),
+        lastName: z.string().min(1, tVal("lastNameRequired")),
+      }),
+    [tVal],
+  );
+
   const router = useRouter();
   const { mutateAsync: register, isPending, error, data, reset } = useAuthControllerRegister();
-  const errorMessage = getErrorMessage(error, data);
+  const rawErrorMessage = getErrorMessage(error, data);
+  if (rawErrorMessage) {
+    console.error("Register API error details:", { error, data, rawErrorMessage });
+  }
+  const errorMessage = rawErrorMessage ? tCommon("genericError") : null;
 
   const handleSubmit = async (values: RegisterFormValues) => {
-    const response = await register({ data: values });
+    try {
+      const response = await register({ data: values });
 
-    if (response.statusCode === 201) {
-      router.push(`/auth/verify-email?email=${encodeURIComponent(values.email)}`);
+      if (response.statusCode === 201) {
+        router.push(`/auth/verify-email?email=${encodeURIComponent(values.email)}`);
+      }
+    } catch (err) {
+      console.error("Register submission error:", err);
     }
   };
-  console.log(error);
 
   return (
-    <div className="container mx-auto flex min-h-[calc(100vh-4rem)] items-center justify-center py-12">
-      <Card className="w-full max-w-md relative">
+    <div className="w-full max-w-md">
+      <Card className="w-full relative border-none shadow-none ring-0">
         {isPending && (
           <div className="absolute inset-0 z-50 flex items-center justify-center bg-background/50 backdrop-blur-[1px] rounded-lg animate-in fade-in">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
           </div>
         )}
         <CardHeader className="text-center">
-          <CardTitle className="text-3xl font-bold tracking-tight">Create an account</CardTitle>
-          <CardDescription>Enter your details below to create your account</CardDescription>
+          <CardTitle className="text-3xl font-bold tracking-tight">{t("register.title")}</CardTitle>
+          <CardDescription>{t("register.subtitle")}</CardDescription>
         </CardHeader>
 
         <CardContent>
           <GenericForm
-            title="Register"
+            title={t("register.submitText")}
             schema={registerSchema}
             error={errorMessage}
             defaultValues={{
@@ -67,29 +89,29 @@ export default function RegisterPage() {
             }}
             onSubmit={handleSubmit}
             onReset={reset}
-            submitText="Create account"
+            submitText={t("register.submitText")}
             fields={[
               {
                 name: "firstName",
-                label: "First Name",
-                placeholder: "John",
+                label: t("register.firstNameLabel"),
+                placeholder: t("register.firstNamePlaceholder"),
               },
               {
                 name: "lastName",
-                label: "Last Name",
-                placeholder: "Doe",
+                label: t("register.lastNameLabel"),
+                placeholder: t("register.lastNamePlaceholder"),
               },
               {
                 name: "email",
-                label: "Email Address",
+                label: t("register.emailLabel"),
                 type: "email",
-                placeholder: "john.doe@example.com",
+                placeholder: t("register.emailPlaceholder"),
               },
               {
                 name: "password",
-                label: "Password",
+                label: t("register.passwordLabel"),
                 type: "password",
-                placeholder: "••••••••",
+                placeholder: t("register.passwordPlaceholder"),
               },
             ]}
           />
@@ -99,13 +121,13 @@ export default function RegisterPage() {
               <Separator className="w-full" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-card px-2 text-muted-foreground">Or</span>
+              <span className="bg-card px-2 text-muted-foreground">{t("login.or")}</span>
             </div>
           </div>
 
           <Button variant="outline" className="w-full" asChild>
-            <a href={GOOGLE_AUTH_URL}>
-              <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
+            <a href={GOOGLE_AUTH_URL} className="flex items-center justify-center gap-2">
+              <svg className="h-4 w-4" viewBox="0 0 24 24">
                 <path
                   d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
                   fill="#4285F4"
@@ -123,16 +145,16 @@ export default function RegisterPage() {
                   fill="#EA4335"
                 />
               </svg>
-              Continue with Google
+              <span>{t("login.googleAuth")}</span>
             </a>
           </Button>
         </CardContent>
 
-        <CardFooter className="justify-center border-t bg-muted/50 py-4">
+        <CardFooter className="justify-center border-t-0 bg-transparent pt-2 pb-4">
           <div className="text-sm">
-            Already have an account?{" "}
+            {t("register.alreadyHaveAccount")}{" "}
             <Link href="/auth/login" className="font-medium text-primary hover:underline">
-              Log in
+              {t("register.signIn")}
             </Link>
           </div>
         </CardFooter>

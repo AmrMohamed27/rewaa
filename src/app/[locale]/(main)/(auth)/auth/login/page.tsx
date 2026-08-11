@@ -16,59 +16,76 @@ import { getErrorMessage } from "@/lib/api-utils";
 import { getAuthControllerGetProfileQueryKey } from "@/lib/api/react-query/auth/auth";
 import { useQueryClient } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { Link, useRouter } from "@/i18n/routing";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import * as z from "zod";
+import { Checkbox } from "@/components/ui/checkbox";
 
-const loginSchema = z.object({
-  email: z.email("Invalid email address"),
-  password: z.string().min(1, "Password is required"),
-});
+import { useMemo } from "react";
 
-type LoginFormValues = z.infer<typeof loginSchema>;
+type LoginFormValues = {
+  email: string;
+  password: string;
+};
 
 export default function LoginPage() {
+  const t = useTranslations("auth.login");
+  const tVal = useTranslations("validation");
+  const tCommon = useTranslations("common");
+
+  const loginSchema = useMemo(
+    () =>
+      z.object({
+        email: z.string().email(tVal("invalidEmail")),
+        password: z.string().min(1, tVal("passwordRequired")),
+      }),
+    [tVal],
+  );
+
   const router = useRouter();
   const queryClient = useQueryClient();
   const { mutateAsync: login, isPending, error, data, reset } = useAuthControllerLogin();
-  const errorMessage = getErrorMessage(error, data);
+  const rawErrorMessage = getErrorMessage(error, data);
+  if (rawErrorMessage) {
+    console.error("Login API error details:", { error, data, rawErrorMessage });
+  }
+  const errorMessage = rawErrorMessage ? tCommon("genericError") : null;
 
   const handleSubmit = async (values: LoginFormValues) => {
     try {
       const response = await login({ data: values });
 
       if (response.statusCode === 200) {
-        // Invalidate profile query to fetch the newly logged-in user
         await queryClient.invalidateQueries({
           queryKey: getAuthControllerGetProfileQueryKey(),
         });
 
-        toast.success("Login successful! Welcome back.");
+        toast.success(t("loginSuccess"));
         router.push("/dashboard");
         router.refresh();
       }
     } catch (err) {
-      console.log(err);
+      console.error("Login submission error:", err);
     }
   };
 
   return (
-    <div className="container mx-auto flex min-h-[calc(100vh-4rem)] items-center justify-center py-12">
-      <Card className="w-full max-w-md relative">
+    <div className="w-full max-w-md">
+      <Card className="w-full relative border-none shadow-none ring-0">
         {isPending && (
           <div className="absolute inset-0 z-50 flex items-center justify-center bg-background/50 backdrop-blur-[1px] rounded-lg animate-in fade-in">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
           </div>
         )}
         <CardHeader className="text-center">
-          <CardTitle className="text-3xl font-bold tracking-tight">Welcome back</CardTitle>
-          <CardDescription>Enter your credentials to access your account</CardDescription>
+          <CardTitle className="text-3xl font-bold tracking-tight">{t("title")}</CardTitle>
+          <CardDescription>{t("subtitle")}</CardDescription>
         </CardHeader>
 
         <CardContent>
           <GenericForm
-            title="Login"
+            title={t("submitText")}
             schema={loginSchema}
             error={errorMessage}
             defaultValues={{
@@ -77,19 +94,38 @@ export default function LoginPage() {
             }}
             onSubmit={handleSubmit}
             onReset={reset}
-            submitText="Log in"
+            submitText={t("submitText")}
+            extraActions={
+              <>
+                <div className="flex items-center gap-2">
+                  <Checkbox id="remember" />
+                  <label
+                    htmlFor="remember"
+                    className="text-sm font-medium leading-none cursor-pointer select-none"
+                  >
+                    {t("rememberMe")}
+                  </label>
+                </div>
+                <Link
+                  href="/auth/forgot-password"
+                  className="text-sm font-medium text-primary hover:underline"
+                >
+                  {t("forgotPasswordLink")}
+                </Link>
+              </>
+            }
             fields={[
               {
                 name: "email",
-                label: "Email Address",
+                label: t("emailLabel"),
                 type: "email",
-                placeholder: "john.doe@example.com",
+                placeholder: t("emailPlaceholder"),
               },
               {
                 name: "password",
-                label: "Password",
+                label: t("passwordLabel"),
                 type: "password",
-                placeholder: "••••••••",
+                placeholder: t("passwordPlaceholder"),
               },
             ]}
           />
@@ -99,14 +135,14 @@ export default function LoginPage() {
               <Separator className="w-full" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-card px-2 text-muted-foreground">Or</span>
+              <span className="bg-card px-2 text-muted-foreground">{t("or")}</span>
             </div>
           </div>
 
           <div className="grid gap-4">
             <Button variant="outline" className="w-full" asChild>
-              <a href={GOOGLE_AUTH_URL} className="flex items-center">
-                <svg width="24px" height="24px" className="mr-2 h-6 w-6" viewBox="-3 0 262 262">
+              <a href={GOOGLE_AUTH_URL} className="flex items-center justify-center gap-2">
+                <svg width="24px" height="24px" className="h-5 w-5" viewBox="-3 0 262 262">
                   <path
                     d="M255.878 133.451c0-10.734-.871-18.567-2.756-26.69H130.55v48.448h71.947c-1.45 12.04-9.283 30.172-26.69 42.356l-.244 1.622 38.755 30.023 2.685.268c24.659-22.774 38.875-56.282 38.875-96.027"
                     fill="#4285F4"
@@ -124,21 +160,17 @@ export default function LoginPage() {
                     fill="#EB4335"
                   />
                 </svg>
-                <span>Continue with Google</span>
+                <span>{t("googleAuth")}</span>
               </a>
-            </Button>
-
-            <Button variant="outline" className="w-full" asChild>
-              <Link href="/auth/login/magic-link">Log in with Magic Link</Link>
             </Button>
           </div>
         </CardContent>
 
-        <CardFooter className="justify-center border-t bg-muted/50 py-4">
+        <CardFooter className="justify-center border-t-0 bg-transparent pt-2 pb-4">
           <div className="text-sm">
-            Don&apos;t have an account?{" "}
+            {t("noAccount")}{" "}
             <Link href="/auth/register" className="font-medium text-primary hover:underline">
-              Sign up
+              {t("signUp")}
             </Link>
           </div>
         </CardFooter>

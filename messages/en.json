@@ -1,0 +1,182 @@
+{
+  "common": {
+    "language": "Language",
+    "english": "English",
+    "arabic": "العربية",
+    "notifications": "Notifications",
+    "noNotifications": "No new notifications",
+    "search": "Search...",
+    "loading": "Loading...",
+    "reset": "Reset",
+    "submitting": "Submitting...",
+    "genericError": "An unexpected error occurred. Please try again.",
+    "brandName": "Rewaa"
+  },
+  "validation": {
+    "invalidEmail": "Invalid email address",
+    "passwordRequired": "Password is required",
+    "passwordMinLength": "Password must be at least 8 characters",
+    "firstNameRequired": "First name is required",
+    "lastNameRequired": "Last name is required",
+    "confirmPasswordRequired": "Confirm Password is required",
+    "passwordsDoNotMatch": "Passwords do not match"
+  },
+  "auth": {
+    "login": {
+      "title": "Login",
+      "subtitle": "Enter your credentials to access your account",
+      "submitText": "Log in",
+      "emailLabel": "Email Address",
+      "emailPlaceholder": "john.doe@example.com",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "••••••••",
+      "or": "Or",
+      "googleAuth": "Continue with Google",
+      "magicLink": "Log in with Magic Link",
+      "noAccount": "Don't have an account?",
+      "signUp": "Sign up",
+      "rememberMe": "Remember me",
+      "forgotPasswordLink": "Forgot your password?",
+      "loginSuccess": "Login successful! Welcome back."
+    },
+    "forgotPassword": {
+      "title": "Forgot your password?",
+      "subtitle": "Enter your email address and we will send you a reset link.",
+      "submitText": "Send Reset Link",
+      "successTitle": "Reset Link Sent!",
+      "successDescription": "Please check your email inbox for password reset instructions.",
+      "backToLogin": "Back to log in"
+    },
+    "resetPassword": {
+      "title": "Reset Password",
+      "subtitle": "Enter a new password for your account below.",
+      "submitText": "Update Password",
+      "newPasswordLabel": "New Password",
+      "confirmPasswordLabel": "Confirm New Password",
+      "passwordsDoNotMatch": "Passwords do not match",
+      "successMessage": "Password reset successfully! You can now log in."
+    },
+    "register": {
+      "title": "Create an account",
+      "subtitle": "Enter your details to get started",
+      "submitText": "Create Account",
+      "firstNameLabel": "First Name",
+      "firstNamePlaceholder": "John",
+      "lastNameLabel": "Last Name",
+      "lastNamePlaceholder": "Doe",
+      "nameLabel": "Full Name",
+      "namePlaceholder": "John Doe",
+      "emailLabel": "Email Address",
+      "emailPlaceholder": "john.doe@example.com",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "••••••••",
+      "confirmPasswordLabel": "Confirm Password",
+      "alreadyHaveAccount": "Already have an account?",
+      "signIn": "Sign in",
+      "termsNotice": "By clicking continue, you agree to our",
+      "termsOfService": "Terms of Service",
+      "privacyPolicy": "Privacy Policy"
+    },
+    "magicLink": {
+      "title": "Log in with Magic Link",
+      "subtitle": "We will send a login link to your email",
+      "submitText": "Send Magic Link",
+      "checkEmail": "Check your email for the login link!",
+      "backToLogin": "Back to login"
+    },
+    "verify": {
+      "title": "Verifying Magic Link...",
+      "subtitle": "Please wait while we log you in",
+      "success": "Magic Link verified! Redirecting...",
+      "failedTitle": "Verification Failed",
+      "invalidToken": "Invalid or expired magic link"
+    },
+    "banner": {
+      "title": "Rewaa Educational",
+      "subtitle": "Inspiring minds and building the future of digital education with state-of-the-art technologies and innovative best practices."
+    }
+  },
+  "nav": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "commerce": "Commerce",
+    "products": "Products",
+    "orders": "Orders",
+    "customers": "Customers",
+    "analytics": "Analytics",
+    "settings": "Settings",
+    "profile": "Profile",
+    "logout": "Log out",
+    "loggingOut": "Logging out...",
+    "courses": "Courses",
+    "exams": "Exams",
+    "students": "Students",
+    "userSettings": "User Settings",
+    "roles": {
+      "user": "User",
+      "admin": "Admin",
+      "teacher": "Teacher",
+      "student": "Student"
+    }
+  },
+  "dashboard": {
+    "overviewTitle": "Dashboard Overview",
+    "welcomeSubtitle": "Welcome back! Here's what's happening with your projects today.",
+    "kpi": {
+      "totalRevenue": "Total Revenue",
+      "totalOrders": "Total Orders",
+      "activeUsers": "Active Users",
+      "salesGrowth": "Sales Growth"
+    },
+    "charts": {
+      "revenueGrowthTitle": "Revenue Growth",
+      "revenueGrowthDesc": "Monthly revenue trends over the last 6 months.",
+      "salesByCategoryTitle": "Sales by Category",
+      "salesByCategoryDesc": "Comparison of sales across different product lines.",
+      "trafficSourceTitle": "Traffic Source",
+      "trafficSourceDesc": "User acquisition channels.",
+      "topReferrersTitle": "Top Referrers",
+      "topReferrersDesc": "Highest traffic from external sites.",
+      "activeSessionsTitle": "Active Sessions",
+      "activeSessionsDesc": "Daily active users and session length.",
+      "marketingRoiTitle": "Marketing ROI",
+      "marketingRoiDesc": "Spend vs Conversions performance.",
+      "quarterlyGoalTitle": "Quarterly Goal",
+      "quarterlyGoalDesc": "Progress towards Q3 target.",
+      "riskAssessmentTitle": "Risk Assessment",
+      "riskAssessmentDesc": "System vulnerability scoring.",
+      "uptimeTitle": "Uptime",
+      "errorRateTitle": "Error Rate",
+      "serviceStatusTitle": "Service Status",
+      "serviceStatusDesc": "API availability over the last 30 days.",
+      "quickTrendTitle": "Quick Trend",
+      "quickTrendDesc": "Last 24 hours activity.",
+      "sessionDetailsTitle": "Session Details",
+      "sessionDetailsDesc": "Detailed view of user sessions per day."
+    },
+    "notifications": {
+      "title": "Notifications",
+      "newBadge": "{count} New",
+      "markAllRead": "Mark all as read",
+      "empty": "No notifications yet",
+      "openAriaLabel": "Open notifications",
+      "items": {
+        "item1": {
+          "title": "New feature available!",
+          "description": "Check out the new analytics dashboard in your settings.",
+          "time": "2 minutes ago"
+        },
+        "item2": {
+          "title": "Project update",
+          "description": "Your team has updated the 'Landing Page' project.",
+          "time": "1 hour ago"
+        },
+        "item3": {
+          "title": "Billing successful",
+          "description": "Your monthly subscription has been renewed.",
+          "time": "5 hours ago"
+        }
+      }
+    }
+  }
+}

@@ -1,10 +1,13 @@
 import "@/app/globals.css";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryProvider } from "@/providers/query-provider";
-import { ThemeProvider } from "@/providers/theme-provider";
+import { routing } from "@/i18n/routing";
 import { getPayload } from "@/lib/cms/getPayload";
+import { QueryProvider } from "@/providers/query-provider";
 import type { Metadata } from "next";
+import { NextIntlClientProvider } from "next-intl";
+import { getMessages } from "next-intl/server";
 import { IBM_Plex_Sans_Arabic } from "next/font/google";
+import { notFound } from "next/navigation";
 import { Toaster } from "sonner";
 
 const ibmPlexArabic = IBM_Plex_Sans_Arabic({
@@ -26,20 +29,33 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
 /**
- * Root layout component for the main application group.
- * Handles global providers (Theme, Query), fonts, and global UI elements like Toaster.
- *
- * @param props - Component props containing children elements.
+ * Root layout component for the main application group with [locale] routing.
  */
-export default function MainLayout({
+export default async function MainLayout({
   children,
+  params,
 }: Readonly<{
   children: React.ReactNode;
+  params: Promise<{ locale: string }>;
 }>) {
+  const { locale } = await params;
+
+  if (!routing.locales.includes(locale as "en" | "ar")) {
+    notFound();
+  }
+
+  const messages = await getMessages();
+  const dir = locale === "ar" ? "rtl" : "ltr";
+
   return (
     <html
-      lang="en"
+      lang={locale}
+      dir={dir}
       className={`${ibmPlexArabic.variable} ${ibmPlexArabic.className} h-full antialiased`}
       suppressHydrationWarning
     >
@@ -47,19 +63,14 @@ export default function MainLayout({
         <meta name="apple-mobile-web-app-title" content="Rewaa" />
       </head>
       <body className="min-h-full flex flex-col">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
+        <NextIntlClientProvider locale={locale} messages={messages}>
           <QueryProvider>
             <TooltipProvider>
               {children}
               <Toaster />
             </TooltipProvider>
           </QueryProvider>
-        </ThemeProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

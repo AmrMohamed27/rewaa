@@ -1,0 +1,182 @@
+{
+  "common": {
+    "language": "اللغة",
+    "english": "English",
+    "arabic": "العربية",
+    "notifications": "الإشعارات",
+    "noNotifications": "لا توجد إشعارات جديدة",
+    "search": "بحث...",
+    "loading": "جاري التحميل...",
+    "reset": "إعادة ضبط",
+    "submitting": "جاري الإرسال...",
+    "genericError": "حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.",
+    "brandName": "رواء"
+  },
+  "validation": {
+    "invalidEmail": "البريد الإلكتروني غير صالح",
+    "passwordRequired": "كلمة المرور مطلوبة",
+    "passwordMinLength": "يجب أن تكون كلمة المرور 8 أحرف على الأقل",
+    "firstNameRequired": "الاسم الأول مطلوب",
+    "lastNameRequired": "اسم العائلة مطلوب",
+    "confirmPasswordRequired": "تأكيد كلمة المرور مطلوب",
+    "passwordsDoNotMatch": "كلمتا المرور غير متطابقتين"
+  },
+  "auth": {
+    "login": {
+      "title": "تسجيل الدخول",
+      "subtitle": "أدخل بيانات الاعتماد الخاصة بك للوصول إلى حسابك",
+      "submitText": "تسجيل الدخول",
+      "emailLabel": "البريد الإلكتروني",
+      "emailPlaceholder": "john.doe@example.com",
+      "passwordLabel": "كلمة المرور",
+      "passwordPlaceholder": "••••••••",
+      "or": "أو",
+      "googleAuth": "المتابعة باستخدام Google",
+      "magicLink": "تسجيل الدخول باستخدام الرابط السحري",
+      "noAccount": "ليس لديك حساب؟",
+      "signUp": "إنشاء حساب",
+      "rememberMe": "تذكرني",
+      "forgotPasswordLink": "نسيت كلمة المرور؟",
+      "loginSuccess": "تم تسجيل الدخول بنجاح! مرحباً بعودتك."
+    },
+    "forgotPassword": {
+      "title": "نسيت كلمة المرور؟",
+      "subtitle": "أدخل بريدك الإلكتروني وسنرسل لك رابطاً لإعادة ضبط كلمة المرور.",
+      "submitText": "إرسال رابط إعادة الضبط",
+      "successTitle": "تم إرسال الرابط!",
+      "successDescription": "تفقد صندوق الوارد في بريدك الإلكتروني للحصول على تعليمات إعادة الضبط.",
+      "backToLogin": "العودة إلى تسجيل الدخول"
+    },
+    "resetPassword": {
+      "title": "إعادة ضبط كلمة المرور",
+      "subtitle": "أدخل كلمة المرور الجديدة الخاصة بك لحسابك.",
+      "submitText": "تحديث كلمة المرور",
+      "newPasswordLabel": "كلمة المرور الجديدة",
+      "confirmPasswordLabel": "تأكيد كلمة المرور جديدة",
+      "passwordsDoNotMatch": "كلمتا المرور غير متطابقتين",
+      "successMessage": "تم تحديث كلمة المرور بنجاح! يمكنك الآن تسجيل الدخول."
+    },
+    "register": {
+      "title": "إنشاء حساب جديد",
+      "subtitle": "أدخل بياناتك للبدء",
+      "submitText": "إنشاء الحساب",
+      "firstNameLabel": "الاسم الأول",
+      "firstNamePlaceholder": "علي",
+      "lastNameLabel": "اسم العائلة",
+      "lastNamePlaceholder": "أحمد",
+      "nameLabel": "الاسم الكامل",
+      "namePlaceholder": "علي أحمد",
+      "emailLabel": "البريد الإلكتروني",
+      "emailPlaceholder": "john.doe@example.com",
+      "passwordLabel": "كلمة المرور",
+      "passwordPlaceholder": "••••••••",
+      "confirmPasswordLabel": "تأكيد كلمة المرور",
+      "alreadyHaveAccount": "لديك حساب بالفعل؟",
+      "signIn": "تسجيل الدخول",
+      "termsNotice": "بالنقر على متابعة، فإنك توافق على",
+      "termsOfService": "شروط الخدمة",
+      "privacyPolicy": "سياسة الخصوصية"
+    },
+    "magicLink": {
+      "title": "تسجيل الدخول برابط سحري",
+      "subtitle": "سنرسل رابط تسجيل الدخول إلى بريدك الإلكتروني",
+      "submitText": "إرسال الرابط السحري",
+      "checkEmail": "تفقد بريدك الإلكتروني للحصول على رابط الدخول!",
+      "backToLogin": "العودة إلى تسجيل الدخول"
+    },
+    "verify": {
+      "title": "جاري التحقق من الرابط السحري...",
+      "subtitle": "يرجى الانتظار بينما نسجل دخولك",
+      "success": "تم التحقق من الرابط السحري! جاري التوجيه...",
+      "failedTitle": "فشل التحقق",
+      "invalidToken": "الرابط السحري غير صالح أو منتهي الصلاحية"
+    },
+    "banner": {
+      "title": "رواء التعليمية",
+      "subtitle": "نلهم العقول ونبني مستقبل التعليم الرقمي بأحدث التقنيات وأفضل الممارسات المبتكرة."
+    }
+  },
+  "nav": {
+    "home": "الرئيسية",
+    "dashboard": "لوحة التحكم",
+    "commerce": "التجارة",
+    "products": "المنتجات",
+    "orders": "الطلبات",
+    "customers": "العملاء",
+    "analytics": "التحليلات",
+    "settings": "الإعدادات",
+    "profile": "الملف الشخصي",
+    "logout": "تسجيل الخروج",
+    "loggingOut": "جاري تسجيل الخروج...",
+    "courses": "الدورات",
+    "exams": "الاختبارات",
+    "students": "الطلاب",
+    "userSettings": "إعدادات المستخدم",
+    "roles": {
+      "user": "مستخدم",
+      "admin": "مدير النظام",
+      "teacher": "معلم",
+      "student": "طالب"
+    }
+  },
+  "dashboard": {
+    "overviewTitle": "نظرة عامة على لوحة التحكم",
+    "welcomeSubtitle": "مرحباً بعودتك! إليك ما يحدث في مشاريعك اليوم.",
+    "kpi": {
+      "totalRevenue": "إجمالي الإيرادات",
+      "totalOrders": "إجمالي الطلبات",
+      "activeUsers": "المستخدمون النشطون",
+      "salesGrowth": "نمو المبيعات"
+    },
+    "charts": {
+      "revenueGrowthTitle": "نمو الإيرادات",
+      "revenueGrowthDesc": "اتجاهات الإيرادات الشهرية خلال الأشهر الستة الماضية.",
+      "salesByCategoryTitle": "المبيعات حسب الفئة",
+      "salesByCategoryDesc": "مقارنة المبيعات عبر خطوط المنتجات المختلفة.",
+      "trafficSourceTitle": "مصدر الزيارات",
+      "trafficSourceDesc": "قنوات استقطاب المستخدمين.",
+      "topReferrersTitle": "أبرز الإحالات",
+      "topReferrersDesc": "أعلى زيارات قادمة من المواقع الخارجية.",
+      "activeSessionsTitle": "الجلسات النشطة",
+      "activeSessionsDesc": "المستخدمون النشطون يومياً ومدة الجلسات.",
+      "marketingRoiTitle": "عائد الاستثمار التسويقي",
+      "marketingRoiDesc": "أداء الإنفاق مقابل التحويلات.",
+      "quarterlyGoalTitle": "الهدف الربع سنوي",
+      "quarterlyGoalDesc": "التقدم نحو هدف الربع الثالث.",
+      "riskAssessmentTitle": "تقييم المخاطر",
+      "riskAssessmentDesc": "تقييم ثغرات النظام.",
+      "uptimeTitle": "وقت التشغيل",
+      "errorRateTitle": "معدل الأخطاء",
+      "serviceStatusTitle": "حالة الخدمة",
+      "serviceStatusDesc": "توافر واجهة البرمجة خلال الـ 30 يوماً الماضية.",
+      "quickTrendTitle": "الاتجاه السريع",
+      "quickTrendDesc": "نشاط الـ 24 ساعة الماضية.",
+      "sessionDetailsTitle": "تفاصيل الجلسة",
+      "sessionDetailsDesc": "عرض تفصيلي لجلسات المستخدمين يومياً."
+    },
+    "notifications": {
+      "title": "الإشعارات",
+      "newBadge": "{count} جديد",
+      "markAllRead": "تحديد الكل كمقروء",
+      "empty": "لا توجد إشعارات بعد",
+      "openAriaLabel": "فتح الإشعارات",
+      "items": {
+        "item1": {
+          "title": "ميزة جديدة متاحة!",
+          "description": "تفقد لوحة تحكم التحليلات الجديدة في إعداداتك.",
+          "time": "منذ دقيقتين"
+        },
+        "item2": {
+          "title": "تحديث المشروع",
+          "description": "قام فريقك بتحديث مشروع 'الصفحة الرئيسية'.",
+          "time": "منذ ساعة واحدة"
+        },
+        "item3": {
+          "title": "نجاح عملية الدفع",
+          "description": "تم تجديد اشتراكك الشهري بنجاح.",
+          "time": "منذ 5 ساعات"
+        }
+      }
+    }
+  }
+}
