@@ -34,7 +34,7 @@ export const getAuth = () => {
   ) => {
     return api<AuthControllerLogin200>(
       {
-        url: `http://localhost:8000/api/auth/login`,
+        url: `/api/auth/login`,
         method: "POST",
         headers: { "Content-Type": "application/json" },
         data: loginDto,
@@ -46,10 +46,7 @@ export const getAuth = () => {
    * @summary Logout the current user
    */
   const authControllerLogout = (options?: SecondParameter<typeof api<AuthControllerLogout200>>) => {
-    return api<AuthControllerLogout200>(
-      { url: `http://localhost:8000/api/auth/logout`, method: "POST" },
-      options,
-    );
+    return api<AuthControllerLogout200>({ url: `/api/auth/logout`, method: "POST" }, options);
   };
   /**
    * @summary Get current user profile
@@ -57,10 +54,7 @@ export const getAuth = () => {
   const authControllerGetProfile = (
     options?: SecondParameter<typeof api<AuthControllerGetProfile200>>,
   ) => {
-    return api<AuthControllerGetProfile200>(
-      { url: `http://localhost:8000/api/auth/me`, method: "GET" },
-      options,
-    );
+    return api<AuthControllerGetProfile200>({ url: `/api/auth/me`, method: "GET" }, options);
   };
   /**
    * @summary Register a new user
@@ -71,7 +65,7 @@ export const getAuth = () => {
   ) => {
     return api<AuthControllerRegister201>(
       {
-        url: `http://localhost:8000/api/auth/register`,
+        url: `/api/auth/register`,
         method: "POST",
         headers: { "Content-Type": "application/json" },
         data: registerDto,
@@ -88,7 +82,7 @@ export const getAuth = () => {
   ) => {
     return api<AuthControllerResendVerification200>(
       {
-        url: `http://localhost:8000/api/auth/resend-verification`,
+        url: `/api/auth/resend-verification`,
         method: "POST",
         headers: { "Content-Type": "application/json" },
         data: resendVerificationDto,
@@ -100,16 +94,13 @@ export const getAuth = () => {
    * @summary Login with Google OAuth2
    */
   const authControllerGoogleAuth = (options?: SecondParameter<typeof api<void>>) => {
-    return api<void>({ url: `http://localhost:8000/api/auth/google`, method: "GET" }, options);
+    return api<void>({ url: `/api/auth/google`, method: "GET" }, options);
   };
   /**
    * @summary Google OAuth2 callback
    */
   const authControllerGoogleAuthRedirect = (options?: SecondParameter<typeof api<void>>) => {
-    return api<void>(
-      { url: `http://localhost:8000/api/auth/google/callback`, method: "GET" },
-      options,
-    );
+    return api<void>({ url: `/api/auth/google/callback`, method: "GET" }, options);
   };
   /**
    * @summary Verify email token
@@ -120,7 +111,7 @@ export const getAuth = () => {
   ) => {
     return api<AuthControllerVerify200>(
       {
-        url: `http://localhost:8000/api/auth/verify`,
+        url: `/api/auth/verify`,
         method: "POST",
         headers: { "Content-Type": "application/json" },
         data: verifyMagicLinkDto,
@@ -137,7 +128,7 @@ export const getAuth = () => {
   ) => {
     return api<MagicLinkControllerRequest200>(
       {
-        url: `http://localhost:8000/api/auth/magic-link/request`,
+        url: `/api/auth/magic-link/request`,
         method: "POST",
         headers: { "Content-Type": "application/json" },
         data: requestMagicLinkDto,
@@ -154,7 +145,7 @@ export const getAuth = () => {
   ) => {
     return api<MagicLinkControllerVerify200>(
       {
-        url: `http://localhost:8000/api/auth/magic-link/verify`,
+        url: `/api/auth/magic-link/verify`,
         method: "POST",
         headers: { "Content-Type": "application/json" },
         data: verifyMagicLinkDto,

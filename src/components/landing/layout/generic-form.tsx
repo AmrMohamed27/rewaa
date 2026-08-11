@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   FieldDescription,
@@ -11,6 +12,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { DeepValue, FormValidateOrFn, Updater, useForm } from "@tanstack/react-form";
+import { Eye, EyeOff } from "lucide-react";
+import { useTranslations } from "next-intl";
 import * as z from "zod";
 import { $ZodTypeInternals } from "zod/v4/core";
 
@@ -52,57 +55,106 @@ interface GenericFormProps<T> {
   fields: FieldConfig<T>[];
   /** Optional custom text for the submit button (default: "Submit") */
   submitText?: string;
+  /** Optional custom text for the reset button (default from i18n: "Reset") */
+  resetText?: string;
+  /** Whether to show reset button (default: false) */
+  showReset?: boolean;
+  /** Extra node to render between fields and submit button (e.g., Remember me & Forgot Password) */
+  extraActions?: React.ReactNode;
   /** Optional global error message to display in the form */
   error?: string | null;
   /** Optional callback function to reset the form */
   onReset?: () => void;
 }
 
+interface PasswordInputProps {
+  id: string;
+  name: string;
+  value: string;
+  onBlur: () => void;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  placeholder?: string;
+  ariaInvalid?: boolean;
+}
+
+/**
+ * Reusable password input with toggleable visibility icon (Eye / EyeOff).
+ * Uses logical Tailwind properties (pe-10, end-0) for seamless LTR & RTL support.
+ */
+function PasswordInput({
+  id,
+  name,
+  value,
+  onBlur,
+  onChange,
+  placeholder,
+  ariaInvalid,
+}: PasswordInputProps) {
+  const [showPassword, setShowPassword] = useState(false);
+
+  return (
+    <div className="relative">
+      <Input
+        id={id}
+        name={name}
+        type={showPassword ? "text" : "password"}
+        value={value}
+        onBlur={onBlur}
+        onChange={onChange}
+        placeholder={placeholder}
+        aria-invalid={ariaInvalid}
+        className="pe-10"
+      />
+      <button
+        type="button"
+        onClick={() => setShowPassword((prev) => !prev)}
+        className="absolute inset-y-0 inset-e-0 flex items-center pe-3 text-muted-foreground hover:text-foreground focus:outline-none transition-colors"
+        aria-label={showPassword ? "Hide password" : "Show password"}
+        tabIndex={-1}
+      >
+        {showPassword ? (
+          <EyeOff className="h-4 w-4 shrink-0" />
+        ) : (
+          <Eye className="h-4 w-4 shrink-0" />
+        )}
+      </button>
+    </div>
+  );
+}
+
 /**
  * A highly reusable, type-safe generic form component built on TanStack Form and Zod.
- *
- * @template T - The type of the form data, typically a Zod schema inference.
- *
- * @param {GenericFormProps<T>} props - The component props.
- * @param {z.ZodType<T>} props.schema - The Zod validation schema for the form.
- * @param {T} props.defaultValues - The initial values for the form fields.
- * @param {(values: T) => void | Promise<void>} props.onSubmit - Callback function triggered on valid form submission.
- * @param {FieldConfig<T>[]} props.fields - Array of field configurations defining labels, names, and input types.
- * @param {string} [props.submitText="Submit"] - Optional custom text for the submit button.
- * @param {string} [props.error] - Optional global error message to display in the form.
- * @param {() => void} [props.onReset] - Optional callback function to reset the form.
- *
- * @example
- * ```tsx
- * const schema = z.object({ email: z.string().email() });
- * <GenericForm
- *   schema={schema}
- *   defaultValues={{ email: "" }}
- *   fields={[{ name: "email", label: "Email Address", type: "email" }]}
- *   onSubmit={(values) => console.log(values)}
- * />
- * ```
  */
-
 export function GenericForm<T>({
   schema,
   defaultValues,
   onSubmit,
   fields,
-  submitText = "Submit",
+  submitText,
+  resetText,
+  showReset = false,
+  extraActions,
   error,
   onReset,
 }: GenericFormProps<T>) {
+  const t = useTranslations("common");
   const form = useForm({
     defaultValues,
     validators: {
       onChange: schema as FormValidateOrFn<T>,
     },
     onSubmit: async ({ value }) => {
-      await onSubmit(value as T);
-      form.reset();
+      try {
+        await onSubmit(value as T);
+        form.reset();
+      } catch (err) {
+        console.error("Form submission error:", err);
+      }
     },
   });
+
+  const finalSubmitText = submitText || t("loading");
+  const finalResetText = resetText || t("reset");
 
   return (
     <form
@@ -133,7 +185,7 @@ export function GenericForm<T>({
                     <Textarea
                       id={field.name}
                       name={field.name}
-                      value={field.state.value as string}
+                      value={(field.state.value as string) || ""}
                       onBlur={field.handleBlur}
                       onChange={(e) =>
                         field.handleChange(
@@ -144,12 +196,26 @@ export function GenericForm<T>({
                       className="min-h-24 resize-none"
                       aria-invalid={isInvalid}
                     />
+                  ) : fieldConfig.type === "password" ? (
+                    <PasswordInput
+                      id={field.name}
+                      name={field.name}
+                      value={(field.state.value as string) || ""}
+                      onBlur={field.handleBlur}
+                      onChange={(e) =>
+                        field.handleChange(
+                          e.target.value as Updater<DeepValue<T, Extract<keyof T, string>>>,
+                        )
+                      }
+                      placeholder={fieldConfig.placeholder}
+                      ariaInvalid={isInvalid}
+                    />
                   ) : (
                     <Input
                       id={field.name}
                       name={field.name}
                       type={fieldConfig.type || "text"}
-                      value={field.state.value as string}
+                      value={(field.state.value as string) || ""}
                       onBlur={field.handleBlur}
                       onChange={(e) =>
                         field.handleChange(
@@ -172,26 +238,42 @@ export function GenericForm<T>({
           </form.Field>
         ))}
       </FieldGroup>
-      <UIField orientation="horizontal" className="w-full justify-between">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => {
-            form.reset();
-            onReset?.();
-          }}
-        >
-          Reset
-        </Button>
+      {extraActions && (
+        <div className="flex items-center justify-between flex-wrap gap-2 text-sm">
+          {extraActions}
+        </div>
+      )}
 
+      {showReset ? (
+        <UIField orientation="horizontal" className="w-full justify-between gap-4">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => {
+              form.reset();
+              onReset?.();
+            }}
+          >
+            {finalResetText}
+          </Button>
+
+          <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
+            {([canSubmit, isSubmitting]) => (
+              <Button type="submit" form="generic-form" disabled={!canSubmit}>
+                {isSubmitting ? t("submitting") : finalSubmitText}
+              </Button>
+            )}
+          </form.Subscribe>
+        </UIField>
+      ) : (
         <form.Subscribe selector={(state) => [state.canSubmit, state.isSubmitting]}>
           {([canSubmit, isSubmitting]) => (
-            <Button type="submit" form="generic-form" disabled={!canSubmit}>
-              {isSubmitting ? "Submitting..." : submitText}
+            <Button type="submit" form="generic-form" disabled={!canSubmit} className="w-full">
+              {isSubmitting ? t("submitting") : finalSubmitText}
             </Button>
           )}
         </form.Subscribe>
-      </UIField>
+      )}
     </form>
   );
 }

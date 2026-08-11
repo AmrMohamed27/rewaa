@@ -27,6 +27,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import { getErrorMessage } from "@/lib/api-utils";
+import { useTranslations } from "next-intl";
 
 export default function ClientVerificationUI({
   initialStatus,
@@ -35,6 +36,8 @@ export default function ClientVerificationUI({
   initialStatus: "success" | "error";
   errorMessage?: string;
 }) {
+  const t = useTranslations("auth.login");
+  const tCommon = useTranslations("common");
   const [resendEmail, setResendEmail] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const {
@@ -44,7 +47,15 @@ export default function ClientVerificationUI({
     data: mutationData,
   } = useAuthControllerResendVerification();
 
-  const mutationErrorMessage = getErrorMessage(mutationError, mutationData);
+  const rawMutationError = getErrorMessage(mutationError, mutationData);
+  if (rawMutationError) {
+    console.error("Resend verification error details:", {
+      mutationError,
+      mutationData,
+      rawMutationError,
+    });
+  }
+  const mutationErrorMessage = rawMutationError ? tCommon("genericError") : null;
 
   const handleResend = async () => {
     if (!resendEmail) {
@@ -60,15 +71,15 @@ export default function ClientVerificationUI({
         setResendEmail("");
       }
     } catch (err) {
-      console.error("Resend error:", err);
+      console.error("Resend verification submission error:", err);
     }
   };
 
   const status = initialStatus;
 
   return (
-    <div className="container mx-auto flex min-h-[calc(100vh-4rem)] items-center justify-center py-12">
-      <Card className="w-full max-w-md">
+    <div className="w-full max-w-md">
+      <Card className="w-full relative border-none shadow-none ring-0">
         <CardHeader className="text-center">
           <CardTitle className="text-3xl font-bold tracking-tight">
             {status === "success" && "Email Verified!"}
@@ -95,7 +106,7 @@ export default function ClientVerificationUI({
           )}
         </CardContent>
 
-        <CardFooter className="flex flex-col gap-3 border-t bg-muted/50 py-6">
+        <CardFooter className="flex flex-col gap-3 border-t-0 bg-transparent pt-2 pb-4">
           {status === "success" && (
             <Button asChild className="w-full">
               <Link href="/auth/login">Go to Login</Link>
@@ -123,7 +134,7 @@ export default function ClientVerificationUI({
                     <Input
                       id="resend-email"
                       type="email"
-                      placeholder="john.doe@example.com"
+                      placeholder={t("emailPlaceholder")}
                       value={resendEmail}
                       onChange={(e) => setResendEmail(e.target.value)}
                     />

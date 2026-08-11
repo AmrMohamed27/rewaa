@@ -26,8 +26,11 @@ import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
 import { getErrorMessage } from "@/lib/api-utils";
+import { useTranslations } from "next-intl";
 
 export default function VerifyEmailUI({ email }: { email?: string }) {
+  const t = useTranslations("auth.login");
+  const tCommon = useTranslations("common");
   const [resendEmail, setResendEmail] = useState(email || "");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const {
@@ -37,7 +40,11 @@ export default function VerifyEmailUI({ email }: { email?: string }) {
     data,
   } = useAuthControllerResendVerification();
 
-  const errorMessage = getErrorMessage(error, data);
+  const rawErrorMessage = getErrorMessage(error, data);
+  if (rawErrorMessage) {
+    console.error("Resend verification error details:", { error, data, rawErrorMessage });
+  }
+  const errorMessage = rawErrorMessage ? tCommon("genericError") : null;
 
   const handleResend = async () => {
     if (!resendEmail) {
@@ -52,14 +59,13 @@ export default function VerifyEmailUI({ email }: { email?: string }) {
         setIsDialogOpen(false);
       }
     } catch (err) {
-      // Error is now handled by the errorMessage variable and displayed in the UI
       console.error("Resend verification error:", err);
     }
   };
 
   return (
-    <div className="container mx-auto flex min-h-[calc(100vh-4rem)] items-center justify-center py-12">
-      <Card className="w-full max-w-md">
+    <div className="w-full max-w-md">
+      <Card className="w-full relative border-none shadow-none ring-0">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
             <div className="p-3 bg-primary/10 rounded-full">
@@ -86,7 +92,7 @@ export default function VerifyEmailUI({ email }: { email?: string }) {
           )}
         </CardContent>
 
-        <CardFooter className="flex flex-col gap-3 border-t bg-muted/50 py-6">
+        <CardFooter className="flex flex-col gap-3 border-t-0 bg-transparent pt-2 pb-4">
           <Button asChild className="w-full">
             <Link href="/auth/login">Back to Login</Link>
           </Button>
@@ -111,7 +117,7 @@ export default function VerifyEmailUI({ email }: { email?: string }) {
                   <Input
                     id="resend-email"
                     type="email"
-                    placeholder="john.doe@example.com"
+                    placeholder={t("emailPlaceholder")}
                     value={resendEmail}
                     onChange={(e) => setResendEmail(e.target.value)}
                   />
