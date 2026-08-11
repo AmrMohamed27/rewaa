@@ -9,21 +9,30 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarRail,
+  SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
 import { useAuthControllerGetProfile, useAuthControllerLogout } from "@/hooks/use-auth";
 import { AuthControllerGetProfile200 } from "@/types/api";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { Link, usePathname, useRouter } from "@/i18n/routing";
 import { ProfileDropdown } from "./ProfileDropdown";
 import { navConfig } from "@/config/nav-config";
 import { cn } from "@/lib/utils";
+import { useLocale, useTranslations } from "next-intl";
+import { PanelLeftIcon } from "lucide-react";
 
 export function AppSidebar({
   initialProfileData,
+  side: sideProp,
 }: {
   initialProfileData: AuthControllerGetProfile200;
+  side?: "left" | "right";
 }) {
+  const locale = useLocale();
+  const side = sideProp ?? (locale === "ar" ? "right" : "left");
+  const t = useTranslations("nav");
+  const tCommon = useTranslations("common");
   const { data, isLoading, error } = useAuthControllerGetProfile({
     query: {
       initialData: initialProfileData,
@@ -34,9 +43,7 @@ export function AppSidebar({
   const { mutate: logout, isPending } = useAuthControllerLogout({
     mutation: {
       onSuccess: () => {
-        // Redirect to login page after successful logout
         router.push("/auth/login");
-        // Force a refresh to clear any cached states if necessary
         router.refresh();
       },
     },
@@ -47,48 +54,76 @@ export function AppSidebar({
   };
   const pathname = usePathname();
 
-  const { state, isMobile } = useSidebar();
+  const { state, isMobile, toggleSidebar } = useSidebar();
   const isCollapsed = state === "collapsed" && !isMobile;
 
   const user = data?.data;
+
+  // Helper to translate nav item label
+  const getNavLabel = (label: string) => {
+    const key = label.toLowerCase();
+    return t.has(key) ? t(key) : label;
+  };
+
   return (
-    <Sidebar collapsible="icon">
-      <SidebarHeader className="h-16 flex py-3 items-start justify-center px-2">
-        <Link href={navConfig.primaryLink.href} className="flex items-center text-start">
-          <Logo brandName="Sidebar" logoOnly={isCollapsed} />
-        </Link>
+    <Sidebar collapsible="icon" side={side}>
+      <SidebarHeader className="h-16 flex items-center justify-center px-3 py-3 border-b border-sidebar-border/50">
+        <button
+          onClick={toggleSidebar}
+          title={t("expandSidebar")}
+          className="hidden group-data-[collapsible=icon]:flex group/logo-trigger size-12 shrink-0 aspect-square p-0 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 transition-all duration-200"
+        >
+          <div className="group-hover/logo-trigger:hidden flex items-center justify-center transition-transform duration-200">
+            <Logo logoOnly width={20} height={20} />
+          </div>
+          <PanelLeftIcon className="hidden group-hover/logo-trigger:inline-flex size-5 rtl:rotate-180 text-white" />
+        </button>
+        <div className="flex w-full items-center justify-between group-data-[collapsible=icon]:hidden">
+          <Link
+            href={navConfig.primaryLink.href}
+            className="flex items-center text-white text-start overflow-hidden rounded-md p-2"
+          >
+            <Logo brandName={tCommon("brandName")} width={20} height={20} />
+          </Link>
+          <SidebarTrigger className="hover:bg-white/10 text-white rounded-full size-8 [&_svg]:size-5" />
+        </div>
       </SidebarHeader>
       <SidebarContent className="flex flex-col gap-y-1">
         <SidebarGroup>
-          <SidebarMenu className="space-y-2">
-            {navConfig.sidebarNav.map((item) => (
-              <SidebarMenuItem key={item.href}>
-                <SidebarMenuButton
-                  asChild
-                  tooltip={item.label}
-                  isActive={pathname === item.href}
-                  className={cn(
-                    "w-full flex items-center gap-4 rounded-full px-4 py-6",
-                    pathname === item.href
-                      ? "bg-secondary text-secondary-foreground"
-                      : "hover:bg-muted/80",
-                    isCollapsed && "px-0 justify-center",
-                  )}
-                >
-                  <Link href={item.href}>
-                    <item.icon className="size-5" />
-                    {!isCollapsed && <span>{item.label}</span>}
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
+          <SidebarMenu className="space-y-2 flex flex-col items-center">
+            {navConfig.sidebarNav.map((item) => {
+              const translatedLabel = getNavLabel(item.label);
+              const isActive = pathname === item.href;
+              return (
+                <SidebarMenuItem key={item.href} className="w-full flex justify-center">
+                  <SidebarMenuButton
+                    asChild
+                    tooltip={translatedLabel}
+                    isActive={isActive}
+                    className={cn(
+                      "flex items-center rounded-full transition-colors w-full gap-4 px-4 py-6 justify-start group-data-[collapsible=icon]:size-12! group-data-[collapsible=icon]:p-0! group-data-[collapsible=icon]:justify-center",
+                      isActive
+                        ? "bg-primary! hover:bg-primary! text-white"
+                        : "text-inactive-gray hover:bg-primary hover:text-white",
+                    )}
+                  >
+                    <Link href={item.href} className="flex items-center justify-center">
+                      <item.icon className="size-5 shrink-0 text-current transition-colors" />
+                      <span className="group-data-[collapsible=icon]:hidden">
+                        {translatedLabel}
+                      </span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              );
+            })}
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
 
       <SidebarFooter className="px-2 py-4">
-        <SidebarMenu>
-          <SidebarMenuItem>
+        <SidebarMenu className="flex flex-col items-center">
+          <SidebarMenuItem className="w-full flex justify-center">
             {isLoading && <div>Loading...</div>}
             {error && <div>Error: {error.message}</div>}
             {data?.statusCode && data?.statusCode >= 400 && (
@@ -105,6 +140,7 @@ export function AppSidebar({
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
+      <SidebarRail />
     </Sidebar>
   );
 }

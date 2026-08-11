@@ -1,4 +1,12 @@
-import { LayoutDashboard, Settings, User, LucideIcon } from "lucide-react";
+import {
+  LayoutDashboard,
+  Video,
+  BookOpen,
+  Users,
+  CreditCard,
+  Settings,
+  LucideIcon,
+} from "lucide-react";
 
 export interface NavItem {
   label: string;
@@ -21,14 +29,29 @@ export const navConfig: NavConfig = {
   },
   sidebarNav: [
     {
-      label: "Home",
+      label: "Dashboard",
       href: "/dashboard",
       icon: LayoutDashboard,
     },
     {
-      label: "Profile",
-      href: "/dashboard/profile",
-      icon: User,
+      label: "Lectures",
+      href: "/dashboard/lectures",
+      icon: Video,
+    },
+    {
+      label: "Courses",
+      href: "/dashboard/courses",
+      icon: BookOpen,
+    },
+    {
+      label: "Students",
+      href: "/dashboard/students",
+      icon: Users,
+    },
+    {
+      label: "Billing",
+      href: "/dashboard/billing",
+      icon: CreditCard,
     },
     {
       label: "Settings",

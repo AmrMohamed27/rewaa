@@ -109,9 +109,12 @@
     "logout": "Log out",
     "loggingOut": "Logging out...",
     "courses": "Courses",
+    "lectures": "Lectures",
     "exams": "Exams",
     "students": "Students",
+    "billing": "Billing",
     "userSettings": "User Settings",
+    "expandSidebar": "Expand Sidebar",
     "roles": {
       "user": "User",
       "admin": "Admin",

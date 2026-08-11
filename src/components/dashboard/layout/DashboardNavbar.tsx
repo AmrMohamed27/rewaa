@@ -1,47 +1,144 @@
 "use client";
 
 import { Logo } from "@/components/landing/layout/logo";
-import { ThemeToggle } from "@/components/landing/layout/theme-toggle";
-import { SidebarTrigger } from "@/components/ui/sidebar";
+import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
+import { Separator } from "@/components/ui/separator";
 import { navConfig } from "@/config/nav-config";
-import Link from "next/link";
-import { useState } from "react"; // Added useState
-import { SearchDialog, SearchTrigger } from "./SearchInput"; // Updated imports
+import { useAuthControllerGetProfile, useAuthControllerLogout } from "@/hooks/use-auth";
+import { Link, usePathname, useRouter } from "@/i18n/routing";
+import { cn } from "@/lib/utils";
+import { AuthControllerGetProfile200 } from "@/types/api";
+import { useTranslations } from "next-intl";
+import { Menu } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useSidebar } from "@/components/ui/sidebar";
 import { NotificationsPopover } from "./NotificationsPopover";
+import { ProfileDropdown } from "./ProfileDropdown";
 
-export function DashboardNavbar() {
-  const [searchOpen, setSearchOpen] = useState(false); // Global search state
+export interface NavLinkItem {
+  label: string;
+  href: string;
+}
+
+interface DashboardNavbarProps {
+  variant?: "light" | "dark";
+  links?: NavLinkItem[];
+  initialProfileData?: AuthControllerGetProfile200;
+}
+
+const DEFAULT_LINKS: NavLinkItem[] = [
+  { label: "courses", href: "/dashboard/courses" },
+  { label: "exams", href: "/dashboard/exams" },
+  { label: "students", href: "/dashboard/students" },
+];
+
+export function DashboardNavbar({
+  variant = "light",
+  links = DEFAULT_LINKS,
+  initialProfileData,
+}: DashboardNavbarProps = {}) {
+  const pathname = usePathname();
+  const t = useTranslations("nav");
+  const tCommon = useTranslations("common");
+  const router = useRouter();
+  const { toggleSidebar } = useSidebar();
+
+  const { data } = useAuthControllerGetProfile({
+    query: {
+      initialData: initialProfileData,
+      staleTime: 1000 * 60 * 5,
+    },
+  });
+
+  const { mutate: logout, isPending } = useAuthControllerLogout({
+    mutation: {
+      onSuccess: () => {
+        router.push("/auth/login");
+        router.refresh();
+      },
+    },
+  });
+
+  const handleLogout = () => {
+    logout();
+  };
+
+  const user = data?.data;
+
+  const getNavLabel = (label: string) => {
+    const key = label.toLowerCase();
+    return t.has(key) ? t(key) : label;
+  };
 
   return (
     <header className="sticky top-0 z-10 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
       <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-8">
-        {/* Brand Logo & Main Nav */}
-        <div className="flex items-center gap-2">
-          <SidebarTrigger className="absolute top-0 left-0" />
-          <Link href={navConfig.primaryLink.href} className="flex items-center">
-            <Logo brandName="Dashboard" />
+        {/* Brand Logo & Main Nav Links */}
+        <div className="flex items-center gap-4 md:gap-8">
+          <Link
+            href={navConfig.primaryLink.href}
+            className="flex items-center text-primary hover:text-primary/90 transition-colors"
+          >
+            <Logo brandName={tCommon("brandName")} brandNameClassName="text-inherit" />
           </Link>
+          <Separator className="max-md:hidden my-0.5" orientation="vertical" />
+
+          {/* Navigation Links */}
+          {links && links.length > 0 && (
+            <nav className="hidden md:flex items-center gap-1 md:gap-2">
+              {links.map((link) => {
+                const isActive = pathname === link.href;
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={cn(
+                      "px-3 py-2 rounded-md text-sm font-medium transition-colors",
+                      isActive
+                        ? "bg-secondary text-secondary-foreground font-semibold"
+                        : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                    )}
+                  >
+                    {getNavLabel(link.label)}
+                  </Link>
+                );
+              })}
+            </nav>
+          )}
         </div>
 
-        {/* Global Search (Desktop Trigger) */}
-        <div className="flex-1 px-4 max-w-md hidden md:block">
-          <SearchTrigger onClick={() => setSearchOpen(true)} />
-        </div>
-
-        {/* Right Side Actions */}
-        <div className="flex items-center space-x-4">
-          {/* Global Search (Mobile Trigger) */}
-          <div className="md:hidden">
-            <SearchTrigger onClick={() => setSearchOpen(true)} />
-          </div>
-
+        {/* User Actions & Controls */}
+        <div className="flex items-center gap-2 md:gap-4">
           <NotificationsPopover />
-          <ThemeToggle />
+          <LanguageSwitcher variant={variant} />
+          <Separator className="max-md:hidden my-2" orientation="vertical" />
+
+          {/* Profile Dropdown (Desktop) */}
+          {user && (
+            <div className="hidden md:block">
+              <ProfileDropdown
+                user={user}
+                handleLogout={handleLogout}
+                isPending={isPending}
+                expanded={true}
+                showRole={true}
+                variant={variant}
+              />
+            </div>
+          )}
+
+          {/* Mobile Hamburger Menu (opens sidebar) */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleSidebar}
+            className="md:hidden hover:bg-muted text-foreground"
+            aria-label="Toggle Sidebar"
+          >
+            <Menu className="size-5" />
+          </Button>
         </div>
       </div>
-
-      {/* Render Dialog strictly ONCE */}
-      <SearchDialog open={searchOpen} setOpen={setSearchOpen} />
     </header>
   );
 }

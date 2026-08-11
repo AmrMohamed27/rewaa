@@ -6,92 +6,137 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { SidebarMenuButton, useSidebar } from "@/components/ui/sidebar";
+import { SidebarMenuButton } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 import { UserResponseDto } from "@/types/api";
 import { LogOut, Settings, User } from "lucide-react";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
+import { useLocale, useTranslations } from "next-intl";
+import Image from "next/image";
 
 interface ProfileDropdownProps {
-  user: UserResponseDto;
+  user: UserResponseDto & {
+    firstNameAr?: string;
+    lastNameAr?: string;
+    role?: string;
+    roleAr?: string;
+    avatarUrl?: string;
+  };
   handleLogout: () => void;
   isPending: boolean;
   expanded?: boolean;
+  showRole?: boolean;
+  variant?: "light" | "dark";
 }
 
 export function ProfileDropdown({
   user,
   handleLogout,
   isPending,
-  expanded: expandedProp,
+  // expanded: expandedProp,
+  showRole = false,
+  variant = "dark",
 }: ProfileDropdownProps) {
-  const { state, isMobile } = useSidebar();
-  const isCollapsed = state === "collapsed" && !isMobile;
-  const expanded = expandedProp ?? !isCollapsed;
+  // const { state, isMobile } = useSidebar();
+  const locale = useLocale();
+  const t = useTranslations("nav");
+  // const isCollapsed = state === "collapsed" && !isMobile;
+  // const expanded = expandedProp ?? !isCollapsed;
+
+  // Localized user display name
+  const isAr = locale === "ar";
+  const firstName = isAr && user.firstNameAr ? user.firstNameAr : user.firstName || "";
+  const lastName = isAr && user.lastNameAr ? user.lastNameAr : user.lastName || "";
+  const fullName = `${firstName} ${lastName}`.trim() || user.email;
+
+  // Localized role
+  const rawRole = (user.role || "user").toLowerCase();
+  const localizedRole =
+    isAr && user.roleAr
+      ? user.roleAr
+      : t.has(`roles.${rawRole}`)
+        ? t(`roles.${rawRole}`)
+        : user.role || t("roles.user");
+
+  const isLight = variant === "light";
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <SidebarMenuButton
           size="lg"
-          tooltip="User Settings"
           className={cn(
-            "relative flex items-center transition-all cursor-pointer",
-            expanded
-              ? "w-full px-3 py-6 justify-start gap-3 rounded-lg"
-              : "h-8 w-8 justify-center rounded-full p-0",
+            "relative flex items-center transition-all cursor-pointer rounded-lg w-full p-3 justify-start gap-3 group-data-[collapsible=icon]:size-12! group-data-[collapsible=icon]:p-0! group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:mx-auto group-data-[collapsible=icon]:bg-transparent! group-data-[collapsible=icon]:hover:bg-transparent!",
+            isLight && "hover:bg-muted text-foreground",
+            !isLight && "hover:bg-primary text-white",
           )}
         >
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-muted border border-border">
-            {user.firstName && user.lastName ? (
+          <div className="flex flex-col text-start overflow-hidden flex-1 group-data-[collapsible=icon]:hidden">
+            <p
+              className={cn(
+                "text-sm font-semibold leading-none truncate",
+                isLight ? "text-foreground" : "text-white",
+              )}
+            >
+              {fullName}
+            </p>
+            <p
+              className={cn(
+                "text-xs leading-none truncate mt-1",
+                isLight ? "text-muted-foreground" : "text-white/70",
+              )}
+            >
+              {showRole ? localizedRole : user.email}
+            </p>
+          </div>
+          <div
+            className={cn(
+              "flex size-8 group-data-[collapsible=icon]:size-10 shrink-0 items-center justify-center rounded-full border overflow-hidden transition-colors",
+              isLight
+                ? "bg-muted border-border text-foreground"
+                : "bg-white/10 border-white/20 text-white",
+            )}
+          >
+            {user.avatarUrl ? (
+              <Image src={user.avatarUrl} alt={fullName} className="h-full w-full object-cover" />
+            ) : firstName && lastName ? (
               <span className="text-xs font-bold uppercase">
-                {user.firstName.charAt(0) + user.lastName.charAt(0)}
+                {firstName.charAt(0) + lastName.charAt(0)}
               </span>
             ) : (
               <User className="h-5 w-5" />
             )}
           </div>
-          {expanded && (
-            <div className="flex flex-col text-start overflow-hidden">
-              <p className="text-sm font-medium leading-none truncate">
-                {user.firstName} {user.lastName}
-              </p>
-              <p className="text-xs leading-none text-muted-foreground truncate mt-1">
-                {user.email}
-              </p>
-            </div>
-          )}
         </SidebarMenuButton>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">
-              {user.firstName + " " + user.lastName}
-            </p>
+            <p className="text-sm font-medium leading-none">{fullName}</p>
             <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href="/dashboard/profile" className="cursor-pointer">
-            <User className="mr-2 h-4 w-4" />
-            <span>Profile</span>
+          <Link href="/dashboard/profile" className="cursor-pointer flex items-center">
+            <User className="mr-2 h-4 w-4 rtl:ml-2 rtl:mr-0" />
+            <span>{t("profile")}</span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href="/dashboard/settings" className="cursor-pointer">
-            <Settings className="mr-2 h-4 w-4" />
-            <span>Settings</span>
+          <Link href="/dashboard/settings" className="cursor-pointer flex items-center">
+            <Settings className="mr-2 h-4 w-4 rtl:ml-2 rtl:mr-0" />
+            <span>{t("settings")}</span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          className="text-red-600 focus:text-red-600 cursor-pointer"
+          className="text-red-600 focus:text-red-600 cursor-pointer flex items-center"
           onClick={handleLogout}
           disabled={isPending}
         >
-          <LogOut className="mr-2 h-4 w-4" />
-          <span>{isPending ? "Logging out..." : "Log out"}</span>
+          <LogOut className="mr-2 h-4 w-4 rtl:ml-2 rtl:mr-0" />
+          <span>{isPending ? t("loggingOut") : t("logout")}</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

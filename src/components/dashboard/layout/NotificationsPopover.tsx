@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Bell } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -9,34 +10,36 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 
-// Static placeholder notifications
-const INITIAL_NOTIFICATIONS = [
-  {
-    id: "1",
-    title: "New feature available!",
-    description: "Check out the new analytics dashboard in your settings.",
-    time: "2 minutes ago",
-    unread: true,
-  },
-  {
-    id: "2",
-    title: "Project update",
-    description: "Your team has updated the 'Landing Page' project.",
-    time: "1 hour ago",
-    unread: true,
-  },
-  {
-    id: "3",
-    title: "Billing successful",
-    description: "Your monthly subscription has been renewed.",
-    time: "5 hours ago",
-    unread: false,
-  },
-];
+type NotificationKey = "item1" | "item2" | "item3";
+
+interface MockNotification {
+  id: string;
+  itemKey: NotificationKey;
+  unread: boolean;
+}
 
 export function NotificationsPopover() {
-  const [data, setData] = useState(INITIAL_NOTIFICATIONS);
+  const t = useTranslations("dashboard.notifications");
+
+  const [data, setData] = useState<MockNotification[]>([
+    {
+      id: "1",
+      itemKey: "item1",
+      unread: true,
+    },
+    {
+      id: "2",
+      itemKey: "item2",
+      unread: true,
+    },
+    {
+      id: "3",
+      itemKey: "item3",
+      unread: false,
+    },
+  ]);
   const [open, setOpen] = useState(false);
+  const dir = useLocale() === "ar" ? "rtl" : "ltr";
 
   // This will be replaced by a react-query hook later
   const unreadCount = data.filter((n) => n.unread).length;
@@ -63,11 +66,11 @@ export function NotificationsPopover() {
           variant="ghost"
           size="icon"
           className="relative h-9 w-9 rounded-full transition-transform active:scale-95"
-          aria-label="Open notifications"
+          aria-label={t("openAriaLabel")}
         >
           <Bell className="h-5 w-5" />
           {unreadCount > 0 && (
-            <span className="absolute right-2 top-2 flex h-2 w-2">
+            <span className="absolute top-2 ltr:right-2 rtl:left-2 flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-destructive opacity-75"></span>
               <span className="relative inline-flex h-2 w-2 rounded-full bg-destructive"></span>
             </span>
@@ -77,22 +80,22 @@ export function NotificationsPopover() {
       <PopoverContent className="w-80 p-0" align="end">
         <div className="flex items-center justify-between px-4 py-3 border-b">
           <div className="flex items-center gap-2">
-            <h4 className="text-sm font-semibold">Notifications</h4>
+            <h4 className="text-sm font-semibold">{t("title")}</h4>
             {unreadCount > 0 && (
               <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
-                {unreadCount} New
+                {t("newBadge", { count: unreadCount })}
               </Badge>
             )}
           </div>
         </div>
-        <ScrollArea className="h-[300px]">
+        <ScrollArea className="h-75" dir={dir}>
           <div className="grid gap-1 p-1">
             {data.length > 0 ? (
               data.map((notification) => (
                 <button
                   key={notification.id}
                   className={cn(
-                    "group flex flex-col items-start gap-1 rounded-md p-3 text-left text-sm transition-all hover:bg-accent",
+                    "group flex flex-col items-start gap-1 rounded-md p-3 text-start text-sm transition-all hover:bg-accent",
                     notification.unread && "bg-accent/40",
                   )}
                   onClick={() => {
@@ -108,7 +111,7 @@ export function NotificationsPopover() {
                         notification.unread ? "text-foreground" : "text-muted-foreground",
                       )}
                     >
-                      {notification.title}
+                      {t(`items.${notification.itemKey}.title`)}
                     </span>
                     {notification.unread && <span className="h-2 w-2 rounded-full bg-primary" />}
                   </div>
@@ -118,17 +121,17 @@ export function NotificationsPopover() {
                       notification.unread ? "text-foreground/80" : "text-muted-foreground/70",
                     )}
                   >
-                    {notification.description}
+                    {t(`items.${notification.itemKey}.description`)}
                   </p>
                   <span className="text-[10px] text-muted-foreground mt-1 group-hover:text-foreground/50 transition-colors">
-                    {notification.time}
+                    {t(`items.${notification.itemKey}.time`)}
                   </span>
                 </button>
               ))
             ) : (
               <div className="flex h-32 flex-col items-center justify-center gap-1 text-center">
                 <Bell className="h-8 w-8 text-muted-foreground/50" />
-                <p className="text-sm text-muted-foreground">No notifications yet</p>
+                <p className="text-sm text-muted-foreground">{t("empty")}</p>
               </div>
             )}
           </div>
@@ -141,7 +144,7 @@ export function NotificationsPopover() {
             onClick={markAllAsRead}
             disabled={unreadCount === 0}
           >
-            Mark all as read
+            {t("markAllRead")}
           </Button>
         </div>
       </PopoverContent>
