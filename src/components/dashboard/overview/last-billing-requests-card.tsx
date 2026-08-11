@@ -2,8 +2,7 @@
 
 import React from "react";
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/routing";
-import { CreditCard, ArrowUpRight, Eye } from "lucide-react";
+import { CreditCard, Eye } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,6 +14,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { dashboardMockData } from "@/lib/mockData";
+import { DashboardCard } from "./dashboard-card";
+import { DashboardCardHeader } from "./dashboard-card-header";
 
 export type BillingRequest = (typeof dashboardMockData.billingRequests)[number];
 
@@ -30,36 +31,31 @@ export function LastBillingRequestsCard({
   const t = useTranslations("dashboard");
 
   return (
-    <div className="lg:col-span-4 rounded-2xl border bg-card p-6 flex flex-col justify-between shadow-sm overflow-hidden">
+    <DashboardCard className="lg:col-span-4 overflow-hidden">
       <div className="w-full flex flex-col h-full justify-between">
         <div>
-          <div className="flex items-center justify-between gap-2 mb-4">
-            <div className="flex items-center gap-2">
-              <CreditCard className="size-5 text-primary" />
-              <h2 className="text-base font-semibold text-foreground">
-                {t("lastBillingRequests")}
-              </h2>
+          <DashboardCardHeader
+            icon={<CreditCard className="size-5 text-primary" />}
+            title={t("lastBillingRequests")}
+            badge={
               <Badge
                 variant="outline"
                 className="text-xs bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20"
               >
                 {t("pendingRequestsCount", { count: billingRequests.length })}
               </Badge>
-            </div>
-            <Link
-              href="/dashboard/billing"
-              className="text-xs font-medium text-primary hover:underline shrink-0 inline-flex items-center gap-1"
-            >
-              {t("manageBilling")}
-              <ArrowUpRight className="size-3.5" />
-            </Link>
-          </div>
+            }
+            action={{
+              label: t("manageBilling"),
+              href: "/dashboard/billing",
+            }}
+          />
 
           {/* Table */}
           <div className="border rounded-xl overflow-hidden">
             <Table>
               <TableHeader>
-                <TableRow className="bg-muted/40">
+                <TableRow className="bg-muted/40" dir="rtl">
                   <TableHead className="text-xs">{t("billingTable.name")}</TableHead>
                   <TableHead className="text-xs">{t("billingTable.amount")}</TableHead>
                   <TableHead className="text-xs hidden sm:table-cell">
@@ -98,6 +94,6 @@ export function LastBillingRequestsCard({
           </div>
         </div>
       </div>
-    </div>
+    </DashboardCard>
   );
 }

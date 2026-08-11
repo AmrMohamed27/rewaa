@@ -5,6 +5,8 @@ import { useTranslations } from "next-intl";
 import { Users } from "lucide-react";
 import { ProgressBar } from "@/components/ui/charts/progress-bar";
 import { dashboardMockData } from "@/lib/mockData";
+import { DashboardCard } from "./dashboard-card";
+import { DashboardCardHeader } from "./dashboard-card-header";
 
 interface ClassesDistributionCardProps {
   classesDistribution: typeof dashboardMockData.classesDistribution;
@@ -18,12 +20,12 @@ export function ClassesDistributionCard({
   const t = useTranslations("dashboard");
 
   return (
-    <div className="lg:col-span-4 rounded-2xl border bg-card p-6 flex flex-col justify-between shadow-sm">
+    <DashboardCard className="lg:col-span-4">
       <div>
-        <h2 className="text-base font-semibold text-foreground flex items-center gap-2 mb-4">
-          <Users className="size-5 text-primary" />
-          {t("classesDistribution")}
-        </h2>
+        <DashboardCardHeader
+          icon={<Users className="size-5 text-primary" />}
+          title={t("classesDistribution")}
+        />
 
         <div className="flex flex-col gap-5">
           {classesDistribution.map((cls) => (
@@ -43,6 +45,6 @@ export function ClassesDistributionCard({
       <div className="mt-6 pt-4 border-t text-xs text-muted-foreground text-center">
         {t("totalStudents")}: {totalStudents.toLocaleString()}
       </div>
-    </div>
+    </DashboardCard>
   );
 }

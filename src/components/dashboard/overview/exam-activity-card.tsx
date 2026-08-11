@@ -7,6 +7,9 @@ import { CheckCircle2, ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DonutChart } from "@/components/ui/charts/donut-chart";
 import { dashboardMockData } from "@/lib/mockData";
+import { DashboardCard } from "./dashboard-card";
+import { DashboardCardHeader } from "./dashboard-card-header";
+import { StatTile } from "./stat-tile";
 
 interface ExamActivityCardProps {
   examActivityToday: typeof dashboardMockData.examActivityToday;
@@ -29,12 +32,12 @@ export function ExamActivityCard({ examActivityToday }: ExamActivityCardProps) {
   });
 
   return (
-    <div className="lg:col-span-4 rounded-2xl border bg-card p-6 flex flex-col justify-between shadow-sm">
+    <DashboardCard className="lg:col-span-4">
       <div>
-        <h2 className="text-base font-semibold text-foreground flex items-center gap-2 mb-4">
-          <CheckCircle2 className="size-5 text-emerald-500" />
-          {t("examActivityToday")}
-        </h2>
+        <DashboardCardHeader
+          icon={<CheckCircle2 className="size-5 text-emerald-500" />}
+          title={t("examActivityToday")}
+        />
 
         {/* Donut Chart */}
         <div className="flex flex-col items-center justify-center relative my-2">
@@ -56,23 +59,18 @@ export function ExamActivityCard({ examActivityToday }: ExamActivityCardProps) {
 
         {/* Stat Cards */}
         <div className="grid grid-cols-1 gap-3 mt-4">
-          <div className="p-3 rounded-xl border bg-muted/30 text-start flex flex-row justify-between items-center">
-            <span className="text-xs text-muted-foreground block font-medium">
-              {t("studentsExamsToday")}
-            </span>
-            <span className="text-lg font-bold text-foreground block">
-              {examActivityToday.studentsCount.toLocaleString()}
-            </span>
-          </div>
+          <StatTile
+            variant="horizontal"
+            label={t("studentsExamsToday")}
+            value={examActivityToday.studentsCount.toLocaleString()}
+          />
 
-          <div className="p-3 rounded-xl border bg-muted/30 text-start flex flex-row justify-between items-center">
-            <span className="text-xs text-muted-foreground block font-medium">
-              {t("averageGrade")}
-            </span>
-            <span className="text-lg font-bold text-emerald-600 dark:text-emerald-400 block">
-              {examActivityToday.averageGrade}
-            </span>
-          </div>
+          <StatTile
+            variant="horizontal"
+            label={t("averageGrade")}
+            value={examActivityToday.averageGrade}
+            valueClassName="text-emerald-600 dark:text-emerald-400"
+          />
         </div>
       </div>
 
@@ -82,6 +80,6 @@ export function ExamActivityCard({ examActivityToday }: ExamActivityCardProps) {
           <ArrowUpRight className="size-4" />
         </Link>
       </Button>
-    </div>
+    </DashboardCard>
   );
 }
