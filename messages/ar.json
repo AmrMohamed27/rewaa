@@ -252,5 +252,70 @@
         }
       }
     }
+  },
+  "courses": {
+    "manageTitle": "إدارة الدورات",
+    "manageSubtitle": "إنشاء وإدارة ونشر الدورات الخاصة بالمنصة",
+    "addNewCourse": "إضافة دورة جديدة",
+    "searchPlaceholder": "بحث عن دورة أو مادة...",
+    "tabs": {
+      "all": "الكل",
+      "published": "منشور",
+      "draft": "مسودة"
+    },
+    "clearFilters": "مسح الفلاتر",
+    "sort": {
+      "newest": "التاريخ: الأحدث أولاً",
+      "oldest": "التاريخ: الأقدم أولاً",
+      "titleAsc": "العنوان: أ إلى ي",
+      "titleDesc": "العنوان: ي إلى أ",
+      "studentsDesc": "عدد الطلاب: الأكثر",
+      "priceAsc": "السعر: من الأقل للأعلى",
+      "priceDesc": "السعر: من الأعلى للأقل",
+      "newestLabel": "الأحدث",
+      "oldestLabel": "الأقدم",
+      "titleAscLabel": "الاسم (أ-ي)",
+      "titleDescLabel": "الاسم (ي-أ)",
+      "studentsDescLabel": "الأكثر إقبالاً",
+      "priceAscLabel": "الأقل سعراً",
+      "priceDescLabel": "الأعلى سعراً"
+    },
+    "status": {
+      "published": "منشور",
+      "draft": "مسودة"
+    },
+    "venue": {
+      "all": "سنتر وأونلاين",
+      "online": "أونلاين",
+      "center": "سنتر"
+    },
+    "card": {
+      "students": "{count, plural, =0 {طالب} zero {طالب} one {طالب} two {طالبين} few {{count} طلاب} many {{count} طالباً} other {{count} طالب}}",
+      "lessons": "{count, plural, =0 {درس} zero {درس} one {درس} two {درسين} few {{count} دروس} many {{count} درساً} other {{count} درس}}",
+      "lessonsShort": "{count, plural, =0 {درس} zero {درس} one {درس} two {درسين} few {{count} دروس} many {{count} درساً} other {{count} درس}}",
+      "free": "مجاني",
+      "egp": "ج.م",
+      "viewStats": "عرض الإحصائيات",
+      "publishNow": "نشر الآن",
+      "modify": "تعديل",
+      "delete": "حذف",
+      "copyLink": "نسخ الرابط",
+      "linkCopied": "تم نسخ الرابط"
+    },
+    "empty": {
+      "title": "لا توجد دورات",
+      "description": "لم نجد أي نتائج تطابق البحث أو الفلتر المحدد. حاول تغيير كلمات البحث أو الفلترة."
+    },
+    "pagination": {
+      "showing": "عرض {start} إلى {end} من إجمالي {total, plural, =0 {دورة} zero {دورة} one {دورة} two {دورتين} few {{total} دورات} many {{total} دورة} other {{total} دورة}}",
+      "previous": "السابق",
+      "next": "التالي"
+    },
+    "deleteDialog": {
+      "title": "تأكيد حذف الدورة؟",
+      "description": "هل أنت متأكد من رغبتك في حذف الدورة \"{title}\"؟ لا يمكن التراجع عن هذا الإجراء.",
+      "cancel": "إلغاء",
+      "confirm": "تأكيد الحذف"
+    }
   }
 }

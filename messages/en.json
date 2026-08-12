@@ -252,5 +252,70 @@
         }
       }
     }
+  },
+  "courses": {
+    "manageTitle": "Manage Courses",
+    "manageSubtitle": "Create, manage, and publish educational courses for the platform",
+    "addNewCourse": "Add a new Course",
+    "searchPlaceholder": "Search course, subject...",
+    "tabs": {
+      "all": "All",
+      "published": "Published",
+      "draft": "Draft"
+    },
+    "clearFilters": "Clear all filters",
+    "sort": {
+      "newest": "Date: Newest first",
+      "oldest": "Date: Oldest first",
+      "titleAsc": "Title: A to Z",
+      "titleDesc": "Title: Z to A",
+      "studentsDesc": "Students: Highest",
+      "priceAsc": "Price: Low to High",
+      "priceDesc": "Price: High to Low",
+      "newestLabel": "Newest",
+      "oldestLabel": "Oldest",
+      "titleAscLabel": "Name (A-Z)",
+      "titleDescLabel": "Name (Z-A)",
+      "studentsDescLabel": "Most Enrolled",
+      "priceAscLabel": "Price: Low to High",
+      "priceDescLabel": "Price: High to Low"
+    },
+    "status": {
+      "published": "Published",
+      "draft": "Draft"
+    },
+    "venue": {
+      "all": "All Venues",
+      "online": "Online",
+      "center": "Center"
+    },
+    "card": {
+      "students": "{count, plural, =1 {1 Student} other {{count} Students}}",
+      "lessons": "{count, plural, =1 {1 Lesson} other {{count} Lessons}}",
+      "lessonsShort": "{count, plural, =1 {1 Lesson} other {{count} Lessons}}",
+      "free": "Free",
+      "egp": "EGP",
+      "viewStats": "View Statistics",
+      "publishNow": "Publish Now",
+      "modify": "Modify",
+      "delete": "Delete",
+      "copyLink": "Copy Link",
+      "linkCopied": "Link Copied"
+    },
+    "empty": {
+      "title": "No courses found",
+      "description": "No courses match your search or selected filter. Try adjusting your search query."
+    },
+    "pagination": {
+      "showing": "Showing {start} to {end} of {total, plural, =1 {1 course} other {{total} courses}}",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "deleteDialog": {
+      "title": "Confirm Course Deletion",
+      "description": "Are you sure you want to delete \"{title}\"? This action cannot be undone.",
+      "cancel": "Cancel",
+      "confirm": "Confirm Delete"
+    }
   }
 }

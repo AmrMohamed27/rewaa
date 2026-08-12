@@ -86,12 +86,12 @@
   --destructive: #ba1a1a;
   --destructive-foreground: #ffffff;
   --error: #ba1a1a;
-  --warning: #ea580c;
-  --warning-bg: #ea580c;
+  --warning: #c2410c;
+  --warning-bg: #fed7aa;
   --info: #2563eb;
   --info-bg: #dbeafe;
-  --success: #16a34a;
-  --success-bg: #dcfce7;
+  --success: #00714d;
+  --success-bg: #6cf8bb;
   --red: #ef4444;
   --red-bg: #fef2f2;
   --border: oklch(0.922 0 0);
@@ -119,6 +119,10 @@
   --sidebar-accent-foreground: #ffffff;
   --sidebar-border: rgba(255, 255, 255, 0.1);
   --sidebar-ring: #007fff;
+}
+
+:lang(ar) {
+  font-variant-numeric: arabic-indic;
 }
 
 @layer base {

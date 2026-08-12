@@ -85,18 +85,18 @@ export function DashboardNavbar({
 
           {/* Navigation Links */}
           {links && links.length > 0 && (
-            <nav className="hidden md:flex items-center gap-1 md:gap-2">
+            <nav className="hidden md:flex items-center gap-1 md:gap-2 h-16">
               {links.map((link) => {
-                const isActive = pathname === link.href;
+                const isActive = pathname === link.href || pathname.startsWith(`${link.href}/`);
                 return (
                   <Link
                     key={link.href}
                     href={link.href}
                     className={cn(
-                      "px-3 py-2 rounded-md text-sm font-medium transition-colors",
+                      "relative flex items-center h-full px-3 text-sm font-medium transition-colors border-b-2 hover:border-primary hover:text-primary",
                       isActive
-                        ? "bg-secondary text-secondary-foreground font-semibold"
-                        : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                        ? "border-primary text-primary font-semibold"
+                        : "border-transparent text-muted-foreground",
                     )}
                   >
                     {getNavLabel(link.label)}
