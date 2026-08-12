@@ -12,6 +12,16 @@
     "genericError": "حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.",
     "brandName": "رواء"
   },
+  "notFound": {
+    "title": "404 - الصفحة غير موجودة",
+    "description": "الصفحة التي تبحث عنها غير موجودة أو تم نقلها.",
+    "returnHome": "العودة للرئيسية"
+  },
+  "error": {
+    "title": "حدث خطأ ما!",
+    "description": "حدث خطأ غير متوقع.",
+    "tryAgain": "إعادة المحاولة"
+  },
   "validation": {
     "invalidEmail": "البريد الإلكتروني غير صالح",
     "passwordRequired": "كلمة المرور مطلوبة",
@@ -289,12 +299,18 @@
       "online": "أونلاين",
       "center": "سنتر"
     },
+    "period": {
+      "monthly": "شهري",
+      "yearly": "سنوي",
+      "termBased": "ترم"
+    },
     "card": {
-      "students": "{count, plural, =0 {طالب} zero {طالب} one {طالب} two {طالبين} few {{count} طلاب} many {{count} طالباً} other {{count} طالب}}",
-      "lessons": "{count, plural, =0 {درس} zero {درس} one {درس} two {درسين} few {{count} دروس} many {{count} درساً} other {{count} درس}}",
-      "lessonsShort": "{count, plural, =0 {درس} zero {درس} one {درس} two {درسين} few {{count} دروس} many {{count} درساً} other {{count} درس}}",
+      "students": "{count, plural, =0 {لا طلاب} zero {لا طلاب} one {طالب واحد} two {طالبين} few {{count} طلاب} many {{count} طالباً} other {{count} طالب}}",
+      "lessons": "{count, plural, =0 {لا دروس} zero {لا دروس} one {درس واحد} two {درسين} few {{count} دروس} many {{count} درساً} other {{count} درس}}",
+      "lessonsShort": "{count, plural, =0 {لا دروس} zero {لا دروس} one {درس واحد} two {درسين} few {{count} دروس} many {{count} درساً} other {{count} درس}}",
       "free": "مجاني",
       "egp": "ج.م",
+      "viewDetails": "عرض التفاصيل",
       "viewStats": "عرض الإحصائيات",
       "publishNow": "نشر الآن",
       "modify": "تعديل",
@@ -307,7 +323,7 @@
       "description": "لم نجد أي نتائج تطابق البحث أو الفلتر المحدد. حاول تغيير كلمات البحث أو الفلترة."
     },
     "pagination": {
-      "showing": "عرض {start} إلى {end} من إجمالي {total, plural, =0 {دورة} zero {دورة} one {دورة} two {دورتين} few {{total} دورات} many {{total} دورة} other {{total} دورة}}",
+      "showing": "عرض {start} إلى {end} من إجمالي {total, plural, =0 {لا دورات} zero {لا دورات} one {دورة واحدة} two {دورتين} few {{total} دورات} many {{total} دورة} other {{total} دورة}}",
       "previous": "السابق",
       "next": "التالي"
     },
@@ -316,6 +332,45 @@
       "description": "هل أنت متأكد من رغبتك في حذف الدورة \"{title}\"؟ لا يمكن التراجع عن هذا الإجراء.",
       "cancel": "إلغاء",
       "confirm": "تأكيد الحذف"
-    }
+    },
+    "details": {
+      "backToCourses": "العودة للدورات",
+      "editCourse": "تعديل الدورة",
+      "overview": "نظرة عامة",
+      "sectionsAndContent": "الفصول والمحتوى",
+      "statsAndAnalytics": "الإحصائيات والأداء",
+      "teacher": "المعلم",
+      "grade": "المرحلة الدراسية",
+      "subject": "المادة",
+      "period": "نظام الاشتراكات",
+      "venue": "مكان الحضور",
+      "createdAt": "تاريخ الإنشاء",
+      "timeLimit": "مدة الصلاحية",
+      "timeLimitDays": "{days, plural, =0 {لا أيام} zero {لا أيام} one {يوم واحد} two {يومين} few {{days} أيام} many {{days} يوماً} other {{days} يوم}}",
+      "noTimeLimit": "وصول دائم غير محدود",
+      "groupsSplit": "تقسيم مجموعات",
+      "groupsSplitYes": "مقسم لمجموعات",
+      "groupsSplitNo": "مجموعة واحدة",
+      "offerLabel": "العرض المتاح",
+      "previewVideo": "الفيديو التعريفي",
+      "noPreviewVideo": "لا يوجد فيديو تعريفي لهذه الدورة",
+      "totalSections": "{count, plural, =0 {لا فصول} zero {لا فصول} one {فصل واحد} two {فصلين} few {{count} فصول} many {{count} فصلاً} other {{count} فصل}}",
+      "totalLessons": "{count, plural, =0 {لا دروس} zero {لا دروس} one {درس واحد} two {درسين} few {{count} دروس} many {{count} درساً} other {{count} درس}}",
+      "totalExams": "{count, plural, =0 {لا اختبارات} zero {لا اختبارات} one {اختبار واحد} two {اختبارين} few {{count} اختبارات} many {{count} اختباراً} other {{count} اختبار}}",
+      "totalStudents": "الطلاب المشتركين",
+      "revenue": "إجمالي الدخل المتوقع",
+      "completionRate": "نسبة إكمال الدروس",
+      "examSuccessRate": "نسبة النجاح في الامتحانات",
+      "noSections": "لا توجد فصول مضافة لهذه الدورة بعد.",
+      "linkedExamBadge": "مرتبط باختبار فصل",
+      "requiredPassBadge": "اجتياز الإجبار للانتقال للفصل التالي",
+      "questionsCount": "{count, plural, =0 {لا أسئلة} zero {لا أسئلة} one {سؤال واحد} two {سؤالين} few {{count} أسئلة} many {{count} سؤالاً} other {{count} سؤال}}",
+      "passingScore": "درجة النجاح: {score}%",
+      "totalGrade": "الدرجة الكلية: {grade}",
+      "writtenText": "الشرح المكتوب:",
+      "attachments": "{count, plural, =0 {لا مرفقات} zero {لا مرفقات} one {مرفق واحد} two {مرفقين} few {{count} مرفقات} many {{count} مرفقاً} other {{count} مرفق}}",
+      "watchVideo": "مشاهدة الشرح"
+    },
+    "resetCourses": "إعادة ضبط بيانات الدورات"
   }
 }

@@ -12,6 +12,7 @@ import {
   BookOpen,
   Check,
   Copy,
+  Eye,
   Globe,
   Globe2,
   House,
@@ -168,6 +169,15 @@ export function CourseCard({
             <DropdownMenuContent align={isAr ? "start" : "end"}>
               {course.isDraft ? (
                 <>
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href={`/${locale}/dashboard/courses/${course.id}`}
+                      className="flex items-center gap-2"
+                    >
+                      <Eye className="h-4 w-4" />
+                      <span>{t("card.viewDetails")}</span>
+                    </Link>
+                  </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link
                       href={`/${locale}/dashboard/courses/${course.id}/edit`}

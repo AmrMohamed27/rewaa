@@ -1,13 +1,15 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
-import { BookOpen, Plus } from "lucide-react";
+import { BookOpen, Plus, RotateCcw } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import * as React from "react";
 
 import { Button } from "@/components/ui/button";
-import { mockCoursesData } from "@/lib/mockCoursesData";
+import { Skeleton } from "@/components/ui/skeleton";
+import { getStoredCourses, saveStoredCourses, resetStoredCourses } from "@/lib/courses-storage";
 import { Course } from "@/types/course";
 import { CourseCard } from "./course-card";
 import { CourseFilters, FilterTab, SortOption } from "./course-filters";
@@ -52,10 +54,25 @@ export function ManageCoursesClient() {
     [searchParams, pathname, router],
   );
 
-  // Initial local state from mock data
-  const [courses, setCourses] = React.useState<Course[]>(() => {
-    return mockCoursesData[locale as "ar" | "en"] || mockCoursesData.ar;
-  });
+  // Local state initialized & synchronized with LocalStorage
+  const [courses, setCourses] = React.useState<Course[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    setCourses(getStoredCourses(locale));
+    setIsLoading(false);
+
+    const handleStorageUpdate = () => {
+      setCourses(getStoredCourses(locale));
+    };
+
+    window.addEventListener("rewaa_courses_updated", handleStorageUpdate);
+    window.addEventListener("storage", handleStorageUpdate);
+    return () => {
+      window.removeEventListener("rewaa_courses_updated", handleStorageUpdate);
+      window.removeEventListener("storage", handleStorageUpdate);
+    };
+  }, [locale]);
 
   // Dialog state for course deletion
   const [courseToDelete, setCourseToDelete] = React.useState<Course | null>(null);
@@ -132,14 +149,23 @@ export function ManageCoursesClient() {
   };
 
   const handlePublishToggle = (courseId: string) => {
-    setCourses((prev) => prev.map((c) => (c.id === courseId ? { ...c, isDraft: false } : c)));
+    const updated = courses.map((c) => (c.id === courseId ? { ...c, isDraft: false } : c));
+    setCourses(updated);
+    saveStoredCourses(locale, updated);
   };
 
   const confirmDelete = () => {
     if (courseToDelete) {
-      setCourses((prev) => prev.filter((c) => c.id !== courseToDelete.id));
+      const updated = courses.filter((c) => c.id !== courseToDelete.id);
+      setCourses(updated);
+      saveStoredCourses(locale, updated);
       setCourseToDelete(null);
     }
+  };
+
+  const handleResetData = () => {
+    const reset = resetStoredCourses(locale);
+    setCourses(reset);
   };
 
   const handleCopyLink = (courseId: string) => {
@@ -163,7 +189,16 @@ export function ManageCoursesClient() {
           </h1>
           <p className="text-sm text-muted-foreground mt-1">{t("manageSubtitle")}</p>
         </div>
-        <div>
+        <div className="flex items-center gap-3">
+          <Button
+            variant="outline"
+            size="default"
+            onClick={handleResetData}
+            className="gap-2 shadow-xs font-semibold"
+          >
+            <RotateCcw className="h-4 w-4" />
+            <span>{t("resetCourses")}</span>
+          </Button>
           <Button asChild size="default" className="gap-2 shadow-sm font-semibold">
             <Link href={`/${locale}/dashboard/courses/create`}>
               <Plus className="h-4 w-4" />
@@ -187,8 +222,27 @@ export function ManageCoursesClient() {
         onResetFilters={handleResetFilters}
       />
 
-      {/* Courses Grid */}
-      {paginatedCourses.length === 0 ? (
+      {/* Courses Grid or Skeleton Loader */}
+      {isLoading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {Array.from({ length: 8 }).map((_, index) => (
+            <div
+              key={index}
+              className="flex flex-col rounded-xl border border-border/60 bg-card overflow-hidden p-4 space-y-3"
+            >
+              <Skeleton className="h-44 w-full rounded-lg" />
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-3 w-1/2" />
+              </div>
+              <div className="pt-4 flex items-center justify-between border-t border-border/40">
+                <Skeleton className="h-4 w-20" />
+                <Skeleton className="h-8 w-24 rounded-md" />
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : paginatedCourses.length === 0 ? (
         <div className="flex flex-col items-center justify-center p-12 text-center bg-card rounded-xl border border-dashed border-border/80">
           <BookOpen className="h-12 w-12 text-muted-foreground/50 mb-3" />
           <h3 className="text-lg font-semibold text-foreground">{t("empty.title")}</h3>

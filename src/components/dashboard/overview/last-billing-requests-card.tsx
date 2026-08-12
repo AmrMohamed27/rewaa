@@ -55,7 +55,7 @@ export function LastBillingRequestsCard({
           <div className="border rounded-xl overflow-hidden">
             <Table>
               <TableHeader>
-                <TableRow className="bg-muted/40" dir="rtl">
+                <TableRow className="bg-muted/40 *:rtl:text-start">
                   <TableHead className="text-xs">{t("billingTable.name")}</TableHead>
                   <TableHead className="text-xs">{t("billingTable.amount")}</TableHead>
                   <TableHead className="text-xs hidden sm:table-cell">
@@ -76,7 +76,7 @@ export function LastBillingRequestsCard({
                     <TableCell className="text-xs text-muted-foreground hidden sm:table-cell">
                       {t(`paymentMethods.${req.paymentMethodKey}`)}
                     </TableCell>
-                    <TableCell className="text-end">
+                    <TableCell className="text-start">
                       <Button
                         variant="ghost"
                         size="icon"

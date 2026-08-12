@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { useTranslations } from "next-intl";
 
 /**
  * Global error boundary component for the application.
@@ -16,6 +17,8 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const t = useTranslations("error");
+
   useEffect(() => {
     // Log the error to an error reporting service (e.g., Sentry) later
     console.error(error);
@@ -23,10 +26,10 @@ export default function Error({
 
   return (
     <div className="flex h-[70vh] flex-col items-center justify-center space-y-4 text-center px-4">
-      <h1 className="text-3xl font-bold tracking-tight">Something went wrong!</h1>
-      <p className="text-muted-foreground">An unexpected error occurred.</p>
+      <h1 className="text-3xl font-bold tracking-tight">{t("title")}</h1>
+      <p className="text-muted-foreground">{t("description")}</p>
       <Button onClick={() => reset()} variant="default">
-        Try again
+        {t("tryAgain")}
       </Button>
     </div>
   );

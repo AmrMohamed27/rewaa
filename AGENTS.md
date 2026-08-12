@@ -4,6 +4,8 @@
 
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
 
+Do NOT run builds after every single change, only after big changes. For small changes, just run type-check and lint and any tests that are available.
+
 <!-- END:nextjs-agent-rules -->
 
 ## Arabic Pluralization Guidelines (جمع القلة وجمع الكثرة والتمييز)
@@ -22,15 +24,16 @@ In Arabic localization, object count pluralization follows specific grammatical 
    - Genitive singular noun + number placeholder `{count}` (e.g. `{count} طالب`, `{count} درس`).
    - Grammatical rule: Hundreds and thousands take a singular genitive noun (مفرد مجرور).
 5. **Zero / One (`zero`, `one`)**:
-   - `zero`: `طالب` / `درس` (or specific zero phrase).
-   - `one`: `طالب` / `درس` (singular noun without explicit 1 digit in concise UI contexts).
+   - `zero`: Negative noun phrase `لا ...` (e.g. `لا طلاب`, `لا دروس`, `لا فصول`, `لا دورات`).
+   - `one`: Singular noun with explicit gendered adjective `واحد` / `واحدة` (e.g. `طالب واحد`, `درس واحد`, `دورة واحدة`).
 
 ### Standard ICU Format Example in JSON messages:
 
 ```json
 {
-  "students": "{count, plural, =0 {طالب} zero {طالب} one {طالب} two {طالبين} few {{count} طلاب} many {{count} طالباً} other {{count} طالب}}",
-  "lessons": "{count, plural, =0 {درس} zero {درس} one {درس} two {درسين} few {{count} دروس} many {{count} درساً} other {{count} درس}}"
+  "students": "{count, plural, =0 {لا طلاب} zero {لا طلاب} one {طالب واحد} two {طالبين} few {{count} طلاب} many {{count} طالباً} other {{count} طالب}}",
+  "lessons": "{count, plural, =0 {لا دروس} zero {لا دروس} one {درس واحد} two {درسين} few {{count} دروس} many {{count} درساً} other {{count} درس}}",
+  "courses": "{total, plural, =0 {لا دورات} zero {لا دورات} one {دورة واحدة} two {دورتين} few {{total} دورات} many {{total} دورة} other {{total} دورة}}"
 }
 ```
 

@@ -74,6 +74,47 @@ export const mockCoursesData: Record<"ar" | "en", Course[]> = {
                 },
               ],
             },
+            {
+              id: "les-002",
+              title: "الدرس الثاني: المقاومة الكهربية وقانون أوم",
+              lectureVideoLink: "https://www.youtube.com/watch?v=u31qwQUeGuM",
+              writtenText:
+                "تأثير طول الموصل ومساحة المقطع ونوع المادة على المقاومة الكهربية، وقانون أوم للدائرة المغلقة.",
+              attachments: [],
+            },
+            {
+              id: "les-003",
+              title: "الدرس الثالث: قانونا كيرشوف وتطبيقاتهما",
+              lectureVideoLink: "https://www.youtube.com/watch?v=u31qwQUeGuM",
+              writtenText:
+                "تطبيق قانون كيرشوف الأول (حفظ الشحنة) وقانون كيرشوف الثاني (حفظ الطاقة) على الدوائر المعقدة.",
+              attachments: [],
+            },
+          ],
+          tests: [],
+        },
+        {
+          id: "sec-002",
+          title: "الفصل الثاني: التأثير المغناطيسي للتيار الكهربي وأجهزة القياس",
+          isDraft: false,
+          isLinkedToExam: false,
+          isRequiredPassExamForNextSection: false,
+          lessons: [
+            {
+              id: "les-004",
+              title: "الدرس الأول: المجال المغناطيسي لتيار يمر في سلك مستقيم وملف دائري",
+              lectureVideoLink: "https://www.youtube.com/watch?v=u31qwQUeGuM",
+              writtenText: "حساب كثافة الفيض المغناطيسي وقواعد تحديد اتجاه المجال المغناطيسي.",
+              attachments: [],
+            },
+            {
+              id: "les-005",
+              title: "الدرس الثاني: القوة المغناطيسية وعزم الثنائي قطب",
+              lectureVideoLink: "https://www.youtube.com/watch?v=u31qwQUeGuM",
+              writtenText:
+                "القوة المؤثرة على سلك يحمل تياراً موضوع في مجال مغناطيسي وعزم الازدواج.",
+              attachments: [],
+            },
           ],
           tests: [],
         },
@@ -101,7 +142,32 @@ export const mockCoursesData: Record<"ar" | "en", Course[]> = {
       venue: "online",
       numberOfParticipants: 850,
       isDraft: false,
-      sections: [],
+      sections: [
+        {
+          id: "sec-003",
+          title: "الفصل الأول: الهيدروكربونات الأليفاتية والتسمية",
+          isDraft: false,
+          isLinkedToExam: false,
+          isRequiredPassExamForNextSection: false,
+          lessons: [
+            {
+              id: "les-006",
+              title: "الدرس الأول: مقدمة في الكيمياء العضوية والألكانات",
+              lectureVideoLink: "https://www.youtube.com/watch?v=u31qwQUeGuM",
+              writtenText: "المركبات العضوية والهيدروكربونات وتسمية الألكانات حسب نظام IUPAC.",
+              attachments: [],
+            },
+            {
+              id: "les-007",
+              title: "الدرس الثاني: الألكينات والألكاينات والتفاعلات",
+              lectureVideoLink: "https://www.youtube.com/watch?v=u31qwQUeGuM",
+              writtenText: "الهيدروكربونات غير المشبعة وتفاعلات الإضافة وقاعدة ماركونيكوف.",
+              attachments: [],
+            },
+          ],
+          tests: [],
+        },
+      ],
     },
     {
       id: "course-003",
@@ -126,7 +192,26 @@ export const mockCoursesData: Record<"ar" | "en", Course[]> = {
       venue: "center",
       numberOfParticipants: 3200,
       isDraft: true,
-      sections: [],
+      sections: [
+        {
+          id: "sec-004",
+          title: "الفصل الأول: تشابه المثلثات والمضلعات",
+          isDraft: false,
+          isLinkedToExam: false,
+          isRequiredPassExamForNextSection: false,
+          lessons: [
+            {
+              id: "les-008",
+              title: "الدرس الأول: شروط تشابه مضلعين وتطبيقات عملية",
+              lectureVideoLink: "",
+              writtenText:
+                "مفهوم التناسب بين الأضلاع وتساوي الزوايا المتناظرة في المضلعات المتشابهة.",
+              attachments: [],
+            },
+          ],
+          tests: [],
+        },
+      ],
     },
     {
       id: "course-004",
@@ -149,7 +234,25 @@ export const mockCoursesData: Record<"ar" | "en", Course[]> = {
       venue: "online",
       numberOfParticipants: 920,
       isDraft: false,
-      sections: [],
+      sections: [
+        {
+          id: "sec-005",
+          title: "الفصل الأول: التركيب الخلوي وDNA",
+          isDraft: false,
+          isLinkedToExam: false,
+          isRequiredPassExamForNextSection: false,
+          lessons: [
+            {
+              id: "les-009",
+              title: "الدرس الأول: تركيب الحمض النووي DNA وتضاعفه",
+              lectureVideoLink: "https://www.youtube.com/watch?v=u31qwQUeGuM",
+              writtenText: "شرح نموذج واتسون وكرك وتضاعف DNA وأنزيما التضاعف والربط.",
+              attachments: [],
+            },
+          ],
+          tests: [],
+        },
+      ],
     },
     {
       id: "course-005",
@@ -362,6 +465,47 @@ export const mockCoursesData: Record<"ar" | "en", Course[]> = {
                 },
               ],
             },
+            {
+              id: "les-002",
+              title: "Lesson 2: Electrical Resistance & Ohm's Law",
+              lectureVideoLink: "https://www.youtube.com/watch?v=u31qwQUeGuM",
+              writtenText:
+                "Effects of conductor length, cross-sectional area, and material on resistance; Ohm's law for closed circuits.",
+              attachments: [],
+            },
+            {
+              id: "les-003",
+              title: "Lesson 3: Kirchhoff's Laws and Applications",
+              lectureVideoLink: "https://www.youtube.com/watch?v=u31qwQUeGuM",
+              writtenText:
+                "Applying Kirchhoff's First Law (Charge Conservation) and Second Law (Energy Conservation) to complex circuits.",
+              attachments: [],
+            },
+          ],
+          tests: [],
+        },
+        {
+          id: "sec-002",
+          title: "Chapter 2: Magnetic Effect of Electric Current & Measuring Instruments",
+          isDraft: false,
+          isLinkedToExam: false,
+          isRequiredPassExamForNextSection: false,
+          lessons: [
+            {
+              id: "les-004",
+              title: "Lesson 1: Magnetic Field of Straight Wire & Circular Loop",
+              lectureVideoLink: "https://www.youtube.com/watch?v=u31qwQUeGuM",
+              writtenText:
+                "Calculating magnetic flux density and rules for magnetic field orientation.",
+              attachments: [],
+            },
+            {
+              id: "les-005",
+              title: "Lesson 2: Magnetic Force & Dipole Moment",
+              lectureVideoLink: "https://www.youtube.com/watch?v=u31qwQUeGuM",
+              writtenText: "Force on current-carrying wire in magnetic field and torque on loop.",
+              attachments: [],
+            },
           ],
           tests: [],
         },
@@ -389,7 +533,32 @@ export const mockCoursesData: Record<"ar" | "en", Course[]> = {
       venue: "online",
       numberOfParticipants: 850,
       isDraft: false,
-      sections: [],
+      sections: [
+        {
+          id: "sec-003",
+          title: "Chapter 1: Aliphatic Hydrocarbons & IUPAC Nomenclature",
+          isDraft: false,
+          isLinkedToExam: false,
+          isRequiredPassExamForNextSection: false,
+          lessons: [
+            {
+              id: "les-006",
+              title: "Lesson 1: Intro to Organic Chemistry & Alkanes",
+              lectureVideoLink: "https://www.youtube.com/watch?v=u31qwQUeGuM",
+              writtenText: "Organic compounds, hydrocarbons, and IUPAC alkane naming rules.",
+              attachments: [],
+            },
+            {
+              id: "les-007",
+              title: "Lesson 2: Alkenes, Alkynes & Chemical Reactions",
+              lectureVideoLink: "https://www.youtube.com/watch?v=u31qwQUeGuM",
+              writtenText: "Unsaturated hydrocarbons, addition reactions, and Markovnikov's rule.",
+              attachments: [],
+            },
+          ],
+          tests: [],
+        },
+      ],
     },
     {
       id: "course-003",
@@ -414,7 +583,26 @@ export const mockCoursesData: Record<"ar" | "en", Course[]> = {
       venue: "center",
       numberOfParticipants: 3200,
       isDraft: true,
-      sections: [],
+      sections: [
+        {
+          id: "sec-004",
+          title: "Chapter 1: Similarity of Triangles & Polygons",
+          isDraft: false,
+          isLinkedToExam: false,
+          isRequiredPassExamForNextSection: false,
+          lessons: [
+            {
+              id: "les-008",
+              title: "Lesson 1: Conditions for Polygon Similarity & Applications",
+              lectureVideoLink: "",
+              writtenText:
+                "Proportionality of sides and equality of corresponding angles in similar polygons.",
+              attachments: [],
+            },
+          ],
+          tests: [],
+        },
+      ],
     },
     {
       id: "course-004",
@@ -438,7 +626,25 @@ export const mockCoursesData: Record<"ar" | "en", Course[]> = {
       venue: "online",
       numberOfParticipants: 920,
       isDraft: false,
-      sections: [],
+      sections: [
+        {
+          id: "sec-005",
+          title: "Chapter 1: Cellular Structure & DNA",
+          isDraft: false,
+          isLinkedToExam: false,
+          isRequiredPassExamForNextSection: false,
+          lessons: [
+            {
+              id: "les-009",
+              title: "Lesson 1: DNA Structure & Replication",
+              lectureVideoLink: "https://www.youtube.com/watch?v=u31qwQUeGuM",
+              writtenText: "Watson-Crick DNA model, replication mechanisms, and ligase enzymes.",
+              attachments: [],
+            },
+          ],
+          tests: [],
+        },
+      ],
     },
     {
       id: "course-005",

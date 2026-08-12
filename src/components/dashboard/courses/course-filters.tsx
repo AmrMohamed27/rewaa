@@ -111,7 +111,7 @@ export function CourseFilters({
       </div>
 
       {/* Controls: Sort Menu & Clear Filters */}
-      <div className="flex items-center gap-2 self-end md:self-auto">
+      <div className="flex items-center gap-2 self-start md:self-auto">
         {isFilterActive && (
           <Button
             variant="ghost"
