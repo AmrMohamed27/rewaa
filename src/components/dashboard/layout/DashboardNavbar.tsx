@@ -71,7 +71,7 @@ export function DashboardNavbar({
   };
 
   return (
-    <header className="sticky top-0 z-10 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
+    <header className="sticky top-0 z-10 w-full border-b bg-white/95 backdrop-blur supports-backdrop-filter:bg-white/60">
       <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-8">
         {/* Brand Logo & Main Nav Links */}
         <div className="flex items-center gap-4 md:gap-8">
@@ -81,7 +81,7 @@ export function DashboardNavbar({
           >
             <Logo brandName={tCommon("brandName")} brandNameClassName="text-inherit" />
           </Link>
-          <Separator className="max-md:hidden my-0.5" orientation="vertical" />
+          <Separator className="max-md:hidden h-8 my-auto" orientation="vertical" />
 
           {/* Navigation Links */}
           {links && links.length > 0 && (
@@ -111,7 +111,7 @@ export function DashboardNavbar({
         <div className="flex items-center gap-2 md:gap-4">
           <NotificationsPopover />
           <LanguageSwitcher variant={variant} />
-          <Separator className="max-md:hidden my-2" orientation="vertical" />
+          <Separator className="max-md:hidden h-8 my-auto" orientation="vertical" />
 
           {/* Profile Dropdown (Desktop) */}
           {user && (

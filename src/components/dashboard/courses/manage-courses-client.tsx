@@ -200,7 +200,7 @@ export function ManageCoursesClient() {
             <span>{t("resetCourses")}</span>
           </Button>
           <Button asChild size="default" className="gap-2 shadow-sm font-semibold">
-            <Link href={`/${locale}/dashboard/courses/create`}>
+            <Link href={`/${locale}/dashboard/courses/new`}>
               <Plus className="h-4 w-4" />
               <span>{t("addNewCourse")}</span>
             </Link>

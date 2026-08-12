@@ -120,7 +120,7 @@
     "loggingOut": "جاري تسجيل الخروج...",
     "courses": "الدورات",
     "lectures": "المحاضرات",
-    "exams": "الاختبارات",
+    "exams": "الامتحانات",
     "students": "الطلاب",
     "billing": "الفواتير والاشتراكات",
     "userSettings": "إعدادات المستخدم",
@@ -146,13 +146,13 @@
     "coursesCount": "عدد الدورات",
     "lecturesCount": "عدد المحاضرات",
     "questionsCount": "عدد الأسئلة",
-    "examsCount": "عدد الاختبارات",
+    "examsCount": "عدد الامتحانات",
     "classesDistribution": "توزيع الصفوف الدراسية",
-    "examActivityToday": "نشاط الاختبارات اليوم",
+    "examActivityToday": "نشاط الامتحانات اليوم",
     "examPassed": "ناجح",
     "examFailed": "راسب",
     "successRate": "نسبة النجاح",
-    "studentsExamsToday": "الطلاب الذين أجروا اختبارات اليوم",
+    "studentsExamsToday": "الطلاب الذين أجروا امتحانات اليوم",
     "averageGrade": "متوسط الدرجات",
     "activityDetails": "تفاصيل النشاط",
     "lastBillingRequests": "أحدث طلبات الفواتير",
@@ -337,7 +337,7 @@
       "backToCourses": "العودة للدورات",
       "editCourse": "تعديل الدورة",
       "overview": "نظرة عامة",
-      "sectionsAndContent": "الفصول والمحتوى",
+      "sectionsAndContent": "الأقسام والمحتوى",
       "statsAndAnalytics": "الإحصائيات والأداء",
       "teacher": "المعلم",
       "grade": "المرحلة الدراسية",
@@ -354,16 +354,16 @@
       "offerLabel": "العرض المتاح",
       "previewVideo": "الفيديو التعريفي",
       "noPreviewVideo": "لا يوجد فيديو تعريفي لهذه الدورة",
-      "totalSections": "{count, plural, =0 {لا فصول} zero {لا فصول} one {فصل واحد} two {فصلين} few {{count} فصول} many {{count} فصلاً} other {{count} فصل}}",
+      "totalSections": "{count, plural, =0 {لا أقسام} zero {لا أقسام} one {قسم واحد} two {قسمين} few {{count} أقسام} many {{count} قسمًا} other {{count} قسم}}",
       "totalLessons": "{count, plural, =0 {لا دروس} zero {لا دروس} one {درس واحد} two {درسين} few {{count} دروس} many {{count} درساً} other {{count} درس}}",
-      "totalExams": "{count, plural, =0 {لا اختبارات} zero {لا اختبارات} one {اختبار واحد} two {اختبارين} few {{count} اختبارات} many {{count} اختباراً} other {{count} اختبار}}",
+      "totalExams": "{count, plural, =0 {لا امتحانات} zero {لا امتحانات} one {امتحان واحد} two {امتحانين} few {{count} امتحانات} many {{count} امتحانًا} other {{count} امتحان}}",
       "totalStudents": "الطلاب المشتركين",
       "revenue": "إجمالي الدخل المتوقع",
       "completionRate": "نسبة إكمال الدروس",
       "examSuccessRate": "نسبة النجاح في الامتحانات",
-      "noSections": "لا توجد فصول مضافة لهذه الدورة بعد.",
-      "linkedExamBadge": "مرتبط باختبار فصل",
-      "requiredPassBadge": "اجتياز الإجبار للانتقال للفصل التالي",
+      "noSections": "لا توجد أقسام مضافة لهذه الدورة بعد.",
+      "linkedExamBadge": "مرتبط بامتحان قسم",
+      "requiredPassBadge": "اجتياز الإجبار للانتقال للقسم التالي",
       "questionsCount": "{count, plural, =0 {لا أسئلة} zero {لا أسئلة} one {سؤال واحد} two {سؤالين} few {{count} أسئلة} many {{count} سؤالاً} other {{count} سؤال}}",
       "passingScore": "درجة النجاح: {score}%",
       "totalGrade": "الدرجة الكلية: {grade}",
@@ -371,6 +371,207 @@
       "attachments": "{count, plural, =0 {لا مرفقات} zero {لا مرفقات} one {مرفق واحد} two {مرفقين} few {{count} مرفقات} many {{count} مرفقاً} other {{count} مرفق}}",
       "watchVideo": "مشاهدة الشرح"
     },
-    "resetCourses": "إعادة ضبط بيانات الدورات"
+    "resetCourses": "إعادة ضبط بيانات الدورات",
+    "new": {
+      "title": "إنشاء دورة جديدة",
+      "editTitle": "تعديل الدورة",
+      "subtitle": "أدخل تفاصيل الدورة، التسعير والإعدادات أدناه لنشرها أو حفظها كمسودة.",
+      "editSubtitle": "تعديل تفاصيل الدورة، التسعير، ومحتوى المنهج أدناه.",
+      "timelineTitle": "مراحل الإنشاء",
+      "disclaimerTitle": "مسودة الدورة والحفظ التلقائي",
+      "disclaimerDescription": "تساعدك هذه الصفحة على إنشاء دورة تعليمية جديدة في المنصة. يمكنك حفظ مسودة في أي وقت والعودة إليها لاحقاً لإكمالها.",
+      "steps": {
+        "infoAndPrice": "المعلومات والسعر",
+        "lectures": "محاضرات الدورة"
+      },
+      "grades": {
+        "grade1": "الصف الأول الثانوي",
+        "grade2": "الصف الثاني الثانوي",
+        "grade3": "الصف الثالث الثانوي",
+        "university": "المرحلة الجامعية"
+      },
+      "subjects": {
+        "mathematics": "الرياضيات",
+        "physics": "الفيزياء",
+        "chemistry": "الكيمياء",
+        "biology": "الأحياء",
+        "english": "اللغة الإنجليزية",
+        "arabic": "اللغة العربية"
+      },
+      "periodOptions": {
+        "monthly": "شهري",
+        "yearly": "سنوي",
+        "termBased": "ترم"
+      },
+      "currencies": {
+        "EGP": "جنيه مصري (EGP)",
+        "USD": "دولار أمريكي (USD)",
+        "SAR": "ريال سعودي (SAR)",
+        "AED": "درهم إماراتي (AED)"
+      },
+      "venues": {
+        "online": {
+          "label": "أونلاين",
+          "desc": "تعلم رقمي عن بُعد"
+        },
+        "center": {
+          "label": "سنتر",
+          "desc": "حضور في السنتر التعليمي"
+        },
+        "all": {
+          "label": "سنتر وأونلاين",
+          "desc": "خيارات حضور مدمجة"
+        }
+      },
+      "sections": {
+        "mainInfo": {
+          "title": "المعلومات الرئيسية",
+          "description": "تفاصيل الدورة الأساسية كالعنوان والشرح بتنسيق ماركداون ورابط الفيديو التعريفي وصورة الغلاف."
+        },
+        "categoryInfo": {
+          "title": "معلومات التصنيف",
+          "description": "المرحلة الدراسية، المادة العلمية، اسم المعلم المحاضر، ونظام الاشتراك."
+        },
+        "priceInfo": {
+          "title": "معلومات السعر",
+          "description": "تحديد خيارات التسعير، العملة، إتاحة الدورة مجاناً، وإضافة خصومات وعروض."
+        },
+        "advancedSettings": {
+          "title": "إعدادات متقدمة",
+          "description": "تحديد مدة صلاحية الوصول، تقسيم الطلاب إلى مجموعات، ومكان الحضور."
+        }
+      },
+      "fields": {
+        "title": "عنوان الدورة",
+        "titlePlaceholder": "مثال: الرياضيات المتقدمة - التفاضل والتكامل",
+        "description": "وصف الدورة",
+        "descriptionPlaceholder": "اكتب تفاصيل الدورة الشاملة والأهداف والمفهوم العام...",
+        "previewVideoLink": "رابط الفيديو التعريفي",
+        "previewVideoLinkPlaceholder": "https://youtube.com/watch?v=... أو رابط درايف",
+        "coverImage": "صورة الغلاف",
+        "coverImageNote": "قم برفع صورة تعبيرية للدورة",
+        "coverImageDrag": "انقر أو اسحب الصورة هنا للرفع",
+        "grade": "المرحلة الدراسية",
+        "selectGrade": "اختر المرحلة الدراسية...",
+        "subject": "المادة",
+        "selectSubject": "اختر المادة...",
+        "teacherName": "اسم المعلم / المحاضر",
+        "teacherNamePlaceholder": "مثال: د. أحمد حسن",
+        "period": "نظام الاشتراك",
+        "selectPeriod": "اختر نظام الاشتراك...",
+        "isFree": "دورة مجانية",
+        "isFreeSubtitle": "قم بالتفعيل إذا كانت الدورة متاح مشاهدتها للطلاب مجاناً بدون رسوم.",
+        "coursePrice": "سعر الدورة",
+        "currency": "العملة",
+        "hasOffer": "يوجد عرض / خصم",
+        "hasOfferSubtitle": "قم بالتفعيل لتحديد نسبة مئوية لخصم السعر الأصلي للدورة.",
+        "offerPercentage": "نسبة الخصم (%)",
+        "hasTimeLimit": "تحديد مدة صلاحية الوصول",
+        "hasTimeLimitSubtitle": "تقييد الفترة الزمنية المتاحة للطالب لمشاهدة الدورة بعد الاشتراك.",
+        "timeLimitValue": "مدة الصلاحية (بالأيام)",
+        "timeLimitDaysSuffix": "أيام",
+        "isSplitToGroups": "تقسيم المشتركين إلى مجموعات",
+        "isSplitToGroupsSubtitle": "تنظيم الطلاب المنضمين للدورة في مجموعات دراسية منفصلة.",
+        "venue": "مكان الحضور",
+        "venueSubtitle": "اختر ما إذا كانت الدورة تدرس أونلاين فقط، أم في السنتر، أم متاحة بالخيارين."
+      },
+      "actions": {
+        "createCourse": "إنشاء الدورة",
+        "updateCourse": "حفظ التعديلات",
+        "saveDraft": "حفظ كمسودة",
+        "saveChanges": "حفظ التعديلات كمسودة",
+        "savingDraft": "جاري الحفظ...",
+        "savingChanges": "جاري حفظ التعديلات...",
+        "creating": "جاري إنشاء الدورة...",
+        "updating": "جاري حفظ التعديلات...",
+        "draftSaved": "تم حفظ المسودة بنجاح!",
+        "courseCreated": "تم إنشاء الدورة بنجاح!",
+        "courseUpdated": "تم تحديث الدورة بنجاح!",
+        "finishAndPublish": "إنهاء ونشر الدورة",
+        "saveAndPublish": "حفظ ونشر التعديلات",
+        "backToMainInfo": "العودة للبيانات الأساسية",
+        "addSection": "إضافة قسم",
+        "addLesson": "إضافة درس",
+        "addExam": "إضافة امتحان",
+        "arrangeSections": "ترتيب الأقسام",
+        "cancel": "إلغاء",
+        "create": "إضافة"
+      },
+      "step2": {
+        "title": "محتوى الدورة والمحاضرات",
+        "subtitle": "قم بإضافة الأقسام، الدروس، الفيديوهات، والامتحانات لبناء محتوى الدورة التعليمية المتكامل.",
+        "noSections": "لم يتم إضافة أي أقسام بعد. انقر على 'إضافة قسم' أعلاه للبدء في بناء المحتوى.",
+        "noLessons": "لم يتم إضافة دروس في هذا القسم بعد.",
+        "addSectionDialog": {
+          "title": "إضافة قسم جديد",
+          "subtitle": "أدخل تفاصيل القسم وشروط الامتحانات.",
+          "sectionTitle": "عنوان القسم",
+          "sectionTitlePlaceholder": "مثال: القسم الأول: مقدمة في الجبر",
+          "isLinkedToExam": "ربط القسم بامتحان",
+          "isLinkedToExamSubtitle": "الطلب من الطلاب أداء امتحان مخصص لهذا القسم.",
+          "isRequiredPassExam": "اجتياز الامتحان شرط للانتقال للقسم التالي",
+          "isRequiredPassExamSubtitle": "منع فتح القسم التالي حتى يتم نجاح الطالب في امتحان هذا القسم."
+        },
+        "addLessonDialog": {
+          "title": "إضافة درس جديد",
+          "subtitle": "اختر القسم وأضف تفاصيل الدرس ورابط الفيديو والشرح.",
+          "targetSection": "القسم التابع له",
+          "selectSection": "اختر القسم...",
+          "lessonTitle": "عنوان الدرس",
+          "lessonTitlePlaceholder": "مثال: الدرس الأول: المعادلات الأساسية",
+          "lectureVideoLink": "رابط فيديو الشرح",
+          "lectureVideoLinkPlaceholder": "https://youtube.com/watch?v=... أو رابط فيميو",
+          "writtenText": "الشرح المكتوب / الملاحظات",
+          "writeSummaryNotesPlaceholder": "اكتب ملخص الملاحظات..."
+        },
+        "addExamDialog": {
+          "title": "إضافة امتحان جديد",
+          "subtitle": "إنشاء محتوى الامتحان وتحديد درجات النجاح.",
+          "targetSection": "القسم التابع له",
+          "selectSection": "اختر القسم...",
+          "examTitle": "عنوان الامتحان",
+          "examTitlePlaceholder": "مثال: امتحان شامل على القسم الأول",
+          "passingScore": "نسبة النجاح (%)",
+          "totalGrade": "الدرجة الكلية"
+        },
+        "pleaseAddExamBadge": "يرجى إضافة امتحان واحد على الأقل",
+        "arrangeDialog": {
+          "title": "ترتيب الأقسام والدروس",
+          "subtitle": "قم بإعادة ترتيب الأقسام لتحديد التسلسل التعليمي للمنهج.",
+          "moveUp": "تحريك للأعلى",
+          "moveDown": "تحريك للاسفل",
+          "done": "تم"
+        }
+      }
+    }
+  },
+  "editor": {
+    "contentArea": {
+      "editableMarkdown": "محرر ماركداون"
+    },
+    "toolbar": {
+      "undo": "تراجع",
+      "redo": "إعادة",
+      "bold": "عريض",
+      "removeBold": "إزالة الخط العريض",
+      "italic": "مائل",
+      "removeItalic": "إزالة الخط المائل",
+      "underline": "تسطير",
+      "removeUnderline": "إزالة التسطير",
+      "bulletedList": "قائمة نقطية",
+      "numberedList": "قائمة مرقمة",
+      "checkList": "قائمة مهام",
+      "toggleGroup": "مجموعة التبديل",
+      "link": "إدراج رابط",
+      "blockTypes": {
+        "paragraph": "فقرة",
+        "quote": "اقتباس",
+        "heading": "عنوان"
+      },
+      "blockTypeSelect": {
+        "selectBlockTypeTooltip": "تحديد نوع النص",
+        "placeholder": "نوع النص"
+      }
+    }
   }
 }

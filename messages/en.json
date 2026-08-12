@@ -371,6 +371,207 @@
       "attachments": "{count, plural, =0 {Attachments & Resources} =1 {1 Attachment} other {{count} Attachments}}",
       "watchVideo": "Watch Lecture"
     },
-    "resetCourses": "Reset courses data"
+    "resetCourses": "Reset courses data",
+    "new": {
+      "title": "Create New Course",
+      "editTitle": "Edit Course",
+      "subtitle": "Fill in the course details, pricing, and settings below to publish or save as draft.",
+      "editSubtitle": "Modify course details, pricing, and curriculum content below.",
+      "timelineTitle": "Creation Progress",
+      "disclaimerTitle": "Course Draft & Auto-Save",
+      "disclaimerDescription": "This wizard helps you create a new educational course on the platform. You can save your draft at any point and return to finish it later.",
+      "steps": {
+        "infoAndPrice": "Information & Price",
+        "lectures": "Course Lectures"
+      },
+      "grades": {
+        "grade1": "Grade 10 (First Secondary)",
+        "grade2": "Grade 11 (Second Secondary)",
+        "grade3": "Grade 12 (Third Secondary)",
+        "university": "University Level"
+      },
+      "subjects": {
+        "mathematics": "Mathematics",
+        "physics": "Physics",
+        "chemistry": "Chemistry",
+        "biology": "Biology",
+        "english": "English Language",
+        "arabic": "Arabic Language"
+      },
+      "periodOptions": {
+        "monthly": "Monthly",
+        "yearly": "Yearly",
+        "termBased": "Term-based"
+      },
+      "currencies": {
+        "EGP": "EGP (Egyptian Pound)",
+        "USD": "USD (US Dollar)",
+        "SAR": "SAR (Saudi Riyal)",
+        "AED": "AED (UAE Dirham)"
+      },
+      "venues": {
+        "online": {
+          "label": "Online",
+          "desc": "Digital remote learning"
+        },
+        "center": {
+          "label": "Center",
+          "desc": "Physical center"
+        },
+        "all": {
+          "label": "Center & Online",
+          "desc": "Hybrid attendance options"
+        }
+      },
+      "sections": {
+        "mainInfo": {
+          "title": "Main Information",
+          "description": "Basic course details such as title, markdown description, video preview link, and cover image."
+        },
+        "categoryInfo": {
+          "title": "Category Information",
+          "description": "Academic level, subject matter, instructor assignment, and subscription period."
+        },
+        "priceInfo": {
+          "title": "Price Information",
+          "description": "Configure pricing options, currency, free access toggles, and optional promotional discounts."
+        },
+        "advancedSettings": {
+          "title": "Advanced Settings",
+          "description": "Set access validity, group splitting options, and attendance venue type."
+        }
+      },
+      "fields": {
+        "title": "Course Title",
+        "titlePlaceholder": "e.g., Advanced Mathematics - Calculus III",
+        "description": "Course Description (Markdown supported)",
+        "descriptionPlaceholder": "Write detailed course overview, objectives, and prerequisites...",
+        "previewVideoLink": "Preview Video URL",
+        "previewVideoLinkPlaceholder": "https://youtube.com/watch?v=... or Drive link",
+        "coverImage": "Cover Image",
+        "coverImageNote": "Upload a course thumbnail image.",
+        "coverImageDrag": "Click or drag image to upload",
+        "grade": "Grade Level",
+        "selectGrade": "Select grade level...",
+        "subject": "Subject",
+        "selectSubject": "Select subject...",
+        "teacherName": "Teacher / Instructor Name",
+        "teacherNamePlaceholder": "e.g., Dr. Ahmed Hassan",
+        "period": "Subscription Period",
+        "selectPeriod": "Select period...",
+        "isFree": "Free Course",
+        "isFreeSubtitle": "Enable if this course is available for free without any subscription fee.",
+        "coursePrice": "Course Price",
+        "currency": "Currency",
+        "hasOffer": "Promotional Discount / Offer",
+        "hasOfferSubtitle": "Enable to set a percentage discount on the original course price.",
+        "offerPercentage": "Offer Percentage (%)",
+        "hasTimeLimit": "Access Time Limit",
+        "hasTimeLimitSubtitle": "Restrict course access duration for enrolled students after purchase.",
+        "timeLimitValue": "Access Validity (Days)",
+        "timeLimitDaysSuffix": "Days",
+        "isSplitToGroups": "Split Students into Groups",
+        "isSplitToGroupsSubtitle": "Organize enrolled students into separate manageable learning groups.",
+        "venue": "Attendance Venue",
+        "venueSubtitle": "Choose whether this course is taught online, in an educational center, or both."
+      },
+      "actions": {
+        "createCourse": "Create Course",
+        "updateCourse": "Save Changes",
+        "saveDraft": "Save Draft",
+        "saveChanges": "Save Draft Changes",
+        "savingDraft": "Saving Draft...",
+        "savingChanges": "Saving Changes...",
+        "creating": "Creating Course...",
+        "updating": "Saving Changes...",
+        "draftSaved": "Draft saved successfully!",
+        "courseCreated": "Course created successfully!",
+        "courseUpdated": "Course updated successfully!",
+        "finishAndPublish": "Finish & Publish Course",
+        "saveAndPublish": "Save & Publish Changes",
+        "backToMainInfo": "Back to Main Info",
+        "addSection": "Add Section",
+        "addLesson": "Add Lesson",
+        "addExam": "Add Exam",
+        "arrangeSections": "Arrange Sections",
+        "cancel": "Cancel",
+        "create": "Create"
+      },
+      "step2": {
+        "title": "Course Curriculum & Lectures",
+        "subtitle": "Add sections, lessons, videos, and exams to build your complete course content.",
+        "noSections": "No sections added yet. Click 'Add Section' above to start building the curriculum.",
+        "noLessons": "No lessons added to this section yet.",
+        "addSectionDialog": {
+          "title": "Add New Section",
+          "subtitle": "Enter section details and exam requirements.",
+          "sectionTitle": "Section Title",
+          "sectionTitlePlaceholder": "e.g., Chapter 1: Introduction to Algebra",
+          "isLinkedToExam": "Link Section to an Exam",
+          "isLinkedToExamSubtitle": "Require students to take an exam associated with this section.",
+          "isRequiredPassExam": "Required Exam Pass for Next Section",
+          "isRequiredPassExamSubtitle": "Prevent students from unlocking the next section until passing this exam."
+        },
+        "addLessonDialog": {
+          "title": "Add New Lesson",
+          "subtitle": "Select section and add lesson details, video, and written text.",
+          "targetSection": "Target Section",
+          "selectSection": "Select section...",
+          "lessonTitle": "Lesson Title",
+          "lessonTitlePlaceholder": "e.g., Lesson 1: Basic Equations",
+          "lectureVideoLink": "Lecture Video Link",
+          "lectureVideoLinkPlaceholder": "https://youtube.com/watch?v=... or Vimeo link",
+          "writtenText": "Written Explanation / Summary",
+          "writeSummaryNotesPlaceholder": "Write summary notes..."
+        },
+        "addExamDialog": {
+          "title": "Add New Exam",
+          "subtitle": "Create an exam content and set passing criteria.",
+          "targetSection": "Target Section",
+          "selectSection": "Select section...",
+          "examTitle": "Exam Title",
+          "examTitlePlaceholder": "e.g., Chapter 1 Comprehensive Test",
+          "passingScore": "Passing Score (%)",
+          "totalGrade": "Total Grade"
+        },
+        "pleaseAddExamBadge": "Please add at least 1 exam",
+        "arrangeDialog": {
+          "title": "Arrange Sections & Lessons",
+          "subtitle": "Drag or move sections to reorder the curriculum flow.",
+          "moveUp": "Move Up",
+          "moveDown": "Move Down",
+          "done": "Done"
+        }
+      }
+    }
+  },
+  "editor": {
+    "contentArea": {
+      "editableMarkdown": "Editable Markdown"
+    },
+    "toolbar": {
+      "undo": "Undo",
+      "redo": "Redo",
+      "bold": "Bold",
+      "removeBold": "Remove bold",
+      "italic": "Italic",
+      "removeItalic": "Remove italic",
+      "underline": "Underline",
+      "removeUnderline": "Remove underline",
+      "bulletedList": "Bulleted list",
+      "numberedList": "Numbered list",
+      "checkList": "Check list",
+      "toggleGroup": "Toggle group",
+      "link": "Insert link",
+      "blockTypes": {
+        "paragraph": "Paragraph",
+        "quote": "Quote",
+        "heading": "Heading"
+      },
+      "blockTypeSelect": {
+        "selectBlockTypeTooltip": "Select block type",
+        "placeholder": "Block type"
+      }
+    }
   }
 }

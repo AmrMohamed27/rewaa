@@ -7,7 +7,7 @@ export const mockCoursesData: Record<"ar" | "en", Course[]> = {
       coverImage: "/courses/physics.jpg",
       title: "الفيزياء للثانوية العامة - منهج الترم الأول كامل",
       description:
-        "شرح شامل ومفصل لمنهج الفيزياء للصف الثالث الثانوي مع تطبيقات عملي ومسائل محلولة وإتاحة اختبارات دورية بعد كل فصل.",
+        "### نبذة عن دورة الفيزياء للثانوية العامة\n\nتعتبر هذه الدورة *الدليل المتكامل* لطلاب **الصف الثالث الثانوي** في مادة الفيزياء للترم الأول. تم إعداد المحتوى ليغطي جميع أجزاء المنهج بأسلوب مبسط وعميق يعتمد على الفهم والتفكير لا الحفظ والتلقين.\n\n#### أهداف الدورة المنهجية:\n1. **استيعاب المفاهيم الأساسية**: فهم الدوائر الكهربية، الشحنات، وفرق الجهد.\n2. **حل المسائل المتقدمة**: التدريب على أفكار امتحانات الأعوام السابقة والتفكير الابتكاري.\n3. **التطبيق العملي**: ربط القوانين النظرية بالتطبيقات الحياتية والتجارب المعملية.\n\n#### محاور المنهج بالتفصيل:\n- **التيار الكهربي وقانون أوم**: دراسة شدة التيار، المقاومة النوعية $R = \\rho \\frac{L}{A}$، والتوصيل على التوالي والتوازي.\n- **قوانين كيرشوف**: طرق حل الدوائر الكهربية المعقدة باستخدام قانون حفظ الشحنة وقانون حفظ الطاقة.\n- **المجال المغناطيسي والقوة المغناطيسية**: تحديد اتجاهات المجال وحساب عزم الازدواج وعزم ثنائي القطب.\n\n> **نصيحة للمذاكرة:** يُنصح بحل الأسئلة التفاعلية بعد كل درس مباشرة لترسيخ المعلومات وتحديد نقاط القوة والضعف.",
       previewVideoLink: "https://www.youtube.com/watch?v=u31qwQUeGuM",
       subject: "الفيزياء",
       grade: "الصف الثالث الثانوي",
@@ -125,7 +125,7 @@ export const mockCoursesData: Record<"ar" | "en", Course[]> = {
       coverImage: "/courses/chemistry.jpg",
       title: "الكيمياء العضوية والتفوق فيها",
       description:
-        "دورة مكثفة في الكيمياء العضوية تتضمن المجموعات الوظيفية والتسمية النظامية والتفاعلات الكيميائية.",
+        "### تفاصيل المنهج والدورة\n\nتعتبر **الكيمياء العضوية** من أهم وأمتع فروع الكيمياء لطلاب الثانوية العامة، حيث تشكل جزءاً كبيراً من الدرجة النهائية. تقدم هذه الدورة شرحاً منهجياً دقيقاً لكل تفاعل ومعادلة.\n\n#### المخرجات التعليمية المتوقعة:\n- إتقان تسمية المركبات العضوية حسب **نظام التسمية الدولي (IUPAC)**.\n- فهم ميكانيكية التفاعلات مثل *الإضافة، الاستبدال، والأكسدة والاختزال*.\n- التمييز بين المجموعات الوظيفية المختلفة وتأثيرها على الخواص الفيزيائية والكيميائية.\n\n```text\nتفاعل هلجنة الألكانات (مثال):\nCH4 + Cl2 --(اشعة فوق بنفسجية UV)--> CH3Cl + HCl\n```\n\n#### جدول المواضيع الأساسية:\n1. **الألكانات والألكينات والألكاينات**: الهيدروكربونات الأليفاتية.\n2. **البنزين العطري**: الهيدروكربونات الأروماتية وتفاعلات الاستبدال.\n3. **مشتقات الهيدروكربونات**: الكحولات، الفينولات، الإيثرات، والأحماض الكاربوكسيلية.\n\n> **ملاحظة:** يتم تقديم ملخصات تشجيعية ورسومات مبسطة لسلاسل التفاعلات الكيميائية لتسهيل الحفظ والمراجعة.",
       previewVideoLink: "https://www.youtube.com/watch?v=u31qwQUeGuM",
       subject: "الكيمياء",
       grade: "الصف الثالث الثانوي",
@@ -174,7 +174,7 @@ export const mockCoursesData: Record<"ar" | "en", Course[]> = {
       coverImage: "/courses/math.jpg",
       title: "أساسيات الرياضيات والفرع الهندسي",
       description:
-        "دورة تجريبية مجانية لجميع طلاب الصف الأول الثانوي لتعلم أساسيات الهندسة والجبر.",
+        "### دورة تاسيسية مجانية لجميع طلاب الصف الأول الثانوي\n\nنهدف من خلال هذه الدورة إلى بناء *قاعدة رياضية متينة* تمكن الطالب من التفوق في مراحل الثانوية العامة المختلفة. تركز الدورة على الفهم المنطقي وتحليل المشكلات الرياضياتية.\n\n#### محتويات الكورس:\n- **وحدة الجبر**: العلاقات والدوال، تحديد نوع جذري المعادلة التربيعية، والمتتابعات.\n- **وحدة الهندسة المستوية**: تشابه المضلعات والمثلثات، نظرية تاليس، والمماس والوتر.\n- **حساب المثلثات**: الزوايا الموجهة، القياس الدائري والستيني، والدوال المثلثية الأساسية.\n\n```text\nقانون المميز للمعادلة التربيعية:\nΔ = b^2 - 4ac\n```\n\n> **تنبيه:** هذه الدورة مجانية بالكامل ومتاحة لجميع الطلاب الراغبين في تقوية مهاراتهم في الرياضيات.",
       previewVideoLink: "",
       subject: "الرياضيات",
       grade: "الصف الأول الثانوي",
@@ -217,7 +217,8 @@ export const mockCoursesData: Record<"ar" | "en", Course[]> = {
       id: "course-004",
       coverImage: "/courses/biology.webp",
       title: "الأحياء والوراثة للثانوية العامة",
-      description: "شرح كامل لمادة الأحياء والوراثة والتركيب الخلوي وتطبيقات على الحمض النووي DNA.",
+      description:
+        "### دليل الأحياء والتركيب الجيني\n\nتعتبر مادة الأحياء من المواد الشيقة التي تعتمد على الاستيعاب البصري والربط بين الوظائف الحيوية والتركيب الخلوي. تقدم هذه الدورة رحلة استكشافية في عالم الخلية والوراثة.\n\n#### النقاط الأساسية المطروحة:\n- **التركيب الخلوي والجزيئي**: دراسة النواة، الكروموسومات، والحمض النووي DNA.\n- **تضاعف DNA وبناء البروتين**: ميكانيكية التضاعف ودور RNA وأنواع الأنزيمات.\n- **الهندسة الوراثية**: تطبيقات البيوتكنولوجي، الجينوم البشري، والإنزيمات القاطعة.\n\n> **معلومة هامة:** يحتوي كل درس على مجسمات ثلاثية الأبعاد ورسومات توضيحية لتسهيل استيعاب التفاصيل الدقيقة.",
       subject: "الأحياء",
       grade: "الصف الثالث الثانوي",
       teacherName: "أ. حسن محرم",
@@ -259,7 +260,7 @@ export const mockCoursesData: Record<"ar" | "en", Course[]> = {
       coverImage: "/courses/arabic.jpg",
       title: "اللغة العربية - النحو والبلاغة الشاملة",
       description:
-        "مساق النحو والبلاغة وإعراب الجمل للثانوية العامة مع قواعد ومسائل اختبارات سابقة.",
+        "### الإتقان التام في قواعد النحو والبلاغة\n\nتهدف الدورة إلى تمكين طالب الثانوية العامة من **إعراب الجمل المعقدة** وفهم الصور البلاغية بمهارة عالية دون عناء.\n\n#### المنهجية الدراسية:\n- **قسم النحو**: دراسة الأفعال، الأسماء المرفوعة والمنصوبة والمجرورة، والممنوع من الصرف.\n- **قسم البلاغة**: علوم البيان والباديع والمعاني، وتذوق النصوص الأدبية.\n- **تدريبات النماذج الامتحان الشاملة**: حل أكثر من 500 سؤال اختيار من متعدد وتدريبات مقالية.\n\n> **ملاحظة:** يتم التقييم الأسبوعي عبر اختبارات إلكترونية تفاعلية تعطي النتائج والتحليلات فوراً.",
       subject: "اللغة العربية",
       grade: "الصف الثاني الثانوي",
       teacherName: "أ. وليد محسن",
@@ -282,7 +283,7 @@ export const mockCoursesData: Record<"ar" | "en", Course[]> = {
       coverImage: "/courses/geography.webp",
       title: "الجغرافيا السياسية والاستراتيجيات",
       description:
-        "شرح خرائط الجغرافيا السياسية والدول المقررة للصف الثالث الثانوي بأحدث الأساليب.",
+        "### فهم العلاقات الدولية والخرائط الاستراتيجية\n\nتدرس هذه الدورة **الجغرافيا السياسية** للصف الثالث الثانوي وفق أحدث المناهج المعتمدة على تحليل الخرائط واستيعاب المفاهيم الجيوسياسية.\n\n#### أهم عناصر الدراسة:\n1. **الدولة ومقوماتها**: المقومات الطبيعية والبشرية لقوة الدولة.\n2. **الحدود السياسية**: أنواع الحدود المشكلات السياسية والحلول الدولية.\n3. **التكتلات الاقتصادية والأحلاف العسكرية**: مثل الاتحاد الأوروبي وحلف الناتو.\n\n> **تلميح:** الخرائط التفاعلية متاحة بجودة عالية للتنزيل والمراجعة الشخصية.",
       subject: "الجغرافيا",
       grade: "الصف الثالث الثانوي",
       teacherName: "أ. أيمن الماضي",
@@ -305,7 +306,8 @@ export const mockCoursesData: Record<"ar" | "en", Course[]> = {
       id: "course-007",
       coverImage: "/courses/english.png",
       title: "اللغة الإنجليزية - إتقان القواعد والقراءة",
-      description: "تطوير مهارات القراءة والكتابة وحل قطع الفهم والقواعد المعقدة للثانوية العامة.",
+      description:
+        "### Master English Grammar & Advanced Comprehension\n\nدورة متكاملة مخصصة لرفع مستوى الطلاب في مادة **اللغة الإنجليزية** واجتياز امتحانات الثانوية العامة بنجاح باهر.\n\n#### المحاور الرئيسية:\n- **Advanced Grammar**: Complete breakdown of tenses, conditionals, passive voice, and reported speech.\n- **Vocabulary & Collocations**: Key vocabulary modules sorted by topics and exam themes.\n- **Reading Comprehension Skills**: Effective strategies for tackling unseen passages and speed-reading.\n- **Essay & Translation Writing**: Structuring formal essays and mastering Arabic-English translation techniques.\n\n> **Tip:** Weekly assignment check and feedback provided by certified English instructors.",
       subject: "اللغة الإنجليزية",
       grade: "الصف الثالث الثانوي",
       teacherName: "مستر شريف المصري",
@@ -328,7 +330,8 @@ export const mockCoursesData: Record<"ar" | "en", Course[]> = {
       id: "course-008",
       coverImage: "/courses/programming.png",
       title: "مقدمة في البرمجة والتفكير المنطقي",
-      description: "دورة للمرحلة الثانوية لتعلم التفكير البرمجي ولغة خوارزمية البداية.",
+      description:
+        "### مدخل إلى عالم البرمجة والتفكير الخوارزمي\n\nتعتبر هذه الدورة *البوابة المثالية* لطلاب المرحلة الثانوية لدخول عالم علوم الحاسب وتطوير التفكير المنطقي والتحليلي.\n\n#### المفاهيم الرئيسية المشروحة:\n- **مبادئ الخوارزميات**: التفكير المنطقي والرسوم التخطيطية (Flowcharts).\n- **أساسيات البرمجة**: المتغيرات، الشروط `if / else`، والحلقات التكرارية `for / while`.\n- **حل المشكلات**: كيفية كتابة كود نظيف وفعال وحل الأخطاء البرمجية البرمجة (Debugging).\n\n```python\n# مثال بسيط بفرنيات التفكير الخوارزمي\ndef calculate_score(correct, total):\n    percentage = (correct / total) * 100\n    return round(percentage, 2)\n```\n\n> **ملاحظة:** لا تتطلب الدورة أي خبرة سابقة في البرمجة وتوفر تطبيقات تطبيقية ممتعة.",
       subject: "الحاسب الآلي",
       grade: "الصف الأول الثانوي",
       teacherName: "مهندس عمرو خالد",
@@ -350,7 +353,8 @@ export const mockCoursesData: Record<"ar" | "en", Course[]> = {
       id: "course-009",
       coverImage: "/courses/history.jpg",
       title: "التاريخ الحديث والمعاصر - الفصل الأول والثاني",
-      description: "مساق تاريخ مصر الحديث والحروب والأحداث التاريخية الهامة للثانوية العامة.",
+      description:
+        "### قراءة تحليلية في تاريخ مصر الحديث\n\nاستعراض ممتع ومنهجي لأحداث **تاريخ مصر الحديث والمعاصر** للصف الثالث الثانوي، بدءاً من الحملة الفرنسية وحتى العصر الحديث.\n\n#### النقاط المنهجية التراكمية:\n- **الحملة الفرنسية على مصر والشام**: أسبابها، نتائجها السياسية والعلمية.\n- **بناء الدولة الحديثة في عهد محمد علي**: الاحتكار الاقتصادي، التوسع العسكري، والإصلاح الإداري.\n- **الثورة العرابية والاحتلال البريطاني**: الأسباب والتداعيات التاريخية.\n\n> **تنويه:** يتم استخدام خطوط زمنية (Timelines) لربط الأحداث وتسلسلها بشكل منطقي سهل الحفظ.",
       subject: "التاريخ",
       grade: "الصف الثالث الثانوي",
       teacherName: "أ. سامح كاملاً",
@@ -373,7 +377,8 @@ export const mockCoursesData: Record<"ar" | "en", Course[]> = {
       id: "course-010",
       coverImage: "/courses/philosophy.jpg",
       title: "الفلسفة والمنطق - الجزء الأول",
-      description: "طرق التفكير الفلسفي والمنطق الصوري والرياضيات المنطقية.",
+      description:
+        "### رحلة في التفكير الفلسفي والمنطق الصوري\n\nتهدف الدورة إلى تنمية مهارات **التفكير النقدي والتحليلي** لدى الطلاب من خلال دراسة مبادئ الفلسفة والمنطق الصوري.\n\n#### أركان المنهج الأساسية:\n1. **مفهوم الفلسفة ونشأتها**: التفكير الفلسفي وأهميته للفرد والمجتمع.\n2. **المنطق الصوري والرياضي**: الحجج المنطقية، الاستنباط والاستقراء.\n3. **الأخلاقيات التطبيقية**: أخلاقيات المهنة، البيئة، والبيوطبيات (البايوإثكس).\n\n> **هدف الدورة:** بناء شخصية مفكرة قادرة على التمييز بين الآراء والحقائق العلمية.",
       subject: "الفلسفة",
       grade: "الصف الثاني الثانوي",
       teacherName: "د. تامر الملا",
@@ -398,7 +403,7 @@ export const mockCoursesData: Record<"ar" | "en", Course[]> = {
       coverImage: "/courses/physics.jpg",
       title: "High School Physics - Complete First Term Curriculum",
       description:
-        "Comprehensive and detailed explanation of the 3rd Secondary Physics curriculum with practical applications and solved problems.",
+        "### High School Physics Masterclass Overview\n\nThis course is the *ultimate comprehensive guide* designed for **Grade 12 (3rd Secondary)** students taking Physics for the first term. The curriculum focuses on deep conceptual understanding rather than rote memorization.\n\n#### Course Objectives:\n1. **Master Core Concepts**: Understand electric circuits, charge dynamics, and potential differences.\n2. **Advanced Problem Solving**: Practice with past national examination questions and complex scenarios.\n3. **Practical Application**: Relate theoretical formulas to real-world physics and engineering applications.\n\n#### Detailed Syllabus Breakdowns:\n- **Electric Current & Ohm's Law**: Study intensity, resistivity $R = \\rho \\frac{L}{A}$, and series/parallel resistor connections.\n- **Kirchhoff's Laws**: Master complex network resolution using Conservation of Charge and Conservation of Energy.\n- **Magnetic Effect & Forces**: Analyze magnetic flux density, Lorentz force, and magnetic dipole torque.\n\n> **Study Tip:** Complete the interactive review quiz immediately following each chapter to solidify memory retention.",
       previewVideoLink: "https://www.youtube.com/watch?v=u31qwQUeGuM",
       subject: "Physics",
       grade: "Grade 12 (3rd Secondary)",
@@ -516,7 +521,7 @@ export const mockCoursesData: Record<"ar" | "en", Course[]> = {
       coverImage: "/courses/chemistry.jpg",
       title: "Organic Chemistry Mastery",
       description:
-        "An intensive course in Organic Chemistry covering functional groups, IUPAC nomenclature, and chemical reactions.",
+        "### Organic Chemistry In-Depth Course\n\nOrganic Chemistry represents a critical segment of the High School Chemistry examination. This course offers step-by-step breakdown of every chemical family and reaction mechanism.\n\n#### Key Learning Outcomes:\n- Master IUPAC nomenclature for aliphatic and aromatic compounds.\n- Understand addition, substitution, elimination, and oxidation-reduction reactions.\n- Differentiate functional groups and analyze their influence on physical properties.\n\n```text\nHalogenation Reaction Example:\nCH4 + Cl2 --(UV Light)--> CH3Cl + HCl\n```\n\n#### Core Syllabus Modules:\n1. **Alkanes, Alkenes & Alkynes**: Aliphatic Hydrocarbons.\n2. **Aromatic Benzene**: Resonance, substitution reactions, and stability.\n3. **Hydrocarbon Derivatives**: Alcohols, phenols, ethers, aldehydes, ketones, and carboxylic acids.\n\n> **Note:** High-resolution reaction roadmaps and summaries are available for download after each section.",
       previewVideoLink: "https://www.youtube.com/watch?v=u31qwQUeGuM",
       subject: "Chemistry",
       grade: "Grade 12 (3rd Secondary)",
@@ -565,7 +570,7 @@ export const mockCoursesData: Record<"ar" | "en", Course[]> = {
       coverImage: "/courses/math.jpg",
       title: "Mathematics Fundamentals & Geometry",
       description:
-        "Free introductory course for 1st Secondary students covering core algebra and geometry concepts.",
+        "### Free Introductory Mathematics Foundation Course\n\nDesigned for **Grade 10 (1st Secondary)** students, this course builds a solid mathematical foundation for senior secondary studies.\n\n#### Featured Modules:\n- **Algebra**: Quadratic equations, discriminant analysis, and sequences.\n- **Euclidean Geometry**: Polygon and triangle similarity, Thales' theorem, and circle properties.\n- **Trigonometry**: Directed angles, radian measure, and fundamental trigonometric functions.\n\n```text\nQuadratic Discriminant Formula:\nΔ = b^2 - 4ac\n```\n\n> **Notice:** This introductory course is 100% free for all registered students.",
       previewVideoLink: "",
       subject: "Mathematics",
       grade: "Grade 10 (1st Secondary)",
@@ -609,7 +614,7 @@ export const mockCoursesData: Record<"ar" | "en", Course[]> = {
       coverImage: "/courses/biology.webp",
       title: "High School Biology & Genetics",
       description:
-        "Complete explanation of Biology, cellular structures, and DNA application topics.",
+        "### High School Biology & Molecular Genetics\n\nExplore the biological world through interactive visual breakdowns and deep dives into cellular machinery and genetic inheritance.\n\n#### Course Highlights:\n- **Cellular & Molecular Biology**: Nucleus structures, chromosomes, and DNA double helix.\n- **DNA Replication & Protein Synthesis**: Transcription, translation, mRNA, tRNA, and ribosome functions.\n- **Genetic Engineering**: Recombinant DNA technology, restriction enzymes, and human genome applications.\n\n> **Visual Learning:** Includes 3D rendered diagrams and step-by-step animations for complex biological pathways.",
       subject: "Biology",
       grade: "Grade 12 (3rd Secondary)",
       teacherName: "Mr. Hassan Moharram",
@@ -650,7 +655,8 @@ export const mockCoursesData: Record<"ar" | "en", Course[]> = {
       id: "course-005",
       coverImage: "/courses/arabic.jpg",
       title: "Arabic Language - Grammar & Rhetoric",
-      description: "Comprehensive grammar and rhetoric course for high school students.",
+      description:
+        "### Complete Arabic Grammar & Classical Rhetoric\n\nMaster the complexities of **Arabic Grammar (النحو)** and **Rhetoric (البلاغة)** with structured rules and extensive practice.\n\n#### Curriculum Sections:\n- **Grammar Module**: Detailed analysis of sentence structures, case endings (الإعراب), and irregular forms.\n- **Rhetoric Module**: Metaphor (الاستعارة), imagery (البديع), and literary analysis.\n- **Exam Practice**: Over 500 multiple-choice questions modeled after official national examinations.\n\n> **Weekly Quizzes:** Instant diagnostic feedback after every module.",
       subject: "Arabic",
       grade: "Grade 11 (2nd Secondary)",
       teacherName: "Mr. Waleed Mohsen",
@@ -672,7 +678,8 @@ export const mockCoursesData: Record<"ar" | "en", Course[]> = {
       id: "course-006",
       coverImage: "/courses/geography.webp",
       title: "Political Geography & Strategies",
-      description: "Maps and political geography curriculum for 3rd Secondary grade.",
+      description:
+        "### International Relations & Geopolitical Strategies\n\nUnderstand state borders, global power dynamics, and political map analysis for **Grade 12 Geography**.\n\n#### Course Modules:\n1. **The State & Power Factors**: Natural and human factors defining state influence.\n2. **Political Borders**: Boundary disputes, maritime laws, and international resolutions.\n3. **Economic Blocks & Military Alliances**: Analysis of the European Union, NATO, and global alliances.\n\n> **Interactive Maps:** High-resolution strategic maps downloadable for self-study.",
       subject: "Geography",
       grade: "Grade 12 (3rd Secondary)",
       teacherName: "Mr. Ayman El-Mady",
@@ -695,7 +702,8 @@ export const mockCoursesData: Record<"ar" | "en", Course[]> = {
       id: "course-007",
       coverImage: "/courses/english.png",
       title: "English Language - Mastery & Grammar",
-      description: "Developing reading, writing, comprehension and advanced grammar skills.",
+      description:
+        "### English Language Mastery & Comprehension\n\nA comprehensive preparation course designed to boost students' confidence and score top marks in English.\n\n#### Key Pillars:\n- **Advanced Grammar**: In-depth coverage of tenses, conditionals, passive structures, and reported speech.\n- **Vocabulary & Idioms**: Thematic word lists aligned with official exam requirements.\n- **Reading Comprehension**: Speed-reading and analytical skills for unseen texts.\n- **Essay & Translation**: Structured essay writing and translation techniques.\n\n> **Personalized Feedback:** Direct guidance from certified instructors.",
       subject: "English",
       grade: "Grade 12 (3rd Secondary)",
       teacherName: "Mr. Sherif El-Masry",
@@ -718,7 +726,8 @@ export const mockCoursesData: Record<"ar" | "en", Course[]> = {
       id: "course-008",
       coverImage: "/courses/programming.png",
       title: "Introduction to Computer Science & Logic",
-      description: "High school introductory course to learn computational thinking.",
+      description:
+        "### Introduction to Computer Science & Algorithmic Thinking\n\nThe ideal gateway course for high school students to explore programming fundamentals and logical problem-solving.\n\n#### Core Concepts Covered:\n- **Algorithmic Logic**: Flowcharts, pseudo-code, and problem decomposition.\n- **Programming Basics**: Variables, control structures `if / else`, loops `for / while`.\n- **Code Quality**: Debugging strategies and writing clean code.\n\n```python\ndef calculate_score(correct, total):\n    percentage = (correct / total) * 100\n    return round(percentage, 2)\n```\n\n> **No Prior Experience Required:** Suitable for complete beginners.",
       subject: "Computer Science",
       grade: "Grade 10 (1st Secondary)",
       teacherName: "Eng. Amr Khaled",
@@ -740,7 +749,8 @@ export const mockCoursesData: Record<"ar" | "en", Course[]> = {
       id: "course-009",
       coverImage: "/courses/history.jpg",
       title: "Modern & Contemporary History - Part 1",
-      description: "Modern history of Egypt and significant historical events.",
+      description:
+        "### Analytical Journey Through Modern Egyptian History\n\nAn engaging historical survey covering major events in Egypt's modern history from the French Campaign to modern times.\n\n#### Chronological Focus Areas:\n- **French Campaign**: Causes, socio-political impacts, and scientific discoveries.\n- **Mohamed Ali Era**: Economic monopoly system, military expansion, and administrative reforms.\n- **Urabi Revolt & British Occupation**: Historical causes and geopolitical consequences.\n\n> **Visual Timelines:** Clear chronological charts for easy memorization.",
       subject: "History",
       grade: "Grade 12 (3rd Secondary)",
       teacherName: "Mr. Sameh Kamel",
@@ -763,7 +773,8 @@ export const mockCoursesData: Record<"ar" | "en", Course[]> = {
       id: "course-010",
       coverImage: "/courses/philosophy.jpg",
       title: "Philosophy & Logic - Part 1",
-      description: "Philosophical thinking methods, formal logic, and symbolic logic.",
+      description:
+        "### Critical Thinking & Symbolic Logic\n\nDevelop critical thinking and analytical skills through the study of philosophy and formal logic.\n\n#### Core Pillars:\n1. **Philosophical Foundations**: History of thought and philosophical reasoning.\n2. **Formal Logic**: Logical arguments, deduction, and induction.\n3. **Applied Ethics**: Environmental ethics, bioethics, and professional responsibility.\n\n> **Course Goal:** Build analytical capabilities to evaluate arguments objectively.",
       subject: "Philosophy",
       grade: "Grade 11 (2nd Secondary)",
       teacherName: "Dr. Tamer El-Molla",

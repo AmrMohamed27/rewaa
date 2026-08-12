@@ -24,7 +24,7 @@ export function StatTile({
     return (
       <div
         className={cn(
-          "p-3 rounded-xl border bg-muted/30 flex flex-row justify-between items-center text-start",
+          "p-3 rounded-xl border bg-card flex flex-row justify-between items-center text-start",
           className,
         )}
       >
@@ -36,7 +36,7 @@ export function StatTile({
 
   if (variant === "compact") {
     return (
-      <div className={cn("flex flex-col gap-1 p-3 rounded-xl bg-muted/40 border", className)}>
+      <div className={cn("flex flex-col gap-1 p-3 rounded-xl bg-card border", className)}>
         <span className="text-xs text-muted-foreground font-medium">{label}</span>
         <span className={cn("text-lg font-semibold text-foreground", valueClassName)}>{value}</span>
       </div>
@@ -47,7 +47,7 @@ export function StatTile({
   return (
     <div
       className={cn(
-        "flex flex-col gap-2 p-3.5 rounded-xl border bg-background hover:bg-muted/30 transition-colors",
+        "flex flex-col gap-2 p-3.5 rounded-xl border bg-card hover:bg-bg-card/30 transition-colors",
         className,
       )}
     >
