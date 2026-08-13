@@ -1,5 +1,8 @@
 export type CoursePeriod = "monthly" | "yearly" | "termBased";
 export type CourseVenue = "center" | "online" | "all";
+export type LessonType = "videoAndText" | "text";
+export type LessonCategory = "independent" | "course-dependent";
+export type LessonPublishStatus = "draft" | "published" | "scheduled";
 
 export interface ExamQuestionOption {
   id: string;
@@ -38,9 +41,35 @@ export interface LessonAttachment {
 
 export interface Lesson {
   id: string;
+  type?: LessonType;
   title: string;
+  description?: string;
+  coverImage?: string;
   lectureVideoLink?: string;
   writtenText?: string;
+  grade?: string;
+  subject?: string;
+  teacherName?: string;
+
+  // Attachments and Exams
+  hasPdfAttachments?: boolean;
+  pdfFiles?: LessonAttachment[];
+  hasImageAttachments?: boolean;
+  imageFiles?: LessonAttachment[];
+  isLinkedToExam?: boolean;
+  linkedExamId?: string;
+  linkedExamTitle?: string;
+  isRequiredPassExam?: boolean;
+
+  // Organization and publish status
+  venue?: CourseVenue;
+  lessonCategory?: LessonCategory;
+  courseId?: string;
+  courseTitle?: string;
+  sectionId?: string;
+  publishStatus?: LessonPublishStatus;
+  scheduledPublishDate?: string;
+
   attachments?: LessonAttachment[];
 }
 

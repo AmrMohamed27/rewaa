@@ -122,6 +122,7 @@
     "lectures": "المحاضرات",
     "exams": "الامتحانات",
     "students": "الطلاب",
+    "lessons": "الدروس",
     "billing": "الفواتير والاشتراكات",
     "userSettings": "إعدادات المستخدم",
     "expandSidebar": "توسيع الشريط الجانبي",
@@ -426,7 +427,7 @@
       "sections": {
         "mainInfo": {
           "title": "المعلومات الرئيسية",
-          "description": "تفاصيل الدورة الأساسية كالعنوان والشرح بتنسيق ماركداون ورابط الفيديو التعريفي وصورة الغلاف."
+          "description": "تفاصيل الدورة الأساسية كالعنوان والشرح ورابط الفيديو التعريفي وصورة الغلاف."
         },
         "categoryInfo": {
           "title": "معلومات التصنيف",
@@ -514,15 +515,86 @@
         },
         "addLessonDialog": {
           "title": "إضافة درس جديد",
-          "subtitle": "اختر القسم وأضف تفاصيل الدرس ورابط الفيديو والشرح.",
+          "editTitle": "تعديل الدرس",
+          "subtitle": "قم بإعداد تفاصيل الدرس، الوسائط، المرفقات، الامتحانات، وإعدادات النشر.",
           "targetSection": "القسم التابع له",
           "selectSection": "اختر القسم...",
+          "groups": {
+            "type": "نوع الدرس",
+            "mainInfo": "البيانات الأساسية",
+            "media": "الفيديو وصورة الغلاف",
+            "academic": "البيانات الأكاديمية",
+            "attachmentsAndExams": "المرفقات والامتحانات",
+            "organization": "التنظيم وحالة النشر"
+          },
+          "groupDescriptions": {
+            "type": "اختر ما إذا كان الدرس يحتوي على محاضرة فيديو أو شرح نصي.",
+            "mainInfo": "عنوان الدرس والوصف المفصل.",
+            "media": "أدخل رابط الفيديو ورابط صورة الغلاف التوضيحية.",
+            "academic": "المرحلة الدراسية، المادة، اسم المعلم، ومكان الحضور.",
+            "attachmentsAndExams": "ملفات PDF، الصور التوضيحية، والامتحانات المرتبطة.",
+            "organization": "حدد حالة النشر وتاريخ ووقت الجدولة.",
+            "category": "اختر ما إذا كان الدرس مستقلاً أو يتبع دورة تعليمية."
+          },
+          "categoryDescriptions": {
+            "independent": "درس مستقل غير مرتبط بمنهج دورة معينة.",
+            "courseDependent": "ربط هذا الدرس مباشرة بدورة تعليمية موجودة."
+          },
+          "typeOptions": {
+            "videoAndText": "فيديو وشرح مكتوب",
+            "videoAndTextDesc": "درس يحتوي على محاضرة مرئية بالإضافة إلى محتوى نصي",
+            "text": "شرح مكتوب فقط",
+            "textDesc": "درس يقتصر على الشرح النصي والمواد القراءية فقط"
+          },
           "lessonTitle": "عنوان الدرس",
           "lessonTitlePlaceholder": "مثال: الدرس الأول: المعادلات الأساسية",
-          "lectureVideoLink": "رابط فيديو الشرح",
+          "description": "وصف الدرس",
+          "descriptionPlaceholder": "اكتب ملخص الدرس والملاحظات والنقاط الرئيسية...",
+          "lectureVideoLink": "رابط الفيديو",
           "lectureVideoLinkPlaceholder": "https://youtube.com/watch?v=... أو رابط فيميو",
-          "writtenText": "الشرح المكتوب / الملاحظات",
-          "writeSummaryNotesPlaceholder": "اكتب ملخص الملاحظات..."
+          "coverImage": "صورة الغلاف",
+          "coverImagePlaceholder": "رفع صورة أو أدخل رابط الصورة",
+          "autoFilledBadge": "مستخرج تلقائياً من الدورة",
+          "gradeLevel": "المرحلة الدراسية",
+          "subject": "المادة",
+          "teacherName": "اسم المعلم",
+          "teacherNamePlaceholder": "مثال: د. أحمد حسن",
+          "hasPdfAttachments": "إرفاق ملفات PDF",
+          "hasPdfAttachmentsSubtitle": "عند تفعيل هذا الخيار، يجب إرفاق ملف PDF واحد على الأقل للطلاب.",
+          "pdfRequiredError": "يرجى إرفاق ملف PDF واحد على الأقل قبل الحفظ.",
+          "uploadPdf": "رفع ملف PDF",
+          "pdfFilesCount": "ملفات PDF ({count})",
+          "noPdfFiles": "لم يتم إرفاق ملفات PDF بعد. اضغط رفع لإرفاق ملف واحد على الأقل.",
+          "hasImageAttachments": "إرفاق صور توضيحية",
+          "hasImageAttachmentsSubtitle": "رفع الرسوم البيانية أو القوانين أو الصور التوضيحية.",
+          "uploadImage": "رفع صورة توضيحية",
+          "explanatoryImagesCount": "الصور التوضيحية ({count})",
+          "noExplanatoryImages": "لم يتم إضافة صور توضيحية بعد.",
+          "isLinkedToExam": "ربط الدرس بامتحان",
+          "isLinkedToExamSubtitle": "حدد امتحاناً مرتبطاً بهذا الدرس.",
+          "selectExam": "اختر الامتحان...",
+          "noExamsAvailable": "لا توجد امتحانات متاحة من النظام",
+          "isRequiredPassExam": "إلزامية اجتياز الامتحان للانتقال للدرس التالي",
+          "isRequiredPassExamSubtitle": "منع فتح الدرس التالي حتى يقوم الطالب باجتياز هذا الامتحان.",
+          "venue": "مكان الحضور",
+          "lessonCategory": "تصنيف الدرس",
+          "categoryOptions": {
+            "courseDependent": "مرتبط بدورة تعليمية",
+            "independent": "مستقل"
+          },
+          "categoryDisabledNote": "محدد تلقائياً ومغلق على (مرتبط بدورة) عند الإنشاء من داخل الدورة.",
+          "locked": "مُغلق",
+          "publishStatus": "حالة النشر",
+          "statusOptions": {
+            "draft": "مسودة",
+            "published": "منشور",
+            "scheduled": "جدولة النشر"
+          },
+          "scheduledPublishDate": "تاريخ ووقت النشر",
+          "scheduledPublishDatePlaceholder": "اختر تاريخ ووقت النشر",
+          "cancel": "إلغاء",
+          "createLesson": "إنشاء درس",
+          "saveChanges": "حفظ التغييرات"
         },
         "addExamDialog": {
           "title": "إضافة امتحان جديد",
@@ -543,6 +615,85 @@
           "done": "تم"
         }
       }
+    }
+  },
+  "lessons": {
+    "manageTitle": "إدارة الدروس",
+    "manageSubtitle": "عرض، تصفية، إنشاء، وإدارة كافة الدروس التعليمية المستقلة والمرتبطة بالدورات.",
+    "addNewLesson": "إضافة درس جديد",
+    "resetLessons": "إعادة ضبط البيانات",
+    "searchPlaceholder": "ابحث في الدروس حسب العنوان، المادة، المعلم...",
+    "clearFilters": "مسح الفلاتر",
+    "metadata": "معلومات عن الدرس",
+    "tabs": {
+      "all": "جميع الدروس",
+      "published": "الدروس المنشورة",
+      "draft": "المسودات والمجدولة"
+    },
+    "sort": {
+      "newest": "الأحدث أولاً",
+      "oldest": "الأقدم أولاً",
+      "titleAsc": "العنوان (أ - ي)",
+      "titleDesc": "العنوان (ي - أ)"
+    },
+    "card": {
+      "videoText": "فيديو وشرح مكتوب",
+      "textOnly": "شرح مكتوب فقط",
+      "independent": "درس مستقل",
+      "courseDependent": "دورة: {courseTitle}",
+      "published": "منشور",
+      "draft": "مسودة",
+      "scheduled": "مجدول",
+      "pdfsCount": "{count, plural, =0 {لا ملفات PDF} zero {لا ملفات PDF} one {ملف PDF واحد} two {ملفين PDF} few {{count} ملفات PDF} many {{count} ملفاً PDF} other {{count} ملف PDF}}",
+      "examLinked": "مرتبط بامتحان",
+      "viewDetails": "عرض التفاصيل",
+      "editLesson": "تعديل الدرس",
+      "copyLink": "نسخ الرابط",
+      "copied": "تم النسخ!",
+      "deleteLesson": "حذف الدرس",
+      "publish": "نشر",
+      "unpublish": "إلغاء النشر"
+    },
+    "deleteDialog": {
+      "title": "حذف الدرس",
+      "description": "هل أنت متاكد من رغبتك في حذف الدرس '{title}'؟ لا يمكن التراجع عن هذا الإجراء.",
+      "confirm": "حذف الدرس",
+      "cancel": "إلغاء"
+    },
+    "details": {
+      "title": "تفاصيل الدرس",
+      "backToLessons": "العودة للدروس",
+      "editLesson": "تعديل الدرس",
+      "videoLecture": "فيديو المحاضرة",
+      "writtenNotes": "الشرح والملاحظات المكتوبة",
+      "attachments": "مرفقات الدرس",
+      "downloadPdf": "تحميل ملف PDF",
+      "linkedExam": "الامتحان المرتبط",
+      "takeExam": "أداء الامتحان",
+      "passingScore": "نسبة النجاح المطلوب: {score}%",
+      "teacherInfo": "المحاضر",
+      "subjectAndGrade": "المادة والمرحلة الدراسية",
+      "venue": "مكان الحضور",
+      "status": "الحالة",
+      "category": "تصنيف الدرس",
+      "linkedCourse": "الدورة المرتبطة",
+      "viewCourse": "عرض الدورة"
+    },
+    "new": {
+      "title": "إنشاء درس جديد",
+      "editTitle": "تعديل الدرس",
+      "subtitle": "قم بإعداد تفاصيل الدرس المستقل أو المرتبط بدورة، المحاضرة المرئية، المرفقات، والامتحانات.",
+      "selectCourse": "اختر الدورة التعليمية",
+      "selectCoursePlaceholder": "اختر الدورة التي يتبع لها هذا الدرس...",
+      "selectSection": "اختر القسم",
+      "selectSectionPlaceholder": "اختر القسم داخل الدورة..."
+    },
+    "pagination": {
+      "showing": "{total, plural, =0 {عرض 0 درس} zero {عرض 0 درس} one {عرض درس واحد من أصل درس واحد} two {عرض درسين من أصل درسين} few {عرض {start} إلى {end} من أصل {total} دروس} many {عرض {start} إلى {end} من أصل {total} درساً} other {عرض {start} إلى {end} من أصل {total} درس}}"
+    },
+    "empty": {
+      "title": "لم يتم العثور على دروس",
+      "description": "جرّب تعديل نتائج البحث أو خيارات التصفية المعروضة."
     }
   },
   "editor": {

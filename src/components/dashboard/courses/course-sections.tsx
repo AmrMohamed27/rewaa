@@ -1,7 +1,8 @@
 "use client";
 
-import { BookOpen, FileText, Video } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { BookOpen, Eye, FileText, Video } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
+import Link from "next/link";
 import {
   Accordion,
   AccordionContent,
@@ -17,6 +18,7 @@ interface CourseSectionsProps {
 }
 
 export function CourseSections({ course }: CourseSectionsProps) {
+  const locale = useLocale();
   const t = useTranslations("courses");
 
   const totalSections = course.sections.length;
@@ -42,21 +44,22 @@ export function CourseSections({ course }: CourseSectionsProps) {
           {t("details.noSections")}
         </div>
       ) : (
-        <Accordion type="single" collapsible className="w-full space-y-3">
+        <Accordion type="single" collapsible defaultValue="section-0" className="w-full space-y-3">
           {course.sections.map((section, idx) => (
             <AccordionItem
               key={section.id}
-              value={section.id}
-              className="border border-border/60 rounded-xl px-4 py-1 bg-muted/20"
+              value={`section-${idx}`}
+              className="border border-border/60 rounded-xl px-4 py-1 bg-muted/20 data-[state=open]:bg-muted/40 transition-colors"
             >
               <AccordionTrigger className="hover:no-underline py-3">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between w-full text-start gap-2 pe-4">
-                  <div className="flex items-center gap-2.5">
-                    <span className="flex items-center justify-center size-6 rounded-full bg-primary/10 text-primary text-xs font-bold">
-                      {idx + 1}
-                    </span>
-                    <span className="font-bold text-foreground text-sm">{section.title}</span>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between w-full text-start gap-2 pe-3">
+                  <div>
+                    <h3 className="text-sm font-bold text-foreground">{section.title}</h3>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      {t("details.totalLessons", { count: section.lessons.length })}
+                    </p>
                   </div>
+
                   <div className="flex items-center gap-2">
                     {section.isLinkedToExam && (
                       <Badge
@@ -84,21 +87,64 @@ export function CourseSections({ course }: CourseSectionsProps) {
                     key={lesson.id}
                     className="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-lg bg-background border border-border/40 gap-2"
                   >
-                    <div className="flex items-center gap-2">
-                      <BookOpen className="size-4 text-primary shrink-0" />
+                    <div className="flex items-center gap-2 flex-wrap">
+                      {lesson.type === "text" ? (
+                        <FileText className="size-4 text-emerald-500 shrink-0" />
+                      ) : (
+                        <BookOpen className="size-4 text-primary shrink-0" />
+                      )}
                       <span className="text-xs font-semibold text-foreground">{lesson.title}</span>
+
+                      {lesson.type === "text" && (
+                        <Badge
+                          variant="outline"
+                          className="text-[10px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
+                        >
+                          {t("new.step2.addLessonDialog.typeOptions.text")}
+                        </Badge>
+                      )}
+
+                      {(lesson.hasPdfAttachments ||
+                        (lesson.pdfFiles && lesson.pdfFiles.length > 0)) && (
+                        <Badge
+                          variant="outline"
+                          className="text-[10px] bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20"
+                        >
+                          PDF ({lesson.pdfFiles?.length || 1})
+                        </Badge>
+                      )}
+
+                      {lesson.isLinkedToExam && (
+                        <Badge
+                          variant="outline"
+                          className="text-[10px] bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20"
+                        >
+                          {t("details.linkedExamBadge")}
+                        </Badge>
+                      )}
                     </div>
-                    {lesson.lectureVideoLink && (
-                      <a
-                        href={lesson.lectureVideoLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-[11px] text-primary hover:underline font-medium"
+
+                    <div className="flex items-center gap-3 shrink-0 ms-auto sm:ms-0">
+                      {lesson.lectureVideoLink && lesson.type !== "text" && (
+                        <a
+                          href={lesson.lectureVideoLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-[11px] text-primary hover:underline font-medium"
+                        >
+                          <Video className="size-3.5" />
+                          <span>{t("details.watchVideo")}</span>
+                        </a>
+                      )}
+
+                      <Link
+                        href={`/${locale}/dashboard/lessons/${lesson.id}`}
+                        className="inline-flex items-center gap-1 text-[11px] text-primary hover:underline font-semibold"
                       >
-                        <Video className="size-3.5" />
-                        <span>{t("details.watchVideo")}</span>
-                      </a>
-                    )}
+                        <Eye className="size-3.5" />
+                        <span>{t("card.viewDetails")}</span>
+                      </Link>
+                    </div>
                   </div>
                 ))}
 

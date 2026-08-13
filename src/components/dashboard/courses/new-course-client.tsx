@@ -20,6 +20,7 @@ import { cn } from "@/lib/utils";
 import { Course } from "@/types/course";
 import "@mdxeditor/editor/style.css";
 import {
+  ArrowLeft,
   BookOpen,
   CheckCircle2,
   Clock,
@@ -38,6 +39,7 @@ import {
   Video,
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
+import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -303,13 +305,20 @@ export function NewCourseClient({ initialCourseId }: NewCourseClientProps = {}) 
   return (
     <div className="flex flex-col gap-6 p-4 sm:p-6 max-w-7xl mx-auto animate-in fade-in duration-500">
       {/* Header section */}
-      <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-          {initialCourseId ? t("editTitle") : t("title")}
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          {initialCourseId ? t("editSubtitle") : t("subtitle")}
-        </p>
+      <div className="flex items-center gap-3">
+        <Button asChild variant="outline" size="icon" className="h-9 w-9 rounded-full shrink-0">
+          <Link href={`/${locale}/dashboard/courses`}>
+            <ArrowLeft className="h-4 w-4 rtl:rotate-180" />
+          </Link>
+        </Button>
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+            {initialCourseId ? t("editTitle") : t("title")}
+          </h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            {initialCourseId ? t("editSubtitle") : t("subtitle")}
+          </p>
+        </div>
       </div>
 
       {successMessage && (
@@ -791,6 +800,8 @@ export function NewCourseClient({ initialCourseId }: NewCourseClientProps = {}) 
   );
 }
 
+import { LessonDialog } from "./lesson-dialog";
+
 /* STEP 2 COMPONENT WITH 4 ACTION BUTTONS AND DIALOGS */
 import {
   Dialog,
@@ -800,7 +811,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { CourseSection, Lesson } from "@/types/course";
+import { CourseSection, Lesson, CourseVenue } from "@/types/course";
 import {
   ArrowDown,
   ArrowUp,
@@ -808,6 +819,10 @@ import {
   FolderPlus,
   ListOrdered,
   Video as VideoIcon,
+  Edit2,
+  FileText as FileTextIcon,
+  Paperclip,
+  Clock as ClockIcon,
 } from "lucide-react";
 
 interface Step2CurriculumViewProps {
@@ -832,14 +847,31 @@ function Step2CurriculumView({
   const [activeDialog, setActiveDialog] = useState<
     "section" | "lesson" | "exam" | "arrange" | null
   >(null);
+  const [editingLesson, setEditingLesson] = useState<{ lesson: Lesson; sectionId: string } | null>(
+    null,
+  );
 
-  // Load existing sections for course
+  // Parent Course Context for auto-filling
+  const [parentCourseContext, setParentCourseContext] = useState({
+    grade: "",
+    subject: "",
+    teacherName: "",
+    venue: "all" as CourseVenue,
+  });
+
+  // Load existing sections and parent course info
   useEffect(() => {
     if (!courseId) return;
     const courses = getStoredCourses(locale);
     const existing = courses.find((c) => c.id === courseId);
-    if (existing && existing.sections) {
-      setSections(existing.sections);
+    if (existing) {
+      if (existing.sections) setSections(existing.sections);
+      setParentCourseContext({
+        grade: existing.grade || "",
+        subject: existing.subject || "",
+        teacherName: existing.teacherName || "",
+        venue: existing.venue || "all",
+      });
     }
   }, [courseId, locale]);
 
@@ -847,12 +879,6 @@ function Step2CurriculumView({
   const [newSecTitle, setNewSecTitle] = useState("");
   const [newSecIsLinkedExam, setNewSecIsLinkedExam] = useState(false);
   const [newSecIsReqPass, setNewSecIsReqPass] = useState(false);
-
-  // Dialog Form states: Lesson
-  const [newLesTargetSecId, setNewLesTargetSecId] = useState("");
-  const [newLesTitle, setNewLesTitle] = useState("");
-  const [newLesVideo, setNewLesVideo] = useState("");
-  const [newLesText, setNewLesText] = useState("");
 
   // Dialog Form states: Exam
   const [newExamTargetSecId, setNewExamTargetSecId] = useState("");
@@ -901,27 +927,33 @@ function Step2CurriculumView({
     setActiveDialog(null);
   };
 
-  const handleAddLesson = () => {
-    if (!newLesTitle.trim() || !newLesTargetSecId) return;
-    const lesId = `les-${Math.floor(1000 + Math.random() * 9000)}`;
-    const newLesson: Lesson = {
-      id: lesId,
-      title: newLesTitle,
-      lectureVideoLink: newLesVideo || undefined,
-      writtenText: newLesText || undefined,
-    };
+  const handleSaveLesson = (targetSecId: string, savedLesson: Lesson) => {
     const updated = sections.map((sec) => {
-      if (sec.id === newLesTargetSecId) {
-        return { ...sec, lessons: [...sec.lessons, newLesson] };
+      const lessonExistsInSec = sec.lessons.some((l) => l.id === savedLesson.id);
+      if (sec.id === targetSecId) {
+        if (lessonExistsInSec) {
+          return {
+            ...sec,
+            lessons: sec.lessons.map((l) => (l.id === savedLesson.id ? savedLesson : l)),
+          };
+        } else {
+          return {
+            ...sec,
+            lessons: [...sec.lessons.filter((l) => l.id !== savedLesson.id), savedLesson],
+          };
+        }
+      } else if (lessonExistsInSec) {
+        return {
+          ...sec,
+          lessons: sec.lessons.filter((l) => l.id !== savedLesson.id),
+        };
       }
       return sec;
     });
+
     setSections(updated);
     syncSectionsToStorage(updated);
-    setNewLesTitle("");
-    setNewLesVideo("");
-    setNewLesText("");
-    setNewLesTargetSecId("");
+    setEditingLesson(null);
     setActiveDialog(null);
   };
 
@@ -982,7 +1014,10 @@ function Step2CurriculumView({
             <button
               key={btn.key}
               type="button"
-              onClick={() => setActiveDialog(btn.key)}
+              onClick={() => {
+                if (btn.key === "lesson") setEditingLesson(null);
+                setActiveDialog(btn.key);
+              }}
               className={cn(
                 "py-3.5 px-4 rounded-xl font-semibold text-sm transition-all flex items-center justify-center gap-2.5 border shadow-2xs group cursor-pointer",
                 isActive
@@ -1036,17 +1071,59 @@ function Step2CurriculumView({
                     {sec.lessons.map((les, lIdx) => (
                       <div
                         key={les.id}
-                        className="flex items-center justify-between text-xs py-1.5 px-3 rounded-lg bg-background border"
+                        className="flex flex-col sm:flex-row sm:items-center justify-between text-xs py-2 px-3 rounded-lg bg-background border gap-2"
                       >
-                        <span className="font-medium text-foreground flex items-center gap-2">
-                          <VideoIcon className="size-3.5 text-muted-foreground" />
-                          {lIdx + 1}. {les.title}
-                        </span>
-                        {les.lectureVideoLink && (
-                          <span className="text-muted-foreground truncate max-w-48 font-mono">
-                            {les.lectureVideoLink}
+                        <div className="flex items-center gap-2.5 flex-wrap">
+                          {les.type === "text" ? (
+                            <FileTextIcon className="size-4 text-emerald-500 shrink-0" />
+                          ) : (
+                            <VideoIcon className="size-4 text-primary shrink-0" />
+                          )}
+                          <span className="font-semibold text-foreground">
+                            {lIdx + 1}. {les.title}
                           </span>
-                        )}
+
+                          {/* Badges for Lesson attributes */}
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
+                            {les.type === "text" ? "Text" : "Video & Text"}
+                          </span>
+
+                          {(les.hasPdfAttachments || (les.pdfFiles && les.pdfFiles.length > 0)) && (
+                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 font-medium flex items-center gap-1">
+                              <Paperclip className="size-3" />
+                              PDFs ({(les.pdfFiles || []).length || 1})
+                            </span>
+                          )}
+
+                          {les.isLinkedToExam && (
+                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 font-medium flex items-center gap-1">
+                              <FileQuestion className="size-3" />
+                              Exam Linked
+                            </span>
+                          )}
+
+                          {les.publishStatus === "scheduled" && (
+                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 font-medium flex items-center gap-1">
+                              <ClockIcon className="size-3" />
+                              Scheduled
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="flex items-center gap-2 self-end sm:self-center">
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon-xs"
+                            onClick={() => {
+                              setEditingLesson({ lesson: les, sectionId: sec.id });
+                              setActiveDialog("lesson");
+                            }}
+                            className="text-muted-foreground hover:text-primary"
+                          >
+                            <Edit2 className="size-3.5" />
+                          </Button>
+                        </div>
                       </div>
                     ))}
 
@@ -1136,82 +1213,19 @@ function Step2CurriculumView({
         </DialogContent>
       </Dialog>
 
-      {/* DIALOG 2: ADD LESSON */}
-      <Dialog
+      {/* DIALOG 2: LESSON DIALOG (ADD & EDIT) */}
+      <LessonDialog
         open={activeDialog === "lesson"}
-        onOpenChange={(open) => !open && setActiveDialog(null)}
-      >
-        <DialogContent className="sm:max-w-lg">
-          <DialogHeader>
-            <DialogTitle>{t("step2.addLessonDialog.title")}</DialogTitle>
-            <DialogDescription>{t("step2.addLessonDialog.subtitle")}</DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 py-2">
-            <div className="flex flex-col gap-2">
-              <label htmlFor="les-sec" className="text-sm font-medium text-foreground">
-                {t("step2.addLessonDialog.targetSection")}
-              </label>
-              <Select value={newLesTargetSecId} onValueChange={setNewLesTargetSecId}>
-                <SelectTrigger id="les-sec">
-                  <SelectValue placeholder={t("step2.addLessonDialog.selectSection")} />
-                </SelectTrigger>
-                <SelectContent>
-                  {sections.map((s) => (
-                    <SelectItem key={s.id} value={s.id}>
-                      {s.title}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex flex-col gap-2">
-              <label htmlFor="les-title" className="text-sm font-medium text-foreground">
-                {t("step2.addLessonDialog.lessonTitle")}
-              </label>
-              <Input
-                id="les-title"
-                value={newLesTitle}
-                onChange={(e) => setNewLesTitle(e.target.value)}
-                placeholder={t("step2.addLessonDialog.lessonTitlePlaceholder")}
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <label htmlFor="les-video" className="text-sm font-medium text-foreground">
-                {t("step2.addLessonDialog.lectureVideoLink")}
-              </label>
-              <Input
-                id="les-video"
-                type="url"
-                value={newLesVideo}
-                onChange={(e) => setNewLesVideo(e.target.value)}
-                placeholder={t("step2.addLessonDialog.lectureVideoLinkPlaceholder")}
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <label htmlFor="les-text" className="text-sm font-medium text-foreground">
-                {t("step2.addLessonDialog.writtenText")}
-              </label>
-              <FormMarkdownEditor
-                value={newLesText}
-                onChange={setNewLesText}
-                placeholder={t("step2.addLessonDialog.writeSummaryNotesPlaceholder")}
-              />
-            </div>
-          </div>
-          <DialogFooter className="gap-2">
-            <Button variant="outline" type="button" onClick={() => setActiveDialog(null)}>
-              {t("actions.cancel")}
-            </Button>
-            <Button
-              type="button"
-              onClick={handleAddLesson}
-              disabled={!newLesTitle.trim() || !newLesTargetSecId}
-            >
-              {t("actions.create")}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        onOpenChange={(open) => {
+          if (!open) setEditingLesson(null);
+          setActiveDialog(open ? "lesson" : null);
+        }}
+        sections={sections}
+        initialLesson={editingLesson?.lesson || null}
+        initialSectionId={editingLesson?.sectionId}
+        parentCourseContext={parentCourseContext}
+        onSave={handleSaveLesson}
+      />
 
       {/* DIALOG 3: ADD EXAM */}
       <Dialog

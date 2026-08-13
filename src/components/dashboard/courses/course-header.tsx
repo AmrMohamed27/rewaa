@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, ArrowRight, Pencil } from "lucide-react";
+import { ArrowLeft, Pencil } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -12,19 +12,16 @@ interface CourseHeaderProps {
 
 export function CourseHeader({ course }: CourseHeaderProps) {
   const locale = useLocale();
-  const isAr = locale === "ar";
   const t = useTranslations("courses");
 
   return (
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-      <div>
-        <Link
-          href={`/${locale}/dashboard/courses`}
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-primary transition-colors mb-2"
-        >
-          {isAr ? <ArrowRight className="size-3.5" /> : <ArrowLeft className="size-3.5" />}
-          <span>{t("details.backToCourses")}</span>
-        </Link>
+      <div className="flex items-center gap-3">
+        <Button asChild variant="outline" size="icon" className="h-9 w-9 rounded-full shrink-0">
+          <Link href={`/${locale}/dashboard/courses`}>
+            <ArrowLeft className="h-4 w-4 rtl:rotate-180" />
+          </Link>
+        </Button>
         <div className="flex items-center gap-3">
           <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
             {course.title}

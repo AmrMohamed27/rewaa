@@ -28,6 +28,7 @@ interface DashboardNavbarProps {
 
 const DEFAULT_LINKS: NavLinkItem[] = [
   { label: "courses", href: "/dashboard/courses" },
+  { label: "lessons", href: "/dashboard/lessons" },
   { label: "exams", href: "/dashboard/exams" },
   { label: "students", href: "/dashboard/students" },
 ];

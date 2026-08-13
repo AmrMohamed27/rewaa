@@ -48,3 +48,18 @@ Always pass `{ count }` to `t()` instead of string concatenation:
 // ✅ Correct ICU plural rendering
 <span>{t("card.lessonsShort", { count: course.numberOfLessons })}</span>
 ```
+
+## Standard Back Button Navigation UI Pattern
+
+All sub-pages across the app (details, creation, and edit pages) MUST use a single standardized round icon button for navigating back to a parent page:
+
+```tsx
+<Button asChild variant="outline" size="icon" className="h-9 w-9 rounded-full shrink-0">
+  <Link href={parentPath}>
+    <ArrowLeft className="h-4 w-4 rtl:rotate-180" />
+  </Link>
+</Button>
+```
+
+- Always place this button adjacent to the page's main `<h1>` title inside a flex container (`flex items-center gap-3`).
+- Always use `rtl:rotate-180` on `<ArrowLeft />` so RTL mode automatically flips the arrow direction without needing conditional logic.
