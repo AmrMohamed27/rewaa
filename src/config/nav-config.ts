@@ -5,6 +5,7 @@ import {
   Users,
   CreditCard,
   Settings,
+  FileQuestion,
   LucideIcon,
 } from "lucide-react";
 
@@ -47,6 +48,11 @@ export const navConfig: NavConfig = {
       label: "Lessons",
       href: "/dashboard/lessons",
       icon: Video,
+    },
+    {
+      label: "Exams",
+      href: "/dashboard/exams",
+      icon: FileQuestion,
     },
     {
       label: "Students",

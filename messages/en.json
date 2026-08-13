@@ -296,7 +296,7 @@
       "draft": "Draft"
     },
     "venue": {
-      "all": "All Venues",
+      "all": "Hybrid",
       "online": "Online",
       "center": "Center"
     },
@@ -617,6 +617,82 @@
       }
     }
   },
+  "exams": {
+    "manageTitle": "Manage Exams",
+    "manageSubtitle": "View, filter, and manage all standalone and course-linked exams.",
+    "addNewExam": "Add New Exam",
+    "resetExams": "Reset Data",
+    "searchPlaceholder": "Search exams by title, subject, teacher...",
+    "clearFilters": "Clear Filters",
+    "tabs": {
+      "all": "All Exams",
+      "published": "Published",
+      "draft": "Drafts & Scheduled"
+    },
+    "sort": {
+      "newest": "Newest First",
+      "oldest": "Oldest First",
+      "titleAsc": "Title (A-Z)",
+      "titleDesc": "Title (Z-A)"
+    },
+    "table": {
+      "columns": {
+        "title": "Title",
+        "subjectGrade": "Subject & Grade",
+        "category": "Category",
+        "typeVenue": "Type & Venue",
+        "questionsStudents": "Questions & Students",
+        "successRate": "Success Rate",
+        "timesUsed": "Times Used",
+        "status": "Status",
+        "dates": "Dates",
+        "actions": "Actions"
+      },
+      "independent": "Independent",
+      "courseLinked": "Course-linked",
+      "questionsCount": "{count, plural, =1 {1 Question} other {{count} Questions}}",
+      "studentsCount": "{count, plural, =1 {1 Student} other {{count} Students}}",
+      "timesUsedCount": "{count, plural, =1 {1 use} other {{count} uses}}",
+      "createdAt": "Created: {date}",
+      "scheduledAt": "Scheduled: {date}"
+    },
+    "category": {
+      "final": "Final",
+      "midterm": "Midterm",
+      "test": "Test",
+      "yearWork": "Year Work",
+      "comprehensive": "Comprehensive",
+      "unit": "Unit",
+      "quiz": "Quiz",
+      "placement": "Placement"
+    },
+    "status": {
+      "published": "Published",
+      "draft": "Draft",
+      "scheduled": "Scheduled",
+      "scheduleTime": "Schedule Time",
+      "createdAt": "Created At"
+    },
+    "actions": {
+      "viewDetails": "View Details",
+      "edit": "Edit Exam",
+      "publish": "Publish",
+      "delete": "Delete Exam"
+    },
+    "deleteDialog": {
+      "title": "Delete Exam",
+      "description": "Are you sure you want to delete \"{title}\"? This action cannot be undone.",
+      "confirm": "Delete Exam",
+      "cancel": "Cancel"
+    },
+    "pagination": {
+      "showing": "Showing {start} to {end} of {total} exams"
+    },
+    "empty": {
+      "title": "No exams found",
+      "description": "Try adjusting your search or filter settings to find what you are looking for."
+    }
+  },
   "lessons": {
     "manageTitle": "Manage Lessons",
     "manageSubtitle": "View, filter, create, and manage all standalone and course lessons.",
@@ -656,7 +732,7 @@
     },
     "deleteDialog": {
       "title": "Delete Lesson",
-      "description": "Are you sure you want to delete '{title}'? This action cannot be undone.",
+      "description": "Are you sure you want to delete \"{title}\"? This action cannot be undone.",
       "confirm": "Delete Lesson",
       "cancel": "Cancel"
     },

@@ -916,7 +916,6 @@ function Step2CurriculumView({
       isLinkedToExam: newSecIsLinkedExam,
       isRequiredPassExamForNextSection: newSecIsReqPass,
       lessons: [],
-      tests: [],
     };
     const updated = [...sections, newSec];
     setSections(updated);
@@ -1058,7 +1057,7 @@ function Step2CurriculumView({
                     </span>
                     {sec.title}
                   </span>
-                  {sec.isLinkedToExam && !sec.linkedExam && (
+                  {sec.isLinkedToExam && !sec.linkedExamId && (
                     <span className="text-xs font-normal px-2.5 py-1 rounded-md bg-warning-bg/10 text-warning dark:warning-bg border border-warning/20">
                       {t("step2.pleaseAddExamBadge")}
                     </span>
@@ -1066,7 +1065,7 @@ function Step2CurriculumView({
                 </div>
 
                 {/* Section Lessons & Linked Exam */}
-                {sec.lessons.length > 0 || (sec.isLinkedToExam && sec.linkedExam) ? (
+                {sec.lessons.length > 0 || (sec.isLinkedToExam && sec.linkedExamId) ? (
                   <div className="pl-6 rtl:pl-0 rtl:pr-6 space-y-2 border-l rtl:border-l-0 rtl:border-r border-border">
                     {sec.lessons.map((les, lIdx) => (
                       <div
@@ -1127,16 +1126,12 @@ function Step2CurriculumView({
                       </div>
                     ))}
 
-                    {/* Linked Exam item under lessons */}
-                    {sec.isLinkedToExam && sec.linkedExam && (
+                    {/* Linked Exam FK item under lessons */}
+                    {sec.isLinkedToExam && sec.linkedExamId && (
                       <div className="flex items-center justify-between text-xs py-1.5 px-3 rounded-lg bg-warning/10 border border-warning/20">
                         <span className="font-medium text-warning dark:warning-bg flex items-center gap-2">
                           <FileQuestion className="size-3.5 text-warning dark:warning-bg" />
-                          {sec.linkedExam.examContent.title}
-                        </span>
-                        <span className="text-warning dark:warning-bg text-[11px] font-medium">
-                          {sec.linkedExam.examContent.passingScore}% /{" "}
-                          {sec.linkedExam.examContent.totalGrade}
+                          {t("step2.addSectionDialog.isLinkedToExam")}: #{sec.linkedExamId}
                         </span>
                       </div>
                     )}

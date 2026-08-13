@@ -617,6 +617,82 @@
       }
     }
   },
+  "exams": {
+    "manageTitle": "إدارة الامتحانات",
+    "manageSubtitle": "عرض، تصفية، وإدارة كافة الامتحانات المستقلة والمرتبطة بالدورات.",
+    "addNewExam": "إضافة امتحان جديد",
+    "resetExams": "إعادة ضبط البيانات",
+    "searchPlaceholder": "ابحث في الامتحانات حسب العنوان، المادة، المعلم...",
+    "clearFilters": "مسح الفلاتر",
+    "tabs": {
+      "all": "جميع الامتحانات",
+      "published": "المنشورة",
+      "draft": "المسودات والمجدولة"
+    },
+    "sort": {
+      "newest": "الأحدث أولاً",
+      "oldest": "الأقدم أولاً",
+      "titleAsc": "العنوان (أ - ي)",
+      "titleDesc": "العنوان (ي - أ)"
+    },
+    "table": {
+      "columns": {
+        "title": "العنوان",
+        "subjectGrade": "المادة والمرحلة",
+        "category": "النوع",
+        "typeVenue": "التصنيف والمكان",
+        "questionsStudents": "الأسئلة والطلاب",
+        "successRate": "معدل النجاح",
+        "timesUsed": "عدد مرات الاستخدام",
+        "status": "الحالة",
+        "dates": "التواريخ",
+        "actions": "الإجراءات"
+      },
+      "independent": "مستقل",
+      "courseLinked": "مرتبط بدورة",
+      "questionsCount": "{count, plural, =0 {لا أسئلة} zero {لا أسئلة} one {سؤال واحد} two {سؤالان} few {{count} أسئلة} many {{count} سؤالاً} other {{count} سؤال}}",
+      "studentsCount": "{count, plural, =0 {لا طلاب} zero {لا طلاب} one {طالب واحد} two {طالبان} few {{count} طلاب} many {{count} طالباً} other {{count} طالب}}",
+      "timesUsedCount": "{count, plural, =0 {لا استخدامات} zero {لا استخدامات} one {مرة واحدة} two {مرتان} few {{count} مرات} many {{count} مرة} other {{count} مرة}}",
+      "createdAt": "أُنشئ: {date}",
+      "scheduledAt": "مجدول: {date}"
+    },
+    "category": {
+      "final": "نهائي",
+      "midterm": "منتصف الفصل",
+      "test": "اختبار",
+      "yearWork": "أعمال السنة",
+      "comprehensive": "شامل",
+      "unit": "وحدة",
+      "quiz": "اختبار قصير",
+      "placement": "تحديد مستوى"
+    },
+    "status": {
+      "published": "منشور",
+      "draft": "مسودة",
+      "scheduled": "مجدول",
+      "scheduleTime": "وقت الجدولة",
+      "createdAt": "تاريخ الإنشاء"
+    },
+    "actions": {
+      "viewDetails": "عرض التفاصيل",
+      "edit": "تعديل الامتحان",
+      "publish": "نشر",
+      "delete": "حذف الامتحان"
+    },
+    "deleteDialog": {
+      "title": "حذف الامتحان",
+      "description": "هل أنت متأكد من رغبتك في حذف الامتحان \"{title}\"؟ لا يمكن التراجع عن هذا الإجراء.",
+      "confirm": "حذف الامتحان",
+      "cancel": "إلغاء"
+    },
+    "pagination": {
+      "showing": "{total, plural, =0 {عرض 0 امتحان} zero {عرض 0 امتحان} one {عرض امتحان واحد من أصل امتحان واحد} two {عرض امتحانين من أصل امتحانين} few {عرض {start} إلى {end} من أصل {total} امتحانات} many {عرض {start} إلى {end} من أصل {total} امتحاناً} other {عرض {start} إلى {end} من أصل {total} امتحان}}"
+    },
+    "empty": {
+      "title": "لم يتم العثور على امتحانات",
+      "description": "جرّب تعديل نتائج البحث أو خيارات التصفية المعروضة."
+    }
+  },
   "lessons": {
     "manageTitle": "إدارة الدروس",
     "manageSubtitle": "عرض، تصفية، إنشاء، وإدارة كافة الدروس التعليمية المستقلة والمرتبطة بالدورات.",
@@ -656,7 +732,7 @@
     },
     "deleteDialog": {
       "title": "حذف الدرس",
-      "description": "هل أنت متاكد من رغبتك في حذف الدرس '{title}'؟ لا يمكن التراجع عن هذا الإجراء.",
+      "description": "هل أنت متاكد من رغبتك في حذف \"{title}\"؟ لا يمكن التراجع عن هذا الإجراء.",
       "confirm": "حذف الدرس",
       "cancel": "إلغاء"
     },

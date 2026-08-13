@@ -23,10 +23,7 @@ export function CourseSections({ course }: CourseSectionsProps) {
 
   const totalSections = course.sections.length;
   const totalLessons = course.sections.reduce((acc, s) => acc + s.lessons.length, 0);
-  const totalExams = course.sections.reduce(
-    (acc, s) => acc + (s.linkedExam ? 1 : 0) + s.tests.length,
-    0,
-  );
+  const totalExams = course.sections.reduce((acc, s) => acc + (s.isLinkedToExam ? 1 : 0), 0);
 
   return (
     <DashboardCard className="p-6 space-y-4">
@@ -148,31 +145,17 @@ export function CourseSections({ course }: CourseSectionsProps) {
                   </div>
                 ))}
 
-                {/* Section Exam if present */}
-                {section.linkedExam && (
-                  <div className="p-3 rounded-lg bg-primary/5 border border-primary/20 space-y-1">
-                    <div className="flex items-center justify-between text-xs font-bold text-primary">
-                      <div className="flex items-center gap-1.5">
-                        <FileText className="size-4" />
-                        <span>{section.linkedExam.examContent.title}</span>
-                      </div>
-                      <span>
-                        {t("details.questionsCount", {
-                          count: section.linkedExam.examContent.questions.length,
-                        })}
-                      </span>
-                    </div>
-                    <div className="text-[11px] text-muted-foreground flex gap-4 pt-1">
-                      <span>
-                        {t("details.passingScore", {
-                          score: section.linkedExam.examContent.passingScore,
-                        })}
-                      </span>
-                      <span>
-                        {t("details.totalGrade", {
-                          grade: section.linkedExam.examContent.totalGrade,
-                        })}
-                      </span>
+                {/* Section Exam FK reference */}
+                {section.isLinkedToExam && section.linkedExamId && (
+                  <div className="p-3 rounded-lg bg-primary/5 border border-primary/20">
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-primary">
+                      <FileText className="size-4" />
+                      <Link
+                        href={`/${locale}/dashboard/exams/${section.linkedExamId}`}
+                        className="hover:underline underline-offset-2"
+                      >
+                        {t("details.linkedExamBadge")} #{section.linkedExamId}
+                      </Link>
                     </div>
                   </div>
                 )}

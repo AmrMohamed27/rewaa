@@ -4,33 +4,6 @@ export type LessonType = "videoAndText" | "text";
 export type LessonCategory = "independent" | "course-dependent";
 export type LessonPublishStatus = "draft" | "published" | "scheduled";
 
-export interface ExamQuestionOption {
-  id: string;
-  text: string;
-}
-
-export interface ExamQuestion {
-  id: string;
-  questionText: string;
-  options?: ExamQuestionOption[];
-  correctAnswer: string | number | boolean;
-  grade: number;
-  explanation?: string;
-}
-
-export interface ExamContent {
-  id: string;
-  title: string;
-  passingScore: number;
-  totalGrade: number;
-  questions: ExamQuestion[];
-}
-
-export interface LinkedExam {
-  sectionId: string;
-  examContent: ExamContent;
-}
-
 export interface LessonAttachment {
   id: string;
   title: string;
@@ -57,26 +30,20 @@ export interface Lesson {
   hasImageAttachments?: boolean;
   imageFiles?: LessonAttachment[];
   isLinkedToExam?: boolean;
-  linkedExamId?: string;
-  linkedExamTitle?: string;
+  linkedExamId?: string; // FK → Exam.id
+  linkedExamTitle?: string; // denormalized
   isRequiredPassExam?: boolean;
 
   // Organization and publish status
   venue?: CourseVenue;
   lessonCategory?: LessonCategory;
-  courseId?: string;
-  courseTitle?: string;
-  sectionId?: string;
+  courseId?: string; // FK → Course.id
+  courseTitle?: string; // denormalized
+  sectionId?: string; // FK → CourseSection.id
   publishStatus?: LessonPublishStatus;
   scheduledPublishDate?: string;
 
   attachments?: LessonAttachment[];
-}
-
-export interface SectionTest {
-  id: string;
-  title: string;
-  testContent: ExamContent;
 }
 
 export interface CourseSection {
@@ -84,10 +51,9 @@ export interface CourseSection {
   title: string;
   isDraft: boolean;
   isLinkedToExam: boolean;
-  linkedExam?: LinkedExam;
+  linkedExamId?: string; // FK → Exam.id (replaces embedded ExamContent)
   isRequiredPassExamForNextSection: boolean;
   lessons: Lesson[];
-  tests: SectionTest[];
 }
 
 export interface Course {
