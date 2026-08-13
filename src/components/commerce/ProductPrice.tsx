@@ -58,7 +58,7 @@ export const ProductPrice: React.FC<ProductPriceProps> = ({
             </span>
             <Badge
               variant="destructive"
-              className="bg-red-500/10 text-red-600 dark:bg-red-500/20 dark:text-red-400 border border-red-500/20 px-2 py-0.5 rounded font-semibold text-xs animate-pulse"
+              className="bg-red-500/10 text-red-600 border border-red-500/20 px-2 py-0.5 rounded font-semibold text-xs animate-pulse"
             >
               {discountPercent}% OFF
             </Badge>

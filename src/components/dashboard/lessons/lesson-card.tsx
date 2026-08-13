@@ -176,14 +176,14 @@ export function LessonCard({
         {/* Additional Metadata Badges: PDFs & Exam */}
         <div className="flex items-center gap-2 flex-wrap text-[11px]">
           {pdfCount > 0 && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 font-medium">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-blue-500/10 text-blue-600 border border-blue-500/20 font-medium">
               <Paperclip className="h-3 w-3" />
               {t("card.pdfsCount", { count: pdfCount })}
             </span>
           )}
 
           {lesson.isLinkedToExam && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 font-medium">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-600 border border-amber-500/20 font-medium">
               <FileQuestion className="h-3 w-3" />
               {t("card.examLinked")}
             </span>

@@ -17,7 +17,7 @@ export function DashboardBanner() {
           alt="Dashboard Header"
           fill
           priority
-          className="object-cover object-center opacity-25 dark:opacity-20 mask-radial-fade ltr:mask-[linear-gradient(to_right,transparent,black_70%)] rtl:mask-[linear-gradient(to_left,transparent,black_70%)]"
+          className="object-cover object-center opacity-25 mask-radial-fade ltr:mask-[linear-gradient(to_right,transparent,black_70%)] rtl:mask-[linear-gradient(to_left,transparent,black_70%)]"
         />
       </div>
 

@@ -121,6 +121,7 @@
     "courses": "Courses",
     "lectures": "Lectures",
     "exams": "Exams",
+    "questions": "Questions Bank",
     "lessons": "Lessons",
     "students": "Students",
     "billing": "Billing",
@@ -691,6 +692,303 @@
     "empty": {
       "title": "No exams found",
       "description": "Try adjusting your search or filter settings to find what you are looking for."
+    },
+    "form": {
+      "createTitle": "Create New Exam",
+      "editTitle": "Edit Exam",
+      "createSubtitle": "Configure exam settings, academic information, and course linkage.",
+      "editSubtitle": "Modify exam details, questions limit, and settings.",
+      "sections": {
+        "basicInfo": "Basic Information",
+        "basicInfoDesc": "Specify the exam title, description, time duration, pass rate, and maximum questions.",
+        "academic": "Academic & Teacher Details",
+        "academicDesc": "Select grade level, subject matter, and assign instructor.",
+        "advanced": "Advanced Exam Settings",
+        "advancedDesc": "Configure student feedback rules and question/choice randomization.",
+        "classification": "Classification & Course Linkage",
+        "classificationDesc": "Specify whether this exam is standalone or linked to a course, section, or lesson."
+      },
+      "fields": {
+        "title": "Exam Title",
+        "titlePlaceholder": "e.g., Comprehensive Physics Midterm Exam",
+        "description": "Description (Markdown supported)",
+        "descriptionPlaceholder": "Write exam rules, instructions, or scope summary...",
+        "triesAllowed": "Number of Tries Allowed",
+        "durationMinutes": "Duration (Minutes)",
+        "passingPercentage": "Passing Score Percentage (%)",
+        "numberOfQuestions": "Maximum Number of Questions",
+        "grade": "Grade Level",
+        "selectGrade": "Select grade level...",
+        "subject": "Subject",
+        "selectSubject": "Select subject...",
+        "teacherName": "Teacher / Instructor Name",
+        "teacherNamePlaceholder": "e.g., Mr. Mohamed Abdel Maaboud",
+        "category": "Exam Category",
+        "selectCategory": "Select category...",
+        "showModelAnswers": "Show Model Answers to Students",
+        "showModelAnswersDesc": "Allow students to view detailed model answers and explanations after finishing the exam.",
+        "randomizeQuestionsOrder": "Randomize Questions Order",
+        "randomizeQuestionsOrderDesc": "Display questions in a random sequence for each student attempt.",
+        "randomizeMCQChoices": "Randomize MCQ Choices Order",
+        "randomizeMCQChoicesDesc": "Shuffle the order of multiple-choice options for each question.",
+        "isIndependent": "Independent Exam",
+        "isIndependentDesc": "Toggle on if this exam is not linked to any specific course or lesson.",
+        "venue": "Attendance Venue",
+        "selectVenue": "Select venue...",
+        "linkedCourse": "Linked Course",
+        "selectCourse": "Select course...",
+        "linkedSection": "Linked Course Section",
+        "selectSection": "Select section...",
+        "linkedLesson": "Linked Lesson (Optional)",
+        "selectLesson": "Select lesson..."
+      },
+      "actions": {
+        "saveDraft": "Save Draft",
+        "createExam": "Create Exam",
+        "saveChanges": "Save Changes",
+        "cancel": "Cancel",
+        "saving": "Saving...",
+        "nextStep": "Next: Sections & Questions",
+        "backToStep1": "Back to Exam Settings"
+      }
+    },
+    "step2": {
+      "title": "Exam Sections & Questions",
+      "subtitle": "Add exam sections, populate questions, choices, and set points for each section.",
+      "buttons": {
+        "addSection": "Add Section",
+        "addQuestion": "Add Questions",
+        "arrangeSections": "Arrange Sections",
+        "importExcel": "Import from Excel"
+      },
+      "addSectionDialog": {
+        "title": "Add New Exam Section",
+        "subtitle": "Enter section title to categorize exam questions.",
+        "titleLabel": "Section Title",
+        "titlePlaceholder": "e.g., Section 1 - Direct Questions",
+        "subtitleLabel": "Short Subtitle (Optional)",
+        "subtitlePlaceholder": "Special instructions or notes...",
+        "create": "Add Section"
+      },
+      "noSections": "No exam sections added yet. Add a section to start organizing questions.",
+      "noQuestions": "No questions added to this section.",
+      "questionsCount": "{count, plural, =0 {No questions} zero {No questions} one {1 question} two {2 questions} few {{count} questions} many {{count} questions} other {{count} questions}}",
+      "pointsCount": "{count, plural, =0 {No points} zero {No points} one {1 point} two {2 points} few {{count} points} many {{count} points} other {{count} points}}",
+      "excelImport": {
+        "title": "Import Questions from Excel",
+        "subtitle": "Formatting rules and specifications required for importing questions.",
+        "noticeTitle": "Important Notice on Import Feature",
+        "noticeDescription": "Automated Excel file parsing will be enabled in an upcoming release. Please ensure your files match the required schema below.",
+        "requirementsTitle": "Required Excel Column Format:",
+        "req1": "Column 1 (Section): Name of the exam section.",
+        "req2": "Column 2 (QuestionName & Content): Short name and full question markdown body.",
+        "req3": "Column 3 (Type): Question type (mcq, true/false, text).",
+        "req4": "Column 4 & 5 (Options & Answer): Answer choices and correct answer indicator.",
+        "gotIt": "Got it"
+      }
+    },
+    "questionDialog": {
+      "addQuestionTitle": "Add New Question",
+      "editQuestionTitle": "Edit Question",
+      "dialogSubtitle": "Configure question content, type, choices, and model answer.",
+      "targetSection": "Target Section",
+      "selectSectionPlaceholder": "Select section...",
+      "questionTypeSelector": "Question Type",
+      "types": {
+        "mcq": "Multiple Choice (MCQ)",
+        "trueFalse": "True / False",
+        "text": "Essay / Text Answer"
+      },
+      "basicInfoGroup": "Basic Information",
+      "questionName": "Question Title / Label",
+      "questionNamePlaceholder": "e.g., Q1 - Newton's Second Law",
+      "questionContent": "Question Body Content (Markdown supported)",
+      "questionContentPlaceholder": "Write question prompt shown to students...",
+      "kindLabel": "Academic Classification",
+      "questionKind": "Academic Classification",
+      "kinds": {
+        "theoretical": "Theoretical",
+        "practical": "Practical",
+        "applicationBased": "Application Based",
+        "analytical": "Analytical",
+        "oral": "Oral",
+        "skillBased": "Skill Based"
+      },
+      "difficultyLabel": "Difficulty Level",
+      "difficulty": "Difficulty Level",
+      "difficulties": {
+        "easy": "Easy",
+        "medium": "Medium",
+        "hard": "Hard"
+      },
+      "hasExplanationTitle": "Include Answer Explanation",
+      "hasExplanationSubtitle": "Show detailed scientific breakdown after exam completion.",
+      "explanationContent": "Answer Explanation Text",
+      "explanationPlaceholder": "Write scientific explanation for the model answer...",
+      "autoFilledHeader": "Academic Information (Auto-filled from parent exam)",
+      "grade": "Grade",
+      "subject": "Subject",
+      "teacher": "Teacher",
+      "notSet": "Not set",
+      "requirementsGroup": "Question Requirements & Points",
+      "gradePoints": "Points / Grade",
+      "selectCorrectTrueFalse": "Select Correct Answer:",
+      "trueOption": "True",
+      "falseOption": "False",
+      "mcqChoicesLabel": "Multiple Choices (Select correct option):",
+      "addChoice": "Add Choice",
+      "choicePlaceholder": "Choice text",
+      "markAsCorrect": "Mark as correct answer",
+      "modelAnswerLabel": "Model Answer Text",
+      "modelAnswerPlaceholder": "Write model answer for grading...",
+      "actions": {
+        "cancel": "Cancel",
+        "saveAndAddAnother": "Save & Add Another",
+        "saveQuestion": "Save Question",
+        "saveChanges": "Save Changes"
+      }
+    },
+    "details": {
+      "backToExams": "Back to Exams",
+      "editExam": "Edit Exam",
+      "overview": "Exam Overview & Description",
+      "noDescription": "No detailed description provided for this exam.",
+      "sectionsTitle": "Exam Sections & Questions Bank",
+      "noSections": "No sections or questions added to this exam yet.",
+      "questionsCount": "{count, plural, =1 {1 Question} other {{count} Questions}}",
+      "stats": {
+        "totalQuestions": "Total Questions",
+        "totalStudents": "Total Students",
+        "successRate": "Success Rate",
+        "timesUsed": "Times Used"
+      },
+      "metadata": {
+        "title": "Exam Metadata & Settings",
+        "teacher": "Teacher / Instructor",
+        "category": "Exam Category",
+        "type": "Exam Type",
+        "venue": "Venue",
+        "linkedCourse": "Linked Course",
+        "triesAllowed": "Tries Allowed",
+        "duration": "Duration (Minutes)",
+        "minutesSuffix": "{minutes} mins",
+        "passingPercentage": "Passing Percentage",
+        "showModelAnswers": "Show Model Answers",
+        "randomizeQuestions": "Randomize Questions",
+        "randomizeMCQ": "Randomize MCQ Choices",
+        "yes": "Yes",
+        "no": "No"
+      },
+      "questions": {
+        "gradePoints": "{points} Points",
+        "modelAnswer": "Model Answer",
+        "explanation": "Answer Explanation",
+        "hint": "Hint",
+        "type": {
+          "mcq": "Multiple Choice",
+          "text": "Text Answer",
+          "true/false": "True / False"
+        },
+        "difficulty": {
+          "easy": "Easy",
+          "medium": "Medium",
+          "hard": "Hard"
+        },
+        "kind": {
+          "theoretical": "Theoretical",
+          "practical": "Practical",
+          "application-based": "Application-based",
+          "analytical": "Analytical",
+          "oral": "Oral",
+          "skill-based": "Skill-based"
+        }
+      }
+    }
+  },
+  "questionsPage": {
+    "manageTitle": "Questions Bank",
+    "manageSubtitle": "Browse, search, and filter all available questions across all exams.",
+    "addNewQuestion": "Add New Question",
+    "searchPlaceholder": "Search by question name, content, model answer, or teacher...",
+    "filterGrade": "All Grades",
+    "filterSubject": "All Subjects",
+    "allGrades": "All Grade Levels",
+    "allSubjects": "All Subjects",
+    "clearFilters": "Clear Filters",
+    "sort": {
+      "nameAsc": "Name (A - Z)",
+      "nameDesc": "Name (Z - A)",
+      "timesUsedDesc": "Most Used",
+      "timesUsedAsc": "Least Used"
+    },
+    "table": {
+      "columns": {
+        "questionName": "Question Title",
+        "subject": "Subject",
+        "grade": "Grade Level",
+        "type": "Question Type",
+        "difficulty": "Difficulty",
+        "timesUsed": "Times Used in Exams",
+        "actions": "Actions"
+      },
+      "timesUsedCount": "{count, plural, =0 {Not used} =1 {1 time} other {{count} times}}"
+    },
+    "actions": {
+      "viewDetails": "View Details",
+      "edit": "Edit Question",
+      "delete": "Delete Question"
+    },
+    "pagination": {
+      "showing": "{total, plural, =0 {Showing 0 questions} =1 {Showing 1 question} other {Showing {start} to {end} of {total} questions}}"
+    },
+    "empty": {
+      "title": "No questions found",
+      "description": "Try adjusting your search query, grade, or subject filters."
+    },
+    "details": {
+      "backToQuestions": "Back to Questions",
+      "editQuestion": "Edit Question",
+      "notFoundTitle": "Question Not Found",
+      "notFoundDesc": "Sorry, the requested question could not be found.",
+      "contentTitle": "Question Prompt & Choices",
+      "optionsHeader": "Answer Choices:",
+      "explanationTitle": "Scientific Explanation & Breakdown",
+      "modelAnswer": "Model Answer",
+      "trueValue": "True",
+      "falseValue": "False",
+      "statsTitle": "Question Usage Metrics",
+      "metadataTitle": "Question Settings & Metadata",
+      "teacher": "Teacher / Instructor",
+      "subject": "Subject",
+      "grade": "Grade Level",
+      "type": "Question Type",
+      "kind": "Classification",
+      "difficulty": "Difficulty Level",
+      "points": "Question Points",
+      "linkedExam": "Linked Origin Exam",
+      "pointsValue": "{count, plural, =1 {1 Point} other {{count} Points}}"
+    },
+    "editPage": {
+      "title": "Edit Question",
+      "subtitle": "Update question details, model answers, and choices.",
+      "saveChanges": "Save Changes",
+      "cancel": "Cancel"
+    },
+    "newPage": {
+      "title": "Add New Question",
+      "subtitle": "Create a new question and assign its grade level, subject, origin exam, and teacher.",
+      "saveQuestion": "Save Question",
+      "cancel": "Cancel",
+      "academicGroupTitle": "Academic Context & Target Exam",
+      "selectExam": "Target Exam",
+      "selectExamPlaceholder": "Select target exam for this question...",
+      "noExam": "Standalone (General Question Bank)",
+      "selectGrade": "Grade Level",
+      "selectGradePlaceholder": "Select grade level...",
+      "selectSubject": "Subject",
+      "selectSubjectPlaceholder": "Select subject...",
+      "teacherName": "Teacher / Instructor Name",
+      "teacherNamePlaceholder": "e.g., Mr. Mohamed Ahmed"
     }
   },
   "lessons": {

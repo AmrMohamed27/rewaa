@@ -69,7 +69,7 @@ export function ExamActivityCard({ examActivityToday }: ExamActivityCardProps) {
             variant="horizontal"
             label={t("averageGrade")}
             value={examActivityToday.averageGrade}
-            valueClassName="text-emerald-600 dark:text-emerald-400"
+            valueClassName="text-emerald-600"
           />
         </div>
       </div>

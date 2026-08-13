@@ -495,7 +495,7 @@ export function ManageExamsClient() {
                           </span>
                           {exam.scheduledAt && (
                             <span
-                              className="flex items-center gap-1 text-blue-600 dark:text-blue-400"
+                              className="flex items-center gap-1 text-blue-600"
                               title={t("status.scheduleTime")}
                             >
                               <CalendarClock className="h-3.5 w-3.5 shrink-0" />

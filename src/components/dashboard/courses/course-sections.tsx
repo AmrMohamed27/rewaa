@@ -69,7 +69,7 @@ export function CourseSections({ course }: CourseSectionsProps) {
                     {section.isRequiredPassExamForNextSection && (
                       <Badge
                         variant="outline"
-                        className="text-[10px] bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20"
+                        className="text-[10px] bg-amber-500/10 text-amber-600 border-amber-500/20"
                       >
                         {t("details.requiredPassBadge")}
                       </Badge>
@@ -95,7 +95,7 @@ export function CourseSections({ course }: CourseSectionsProps) {
                       {lesson.type === "text" && (
                         <Badge
                           variant="outline"
-                          className="text-[10px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
+                          className="text-[10px] bg-emerald-500/10 text-emerald-600 border-emerald-500/20"
                         >
                           {t("new.step2.addLessonDialog.typeOptions.text")}
                         </Badge>
@@ -105,7 +105,7 @@ export function CourseSections({ course }: CourseSectionsProps) {
                         (lesson.pdfFiles && lesson.pdfFiles.length > 0)) && (
                         <Badge
                           variant="outline"
-                          className="text-[10px] bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20"
+                          className="text-[10px] bg-blue-500/10 text-blue-600 border-blue-500/20"
                         >
                           PDF ({lesson.pdfFiles?.length || 1})
                         </Badge>
@@ -114,7 +114,7 @@ export function CourseSections({ course }: CourseSectionsProps) {
                       {lesson.isLinkedToExam && (
                         <Badge
                           variant="outline"
-                          className="text-[10px] bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20"
+                          className="text-[10px] bg-amber-500/10 text-amber-600 border-amber-500/20"
                         >
                           {t("details.linkedExamBadge")}
                         </Badge>

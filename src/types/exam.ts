@@ -70,7 +70,9 @@ export interface Exam {
   examType: ExamType;
   venue?: ExamVenue; // independent only
   courseId?: string; // FK → Course.id
-  courseTitle?: string; // denormalized for fast display
+  courseTitle?: string; // denormalized
+  sectionId?: string; // FK → CourseSection.id
+  lessonId?: string; // FK → Lesson.id for fast display
 
   // ── Settings (not shown in list page) ────────────────────────────────────
   triesAllowed: number; // default 1

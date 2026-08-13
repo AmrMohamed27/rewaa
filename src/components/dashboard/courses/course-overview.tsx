@@ -1,6 +1,6 @@
 "use client";
 
-import { Video } from "lucide-react";
+import { BookOpen, Video } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { DashboardCard } from "../overview/dashboard-card";
 import { Course } from "@/types/course";
@@ -40,7 +40,12 @@ export function CourseOverview({ course }: CourseOverviewProps) {
 
   return (
     <DashboardCard className="p-6 space-y-4">
-      <h2 className="text-lg font-bold text-foreground">{t("details.overview")}</h2>
+      <div className="flex items-center justify-between border-b border-border/60 pb-3">
+        <h2 className="text-base font-bold text-foreground flex items-center gap-2">
+          <BookOpen className="h-4 w-4 text-primary" />
+          <span>{t("details.overview")}</span>
+        </h2>
+      </div>
       <MarkdownViewer content={course.description} isRtl={isRtl} />
 
       {/* Preview Video if available */}

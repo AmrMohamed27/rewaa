@@ -72,7 +72,7 @@ export default function ForgotPasswordPage() {
         <CardContent>
           {isSubmitted ? (
             <div className="space-y-6 text-center py-4">
-              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600 dark:bg-emerald-500/20 dark:text-emerald-400">
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600">
                 <CheckCircle2 className="h-6 w-6" />
               </div>
               <div className="space-y-2">

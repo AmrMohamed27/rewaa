@@ -34,7 +34,7 @@ export function TotalStudentsCard({ students }: TotalStudentsCardProps) {
           variant="compact"
           label={t("activeToday")}
           value={students.activeToday.toLocaleString()}
-          valueClassName="text-emerald-600 dark:text-emerald-400"
+          valueClassName="text-emerald-600"
         />
 
         <StatTile

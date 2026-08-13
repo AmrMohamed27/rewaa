@@ -46,10 +46,13 @@ export default function InitializedMDXEditor({
   }, [markdown]);
 
   return (
-    <div dir={isRtl ? "rtl" : "ltr"} className="w-full">
+    <div
+      dir={isRtl ? "rtl" : "ltr"}
+      className="w-full min-h-32 border rounded-md overflow-hidden bg-background"
+    >
       <MDXEditor
         markdown={markdown}
-        className={cn("min-h-32 border rounded-md overflow-hidden bg-background", className)}
+        className={cn("w-full h-full", className)}
         contentEditableClassName={cn(
           "prose max-w-none p-3 font-[inherit]!",
           // 2. Force text alignment for RTL languages if Tailwind's typography plugin interferes

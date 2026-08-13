@@ -6,6 +6,7 @@ import {
   CreditCard,
   Settings,
   FileQuestion,
+  HelpCircle,
   LucideIcon,
 } from "lucide-react";
 
@@ -53,6 +54,11 @@ export const navConfig: NavConfig = {
       label: "Exams",
       href: "/dashboard/exams",
       icon: FileQuestion,
+    },
+    {
+      label: "Questions",
+      href: "/dashboard/questions",
+      icon: HelpCircle,
     },
     {
       label: "Students",

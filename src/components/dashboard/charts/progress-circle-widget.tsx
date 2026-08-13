@@ -55,7 +55,7 @@ export function ProgressCircleWidget({
             {...props}
           >
             {children || (
-              <span className="text-xs font-medium text-gray-900 dark:text-gray-50">
+              <span className="text-xs font-medium text-gray-900">
                 {Math.round((value / max) * 100)}%
               </span>
             )}

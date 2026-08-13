@@ -32,26 +32,22 @@ export const StockBadge: React.FC<StockBadgeProps> = ({
   switch (status) {
     case "in_stock":
       label = customLabel || "In Stock";
-      badgeClasses =
-        "bg-emerald-500/10 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300 border-emerald-500/20";
+      badgeClasses = "bg-emerald-500/10 text-emerald-700 border-emerald-500/20";
       dotColor = "bg-emerald-500";
       break;
     case "low_stock":
       label = customLabel || (stockCount ? `Only ${stockCount} left` : "Low Stock");
-      badgeClasses =
-        "bg-amber-500/10 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300 border-amber-500/20 animate-pulse";
+      badgeClasses = "bg-amber-500/10 text-amber-700 border-amber-500/20 animate-pulse";
       dotColor = "bg-amber-500";
       break;
     case "out_of_stock":
       label = customLabel || "Out of Stock";
-      badgeClasses =
-        "bg-rose-500/10 text-rose-700 dark:bg-rose-500/20 dark:text-rose-300 border-rose-500/20";
+      badgeClasses = "bg-rose-500/10 text-rose-700 border-rose-500/20";
       dotColor = "bg-rose-500";
       break;
     case "preorder":
       label = customLabel || "Available for Preorder";
-      badgeClasses =
-        "bg-violet-500/10 text-violet-700 dark:bg-violet-500/20 dark:text-violet-300 border-violet-500/20";
+      badgeClasses = "bg-violet-500/10 text-violet-700 border-violet-500/20";
       dotColor = "bg-violet-500";
       break;
     default:

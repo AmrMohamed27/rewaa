@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
+import { FormTimelineSidebar } from "@/components/dashboard/common/form-timeline-sidebar";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FormMarkdownEditor } from "@/components/ui/form-markdown-editor";
 import { FormRadioGroup } from "@/components/ui/form-radio-group";
 import { FormSectionCard } from "@/components/ui/form-section-card";
@@ -26,12 +26,10 @@ import {
   Clock,
   Coins,
   FileText,
-  HelpCircle,
   Image as ImageIcon,
   Layers,
   Loader2,
   MapPin,
-  Sparkles,
   Tag,
   Upload,
   User,
@@ -39,8 +37,8 @@ import {
   Video,
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -322,87 +320,21 @@ export function NewCourseClient({ initialCourseId }: NewCourseClientProps = {}) 
       </div>
 
       {successMessage && (
-        <div className="rounded-lg bg-emerald-500/10 border border-emerald-500/20 p-4 text-emerald-600 dark:text-emerald-400 text-sm font-medium animate-in fade-in slide-in-from-top-2">
+        <div className="rounded-lg bg-emerald-500/10 border border-emerald-500/20 p-4 text-emerald-600 text-sm font-medium animate-in fade-in slide-in-from-top-2">
           {successMessage}
         </div>
       )}
 
       {/* Main layout: Sidebar + Form */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* Helper Sidebar (4 cols on lg) */}
-        <aside className="lg:col-span-4 flex flex-col gap-6 order-2 lg:order-1">
-          {/* 1. Steps timeline div */}
-          <Card className="bg-card border shadow-xs">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base font-semibold flex items-center gap-2">
-                <Sparkles className="size-4 text-primary shrink-0" />
-                {t("timelineTitle")}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="relative pl-6 rtl:pl-0 rtl:pr-6 space-y-6 before:absolute before:left-2.5 rtl:before:left-auto rtl:before:right-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-border">
-                {steps.map((step) => {
-                  const StepIcon = step.icon;
-                  const isActive = currentStep === step.id;
-                  const isDone = step.complete && step.id < currentStep;
-
-                  return (
-                    <div key={step.id} className="relative flex items-center gap-3">
-                      <span
-                        className={`absolute -left-6 rtl:-left-auto rtl:-right-6 flex size-5 items-center justify-center rounded-full text-xs font-semibold ring-4 ring-background transition-colors ${
-                          isDone
-                            ? "bg-emerald-500 text-white"
-                            : isActive
-                              ? "bg-primary text-primary-foreground"
-                              : "bg-muted text-muted-foreground"
-                        }`}
-                      >
-                        {isDone ? <CheckCircle2 className="size-3.5" /> : step.id}
-                      </span>
-                      <div className="flex items-center gap-2 min-w-0">
-                        <StepIcon
-                          className={`size-4 shrink-0 ${
-                            isActive
-                              ? "text-primary"
-                              : isDone
-                                ? "text-emerald-500"
-                                : "text-muted-foreground"
-                          }`}
-                        />
-                        <span
-                          className={`text-sm font-medium truncate ${
-                            isActive
-                              ? "text-foreground font-semibold"
-                              : isDone
-                                ? "text-foreground"
-                                : "text-muted-foreground"
-                          }`}
-                        >
-                          {step.label}
-                        </span>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* 2. Disclaimer div */}
-          <Card className="border shadow-xs border-primary/20 bg-primary/5">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-semibold flex items-center gap-2 text-primary">
-                <HelpCircle className="size-4 shrink-0" />
-                {t("disclaimerTitle")}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                {t("disclaimerDescription")}
-              </p>
-            </CardContent>
-          </Card>
-        </aside>
+        {/* Reusable Vertical Timeline Sidebar */}
+        <FormTimelineSidebar
+          timelineTitle={t("timelineTitle")}
+          steps={steps}
+          currentStep={currentStep}
+          disclaimerTitle={t("disclaimerTitle")}
+          disclaimerDescription={t("disclaimerDescription")}
+        />
 
         {/* Main Form Area (8 cols on lg) */}
         <main className="lg:col-span-8 order-1 lg:order-2">
@@ -811,18 +743,18 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { CourseSection, Lesson, CourseVenue } from "@/types/course";
+import { CourseSection, CourseVenue, Lesson } from "@/types/course";
 import {
   ArrowDown,
   ArrowUp,
+  Clock as ClockIcon,
+  Edit2,
   FileQuestion,
+  FileText as FileTextIcon,
   FolderPlus,
   ListOrdered,
-  Video as VideoIcon,
-  Edit2,
-  FileText as FileTextIcon,
   Paperclip,
-  Clock as ClockIcon,
+  Video as VideoIcon,
 } from "lucide-react";
 
 interface Step2CurriculumViewProps {
@@ -1058,7 +990,7 @@ function Step2CurriculumView({
                     {sec.title}
                   </span>
                   {sec.isLinkedToExam && !sec.linkedExamId && (
-                    <span className="text-xs font-normal px-2.5 py-1 rounded-md bg-warning-bg/10 text-warning dark:warning-bg border border-warning/20">
+                    <span className="text-xs font-normal px-2.5 py-1 rounded-md bg-warning-bg/10 text-warning border border-warning/20">
                       {t("step2.pleaseAddExamBadge")}
                     </span>
                   )}
@@ -1088,21 +1020,21 @@ function Step2CurriculumView({
                           </span>
 
                           {(les.hasPdfAttachments || (les.pdfFiles && les.pdfFiles.length > 0)) && (
-                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 font-medium flex items-center gap-1">
+                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 font-medium flex items-center gap-1">
                               <Paperclip className="size-3" />
                               PDFs ({(les.pdfFiles || []).length || 1})
                             </span>
                           )}
 
                           {les.isLinkedToExam && (
-                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 font-medium flex items-center gap-1">
+                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 font-medium flex items-center gap-1">
                               <FileQuestion className="size-3" />
                               Exam Linked
                             </span>
                           )}
 
                           {les.publishStatus === "scheduled" && (
-                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 font-medium flex items-center gap-1">
+                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-600 font-medium flex items-center gap-1">
                               <ClockIcon className="size-3" />
                               Scheduled
                             </span>
@@ -1129,8 +1061,8 @@ function Step2CurriculumView({
                     {/* Linked Exam FK item under lessons */}
                     {sec.isLinkedToExam && sec.linkedExamId && (
                       <div className="flex items-center justify-between text-xs py-1.5 px-3 rounded-lg bg-warning/10 border border-warning/20">
-                        <span className="font-medium text-warning dark:warning-bg flex items-center gap-2">
-                          <FileQuestion className="size-3.5 text-warning dark:warning-bg" />
+                        <span className="font-medium text-warning flex items-center gap-2">
+                          <FileQuestion className="size-3.5 text-warning" />
                           {t("step2.addSectionDialog.isLinkedToExam")}: #{sec.linkedExamId}
                         </span>
                       </div>

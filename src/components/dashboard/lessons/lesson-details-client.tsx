@@ -1,31 +1,25 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import { useLocale, useTranslations } from "next-intl";
-import { Lesson } from "@/types/course";
-import { getStoredLessons } from "@/lib/lessons-storage";
 import { Button } from "@/components/ui/button";
-import { DashboardCard } from "../overview/dashboard-card";
 import { MarkdownViewer } from "@/components/ui/markdown-viewer";
+import { getStoredLessons } from "@/lib/lessons-storage";
+import { Lesson } from "@/types/course";
 import {
   ArrowLeft,
+  Clock,
+  Download,
+  ExternalLink,
   FileQuestion,
   FileText,
-  Globe,
-  Globe2,
-  GraduationCap,
-  House,
-  Link2,
   Paperclip,
   Pencil,
-  User,
   Video,
-  Download,
-  Clock,
-  Sparkles,
 } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { DashboardCard } from "../overview/dashboard-card";
 
 interface LessonDetailsClientProps {
   lessonId: string;
@@ -99,6 +93,8 @@ export function LessonDetailsClient({ lessonId }: LessonDetailsClientProps) {
     );
   }
 
+  const isRtl = locale === "ar";
+
   if (!lesson) {
     return (
       <div className="p-12 text-center space-y-4">
@@ -147,7 +143,7 @@ export function LessonDetailsClient({ lessonId }: LessonDetailsClientProps) {
                   {t("card.published")}
                 </span>
               ) : lesson.publishStatus === "scheduled" ? (
-                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-purple-500/10 text-purple-600 dark:text-purple-400">
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-purple-500/10 text-purple-600">
                   <Clock className="h-3 w-3" />
                   {t("card.scheduled")}
                 </span>
@@ -225,7 +221,10 @@ export function LessonDetailsClient({ lessonId }: LessonDetailsClientProps) {
               {t("details.writtenNotes")}
             </h2>
             {lesson.description || lesson.writtenText ? (
-              <MarkdownViewer content={lesson.description || lesson.writtenText || ""} />
+              <MarkdownViewer
+                content={lesson.description || lesson.writtenText || ""}
+                isRtl={isRtl}
+              />
             ) : (
               <p className="text-sm text-muted-foreground italic py-4 text-center border border-dashed rounded-lg">
                 No written summary provided for this lesson.
@@ -247,7 +246,7 @@ export function LessonDetailsClient({ lessonId }: LessonDetailsClientProps) {
                     className="flex items-center justify-between p-3 rounded-lg border bg-muted/20 hover:bg-muted/40 transition-colors"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="p-2 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400">
+                      <div className="p-2 rounded-lg bg-blue-500/10 text-blue-600">
                         <FileText className="size-5" />
                       </div>
                       <div>
@@ -275,7 +274,7 @@ export function LessonDetailsClient({ lessonId }: LessonDetailsClientProps) {
           {lesson.isLinkedToExam && (
             <DashboardCard className="p-6 space-y-3 bg-amber-500/5 border-amber-500/20">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-amber-700 dark:text-amber-400 font-bold text-base">
+                <div className="flex items-center gap-2 text-amber-700 font-bold text-base">
                   <FileQuestion className="size-5" />
                   <span>{lesson.linkedExamTitle || t("details.linkedExam")}</span>
                 </div>
@@ -287,7 +286,7 @@ export function LessonDetailsClient({ lessonId }: LessonDetailsClientProps) {
                 </Button>
               </div>
               {lesson.isRequiredPassExam && (
-                <p className="text-xs text-amber-600 dark:text-amber-400 font-medium">
+                <p className="text-xs text-amber-600 font-medium">
                   * Students are required to pass this exam to unlock subsequent curriculum lessons.
                 </p>
               )}
@@ -297,83 +296,56 @@ export function LessonDetailsClient({ lessonId }: LessonDetailsClientProps) {
 
         {/* Right / Sidebar Information Card (1 Column) */}
         <div className="space-y-6">
-          <DashboardCard className="p-6 space-y-5">
-            <h3 className="text-base font-bold text-foreground border-b pb-3 flex items-center gap-2">
-              <Sparkles className="size-4 text-primary" />
+          <DashboardCard className="p-6 space-y-4">
+            <h2 className="text-base font-bold text-foreground border-b border-border/60 pb-3">
               {t("metadata")}
-            </h3>
+            </h2>
 
-            {/* Category */}
-            <div className="space-y-1">
-              <span className="text-xs font-medium text-muted-foreground block">
-                {t("details.category")}
-              </span>
-              <span className="text-sm font-semibold text-foreground flex items-center gap-1.5">
-                <Link2 className="size-4 text-primary" />
-                {lesson.lessonCategory === "course-dependent" && lesson.courseTitle
-                  ? t("card.courseDependent", { courseTitle: lesson.courseTitle })
-                  : t("card.independent")}
-              </span>
-            </div>
-
-            {/* Course Link if courseDependent */}
-            {lesson.courseId && (
-              <div className="p-3 rounded-lg bg-primary/5 border border-primary/20 space-y-1">
-                <span className="text-xs font-medium text-primary block">
-                  {t("details.linkedCourse")}
-                </span>
-                <Link
-                  href={`/${locale}/dashboard/courses/${lesson.courseId}`}
-                  className="text-sm font-bold text-primary hover:underline block truncate"
-                >
-                  {lesson.courseTitle || t("details.viewCourse")}
-                </Link>
-              </div>
-            )}
-
-            {/* Instructor */}
-            {lesson.teacherName && (
-              <div className="space-y-1 pt-2 border-t border-border/40">
-                <span className="text-xs font-medium text-muted-foreground block">
-                  {t("details.teacherInfo")}
-                </span>
-                <span className="text-sm font-bold text-foreground flex items-center gap-1.5">
-                  <User className="size-4 text-muted-foreground" />
-                  {lesson.teacherName}
+            <div className="space-y-3 text-xs">
+              <div className="flex justify-between py-1 border-b border-border/40">
+                <span className="text-muted-foreground">{t("details.category")}</span>
+                <span className="font-semibold text-foreground">
+                  {lesson.lessonCategory === "course-dependent" && lesson.courseTitle
+                    ? t("card.courseDependent", { courseTitle: lesson.courseTitle })
+                    : t("card.independent")}
                 </span>
               </div>
-            )}
 
-            {/* Subject & Grade */}
-            {(lesson.subject || lesson.grade) && (
-              <div className="space-y-1 pt-2 border-t border-border/40">
-                <span className="text-xs font-medium text-muted-foreground block">
-                  {t("details.subjectAndGrade")}
-                </span>
-                <span className="text-sm font-semibold text-foreground flex items-center gap-1.5">
-                  <GraduationCap className="size-4 text-muted-foreground" />
-                  {[formatSubject(lesson.subject), formatGrade(lesson.grade)]
-                    .filter(Boolean)
-                    .join(" • ")}
-                </span>
+              {lesson.lessonCategory === "course-dependent" && lesson.courseId && (
+                <div className="flex justify-between py-1 border-b border-border/40">
+                  <span className="text-muted-foreground">{t("details.linkedCourse")}</span>
+                  <Link
+                    href={`/${locale}/dashboard/courses/${lesson.courseId}`}
+                    className="font-semibold text-primary hover:underline flex items-center gap-1"
+                  >
+                    <ExternalLink className="size-3" />
+                    <span>{lesson.courseTitle || t("details.viewCourse")}</span>
+                  </Link>
+                </div>
+              )}
+
+              {lesson.teacherName && (
+                <div className="flex justify-between py-1 border-b border-border/40">
+                  <span className="text-muted-foreground">{t("details.teacherInfo")}</span>
+                  <span className="font-semibold text-foreground">{lesson.teacherName}</span>
+                </div>
+              )}
+
+              {(lesson.subject || lesson.grade) && (
+                <div className="flex justify-between py-1 border-b border-border/40">
+                  <span className="text-muted-foreground">{t("details.subjectAndGrade")}</span>
+                  <span className="font-semibold text-foreground">
+                    {[formatSubject(lesson.subject), formatGrade(lesson.grade)]
+                      .filter(Boolean)
+                      .join(" • ")}
+                  </span>
+                </div>
+              )}
+
+              <div className="flex justify-between py-1 border-b border-border/40">
+                <span className="text-muted-foreground">{t("details.venue")}</span>
+                <span className="font-semibold text-foreground">{formatVenue(lesson.venue)}</span>
               </div>
-            )}
-
-            {/* Venue */}
-            <div className="space-y-1 pt-2 border-t border-border/40">
-              <span className="text-xs font-medium text-muted-foreground block">
-                {t("details.venue")}
-              </span>
-              <span className="text-sm font-semibold text-foreground flex items-center gap-1.5">
-                {lesson.venue === "online" ? (
-                  <Globe className="size-4 text-primary" />
-                ) : lesson.venue === "center" ? (
-                  <House className="size-4 text-primary" />
-                ) : (
-                  <Globe2 className="size-4 text-primary" />
-                )}
-                {formatVenue(lesson.venue)}
-              </span>
             </div>
           </DashboardCard>
         </div>

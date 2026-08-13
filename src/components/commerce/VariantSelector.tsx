@@ -321,12 +321,8 @@ export const VariantSelector: React.FC<VariantSelectorProps> = ({
                       : "border-input bg-background hover:bg-muted hover:border-muted-foreground/30 text-foreground",
                     isOutOfStock &&
                       "opacity-40 cursor-not-allowed border-dashed bg-muted/20 text-muted-foreground border-border",
-                    isLowStock &&
-                      !isSelected &&
-                      "border-amber-300 dark:border-amber-700/50 bg-amber-500/5",
-                    isPreorder &&
-                      !isSelected &&
-                      "border-violet-300 dark:border-violet-700/50 bg-violet-500/5",
+                    isLowStock && !isSelected && "border-amber-300 bg-amber-500/5",
+                    isPreorder && !isSelected && "border-violet-300 bg-violet-500/5",
                   )}
                   title={`${size.name}${isOutOfStock ? " (Out of Stock)" : isLowStock ? " (Low Stock)" : isPreorder ? " (Preorder)" : ""}`}
                 >

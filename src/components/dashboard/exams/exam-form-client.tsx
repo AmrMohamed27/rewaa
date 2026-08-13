@@ -1,0 +1,1032 @@
+/* eslint-disable react-hooks/set-state-in-effect */
+"use client";
+
+import {
+  ArrowLeft,
+  BookOpen,
+  CheckCircle2,
+  Edit2,
+  Eye,
+  FileQuestion,
+  FileSpreadsheet,
+  FolderPlus,
+  GraduationCap,
+  HelpCircle,
+  ListOrdered,
+  Plus,
+  Settings,
+  Shuffle,
+  Trash2,
+} from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import * as React from "react";
+
+import { ArrangeSectionsDialog } from "@/components/dashboard/common/arrange-sections-dialog";
+import { FormTimelineSidebar } from "@/components/dashboard/common/form-timeline-sidebar";
+import { ExcelImportDisclaimerDialog } from "@/components/dashboard/exams/excel-import-dialog";
+import { QuestionDialog } from "@/components/dashboard/exams/question-dialog";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { FormMarkdownEditor } from "@/components/ui/form-markdown-editor";
+import { FormSectionCard } from "@/components/ui/form-section-card";
+import { FormToggleSetting } from "@/components/ui/form-toggle-setting";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { getStoredCourses } from "@/lib/courses-storage";
+import { getStoredExams, saveStoredExams } from "@/lib/exams-storage";
+import { cn } from "@/lib/utils";
+import { Course } from "@/types/course";
+import {
+  Exam,
+  ExamCategory,
+  ExamPublishStatus,
+  ExamSection,
+  ExamType,
+  ExamVenue,
+  Question,
+} from "@/types/exam";
+
+interface ExamFormClientProps {
+  mode: "create" | "edit";
+  initialData?: Exam | null;
+}
+
+export function ExamFormClient({ mode, initialData }: ExamFormClientProps) {
+  const locale = useLocale();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const t = useTranslations("exams");
+  const tForm = useTranslations("exams.form");
+  const tStep2 = useTranslations("exams.step2");
+  const tCourses = useTranslations("courses");
+  const tGrades = useTranslations("courses.new.grades");
+  const tSubjects = useTranslations("courses.new.subjects");
+
+  // Step state (1: Settings, 2: Sections & Questions)
+  const [currentStep, setCurrentStep] = React.useState<1 | 2>(1);
+
+  // Read URL query params for auto-filling when coming from course/lesson context
+  const paramCourseId = searchParams.get("courseId");
+  const paramSectionId = searchParams.get("sectionId");
+  const paramLessonId = searchParams.get("lessonId");
+
+  const isContextLocked = Boolean(paramCourseId);
+
+  // Available courses for linking dropdowns
+  const [availableCourses, setAvailableCourses] = React.useState<Course[]>([]);
+
+  React.useEffect(() => {
+    setAvailableCourses(getStoredCourses(locale));
+  }, [locale]);
+
+  // Form State - Step 1
+  const [title, setTitle] = React.useState(initialData?.title || "");
+  const [description, setDescription] = React.useState(initialData?.description || "");
+  const [triesAllowed, setTriesAllowed] = React.useState<number>(initialData?.triesAllowed ?? 1);
+  const [durationMinutes, setDurationMinutes] = React.useState<number>(
+    initialData?.durationMinutes ?? 30,
+  );
+  const [passingPercentage, setPassingPercentage] = React.useState<number>(
+    initialData?.passingPercentage ?? 60,
+  );
+  const [numberOfQuestions, setNumberOfQuestions] = React.useState<number>(
+    initialData?.numberOfQuestions ?? 10,
+  );
+
+  // Academic Info
+  const [grade, setGrade] = React.useState(initialData?.grade || "");
+  const [subject, setSubject] = React.useState(initialData?.subject || "");
+  const [teacherName, setTeacherName] = React.useState(initialData?.teacherName || "");
+  const [category, setCategory] = React.useState<ExamCategory>(initialData?.category || "test");
+
+  // Advanced Settings
+  const [showModelAnswers, setShowModelAnswers] = React.useState(
+    initialData?.showModelAnswers ?? true,
+  );
+  const [randomizeQuestionsOrder, setRandomizeQuestionsOrder] = React.useState(
+    initialData?.randomizeQuestionsOrder ?? true,
+  );
+  const [randomizeMCQChoices, setRandomizeMCQChoices] = React.useState(
+    initialData?.randomizeMCQChoices ?? false,
+  );
+
+  // Classification & Linking
+  const [isIndependent, setIsIndependent] = React.useState<boolean>(
+    initialData ? initialData.examType === "independent" : isContextLocked ? false : true,
+  );
+  const [venue, setVenue] = React.useState<ExamVenue>(initialData?.venue || "online");
+
+  const [selectedCourseId, setSelectedCourseId] = React.useState<string>(
+    initialData?.courseId || paramCourseId || "",
+  );
+  const [selectedSectionId, setSelectedSectionId] = React.useState<string>(
+    initialData?.sectionId || paramSectionId || "",
+  );
+  const [selectedLessonId, setSelectedLessonId] = React.useState<string>(
+    initialData?.lessonId || paramLessonId || "",
+  );
+
+  // Form State - Step 2 (Exam Sections & Questions)
+  const [examSections, setExamSections] = React.useState<ExamSection[]>(
+    initialData?.examSections || [
+      {
+        id: "sec-1",
+        title: "الفصل الأول - الأسئلة الرئيسية",
+        questions: [],
+      },
+    ],
+  );
+
+  // Step 2 Active Dialog State
+  const [activeDialog, setActiveDialog] = React.useState<
+    "addSection" | "question" | "arrange" | "excel" | null
+  >(null);
+  const [editingQuestion, setEditingQuestion] = React.useState<{
+    question: Question;
+    sectionId: string;
+  } | null>(null);
+  const [targetQuestionSectionId, setTargetQuestionSectionId] = React.useState<string>("");
+
+  // Add Section Dialog state
+  const [newSecTitle, setNewSecTitle] = React.useState("");
+
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+
+  // Derived sections & lessons for selected course
+  const selectedCourse = React.useMemo(
+    () => availableCourses.find((c) => c.id === selectedCourseId),
+    [availableCourses, selectedCourseId],
+  );
+
+  const availableSections = React.useMemo(() => selectedCourse?.sections || [], [selectedCourse]);
+
+  const selectedSection = React.useMemo(
+    () => availableSections.find((s) => s.id === selectedSectionId),
+    [availableSections, selectedSectionId],
+  );
+
+  const availableLessons = React.useMemo(() => selectedSection?.lessons || [], [selectedSection]);
+
+  // Auto-fill academic info from selected course when creating a new exam
+  React.useEffect(() => {
+    if (mode === "create" && selectedCourse && !isIndependent) {
+      if (selectedCourse.grade) setGrade(selectedCourse.grade);
+      if (selectedCourse.subject) setSubject(selectedCourse.subject);
+      if (selectedCourse.teacherName) setTeacherName(selectedCourse.teacherName);
+    }
+  }, [mode, selectedCourse, isIndependent]);
+
+  // Handle course change reset
+  const handleCourseChange = (cId: string) => {
+    setSelectedCourseId(cId);
+    setSelectedSectionId("");
+    setSelectedLessonId("");
+  };
+
+  const handleSectionChange = (sId: string) => {
+    setSelectedSectionId(sId);
+    setSelectedLessonId("");
+  };
+
+  // Helper to build exam object
+  const buildExamObject = (status: ExamPublishStatus): Exam => {
+    const examType: ExamType = isIndependent ? "independent" : "course-dependent";
+    const totalQuestionsCount = examSections.reduce((acc, sec) => acc + sec.questions.length, 0);
+
+    return {
+      id: initialData?.id || `exam-${Date.now()}`,
+      title: title.trim(),
+      description,
+      subject,
+      grade,
+      teacherName,
+      category,
+      examType,
+      venue: isIndependent ? venue : undefined,
+      courseId: !isIndependent ? selectedCourseId || undefined : undefined,
+      courseTitle: !isIndependent ? selectedCourse?.title || undefined : undefined,
+      sectionId: !isIndependent ? selectedSectionId || undefined : undefined,
+      lessonId: !isIndependent ? selectedLessonId || undefined : undefined,
+
+      triesAllowed: Number(triesAllowed) || 1,
+      durationMinutes: Number(durationMinutes) || 30,
+      passingPercentage: Number(passingPercentage) || 60,
+      numberOfQuestions:
+        totalQuestionsCount > 0 ? totalQuestionsCount : Number(numberOfQuestions) || 10,
+
+      showModelAnswers,
+      randomizeQuestionsOrder,
+      randomizeMCQChoices,
+
+      examSections,
+      numberOfStudents: initialData?.numberOfStudents || 0,
+      successRate: initialData?.successRate || 0,
+      timesUsed: initialData?.timesUsed || 0,
+
+      publishStatus: status,
+      createdAt: initialData?.createdAt || new Date().toISOString(),
+    };
+  };
+
+  // Save as Draft when proceeding to Step 2
+  const handleProceedToStep2 = () => {
+    if (!title.trim()) return;
+
+    const draftExam = buildExamObject("draft");
+    const storedExams = getStoredExams(locale);
+    let updatedList: Exam[];
+
+    if (mode === "edit" && initialData) {
+      updatedList = storedExams.map((e) => (e.id === initialData.id ? draftExam : e));
+    } else {
+      const exists = storedExams.some((e) => e.id === draftExam.id);
+      if (exists) {
+        updatedList = storedExams.map((e) => (e.id === draftExam.id ? draftExam : e));
+      } else {
+        updatedList = [draftExam, ...storedExams];
+      }
+    }
+
+    saveStoredExams(locale, updatedList);
+    setCurrentStep(2);
+  };
+
+  // Final Submit Handler
+  const handleSave = (publishStatus: ExamPublishStatus) => {
+    if (!title.trim()) return;
+
+    setIsSubmitting(true);
+    const finalExam = buildExamObject(publishStatus);
+    const storedExams = getStoredExams(locale);
+    let updatedList: Exam[];
+
+    const exists = storedExams.some((e) => e.id === finalExam.id);
+    if (exists) {
+      updatedList = storedExams.map((e) => (e.id === finalExam.id ? finalExam : e));
+    } else {
+      updatedList = [finalExam, ...storedExams];
+    }
+
+    saveStoredExams(locale, updatedList);
+    router.push(`/${locale}/dashboard/exams`);
+  };
+
+  // Step 2 Handlers
+  const handleAddSection = () => {
+    if (!newSecTitle.trim()) return;
+    const newSec: ExamSection = {
+      id: `sec-${Date.now()}`,
+      title: newSecTitle.trim(),
+      questions: [],
+    };
+    setExamSections((prev) => [...prev, newSec]);
+    setNewSecTitle("");
+    setActiveDialog(null);
+  };
+
+  const handleSaveQuestion = (savedQuestion: Question, targetSecId: string, keepOpen?: boolean) => {
+    setExamSections((prevSections) => {
+      return prevSections.map((sec) => {
+        if (sec.id === targetSecId) {
+          const questionExists = sec.questions.some((q) => q.id === savedQuestion.id);
+          let updatedQuestions: Question[];
+          if (questionExists) {
+            updatedQuestions = sec.questions.map((q) =>
+              q.id === savedQuestion.id ? savedQuestion : q,
+            );
+          } else {
+            updatedQuestions = [...sec.questions, savedQuestion];
+          }
+          return { ...sec, questions: updatedQuestions };
+        } else {
+          // If moved to another section, remove from old section
+          return {
+            ...sec,
+            questions: sec.questions.filter((q) => q.id !== savedQuestion.id),
+          };
+        }
+      });
+    });
+
+    if (!keepOpen) {
+      setEditingQuestion(null);
+      setActiveDialog(null);
+    }
+  };
+
+  const handleDeleteQuestion = (secId: string, qId: string) => {
+    setExamSections((prev) =>
+      prev.map((sec) =>
+        sec.id === secId ? { ...sec, questions: sec.questions.filter((q) => q.id !== qId) } : sec,
+      ),
+    );
+  };
+
+  const topButtons = [
+    { key: "addSection", label: tStep2("buttons.addSection"), icon: Plus },
+    { key: "question", label: tStep2("buttons.addQuestion"), icon: FileQuestion },
+    { key: "arrange", label: tStep2("buttons.arrangeSections"), icon: ListOrdered },
+    { key: "excel", label: tStep2("buttons.importExcel"), icon: FileSpreadsheet },
+  ] as const;
+
+  const timelineSteps = [
+    {
+      id: 1,
+      label: tForm("sections.basicInfo"),
+      icon: BookOpen,
+      complete: currentStep > 1,
+    },
+    {
+      id: 2,
+      label: tStep2("title"),
+      icon: FileQuestion,
+      complete: false,
+    },
+  ];
+
+  return (
+    <div className="flex flex-col gap-6 p-4 sm:p-6 max-w-7xl mx-auto animate-in fade-in duration-500 pb-28">
+      {/* ── Page Header with Standard Round Back Button ──────────────────── */}
+      <div className="flex items-center gap-3">
+        <Button asChild variant="outline" size="icon" className="h-9 w-9 rounded-full shrink-0">
+          <Link href={`/${locale}/dashboard/exams`}>
+            <ArrowLeft className="h-4 w-4 rtl:rotate-180" />
+          </Link>
+        </Button>
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+            {mode === "create" ? tForm("createTitle") : tForm("editTitle")}
+          </h1>
+          <p className="text-sm text-muted-foreground mt-0.5">
+            {currentStep === 1 ? tForm("createSubtitle") : tStep2("subtitle")}
+          </p>
+        </div>
+      </div>
+
+      {/* Main layout: Timeline Sidebar (4 cols) + Form Content (8 cols) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        {/* Reusable Vertical Timeline Sidebar */}
+        <FormTimelineSidebar
+          timelineTitle={tCourses("new.timelineTitle")}
+          steps={timelineSteps}
+          currentStep={currentStep}
+          disclaimerTitle={tCourses("new.disclaimerTitle")}
+          disclaimerDescription={tCourses("new.disclaimerDescription")}
+        />
+
+        {/* Main Form Content Area */}
+        <main className="lg:col-span-8 order-1 lg:order-2">
+          {/* ── STEP 1: EXAM SETTINGS & BASIC INFO ──────────────────────────────────── */}
+          {currentStep === 1 && (
+            <div className="space-y-6">
+              {/* Section 1: Basic Information */}
+              <FormSectionCard
+                title={tForm("sections.basicInfo")}
+                description={tForm("sections.basicInfoDesc")}
+                icon={BookOpen}
+              >
+                <div className="space-y-4">
+                  {/* Exam Title */}
+                  <div className="space-y-2">
+                    <Label htmlFor="exam-title" className="font-semibold">
+                      {tForm("fields.title")} <span className="text-destructive">*</span>
+                    </Label>
+                    <Input
+                      id="exam-title"
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      placeholder={tForm("fields.titlePlaceholder")}
+                      required
+                    />
+                  </div>
+
+                  {/* Description Markdown */}
+                  <div className="space-y-2">
+                    <Label className="font-semibold">{tForm("fields.description")}</Label>
+                    <FormMarkdownEditor
+                      value={description}
+                      onChange={setDescription}
+                      placeholder={tForm("fields.descriptionPlaceholder")}
+                    />
+                  </div>
+
+                  {/* Numeric Settings Grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 pt-2">
+                    {/* Tries Allowed */}
+                    <div className="space-y-2">
+                      <Label htmlFor="tries-allowed" className="text-xs font-semibold">
+                        {tForm("fields.triesAllowed")}
+                      </Label>
+                      <Input
+                        id="tries-allowed"
+                        type="number"
+                        min={1}
+                        max={10}
+                        value={triesAllowed}
+                        onChange={(e) => setTriesAllowed(parseInt(e.target.value, 10) || 1)}
+                      />
+                    </div>
+
+                    {/* Exam Duration */}
+                    <div className="space-y-2">
+                      <Label htmlFor="duration-minutes" className="text-xs font-semibold">
+                        {tForm("fields.durationMinutes")}
+                      </Label>
+                      <Input
+                        id="duration-minutes"
+                        type="number"
+                        min={5}
+                        max={300}
+                        value={durationMinutes}
+                        onChange={(e) => setDurationMinutes(parseInt(e.target.value, 10) || 30)}
+                      />
+                    </div>
+
+                    {/* Pass Percentage */}
+                    <div className="space-y-2">
+                      <Label htmlFor="passing-percentage" className="text-xs font-semibold">
+                        {tForm("fields.passingPercentage")}
+                      </Label>
+                      <Input
+                        id="passing-percentage"
+                        type="number"
+                        min={0}
+                        max={100}
+                        value={passingPercentage}
+                        onChange={(e) => setPassingPercentage(parseInt(e.target.value, 10) || 60)}
+                      />
+                    </div>
+
+                    {/* Number of Questions (Max Cap) */}
+                    <div className="space-y-2">
+                      <Label htmlFor="number-of-questions" className="text-xs font-semibold">
+                        {tForm("fields.numberOfQuestions")}
+                      </Label>
+                      <Input
+                        id="number-of-questions"
+                        type="number"
+                        min={1}
+                        max={200}
+                        value={numberOfQuestions}
+                        onChange={(e) => setNumberOfQuestions(parseInt(e.target.value, 10) || 10)}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </FormSectionCard>
+
+              {/* Section 2: Academic & Teacher Info */}
+              <FormSectionCard
+                title={tForm("sections.academic")}
+                description={tForm("sections.academicDesc")}
+                icon={GraduationCap}
+              >
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Grade Level */}
+                  <div className="space-y-2">
+                    <Label className="font-semibold">{tForm("fields.grade")}</Label>
+                    <Select
+                      value={grade}
+                      onValueChange={setGrade}
+                      disabled={!isIndependent && isContextLocked}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder={tForm("fields.selectGrade")} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="grade1">{tGrades("grade1")}</SelectItem>
+                        <SelectItem value="grade2">{tGrades("grade2")}</SelectItem>
+                        <SelectItem value="grade3">{tGrades("grade3")}</SelectItem>
+                        <SelectItem value="university">{tGrades("university")}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Subject */}
+                  <div className="space-y-2">
+                    <Label className="font-semibold">{tForm("fields.subject")}</Label>
+                    <Select
+                      value={subject}
+                      onValueChange={setSubject}
+                      disabled={!isIndependent && isContextLocked}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder={tForm("fields.selectSubject")} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="physics">{tSubjects("physics")}</SelectItem>
+                        <SelectItem value="chemistry">{tSubjects("chemistry")}</SelectItem>
+                        <SelectItem value="mathematics">{tSubjects("mathematics")}</SelectItem>
+                        <SelectItem value="biology">{tSubjects("biology")}</SelectItem>
+                        <SelectItem value="arabic">{tSubjects("arabic")}</SelectItem>
+                        <SelectItem value="english">{tSubjects("english")}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Teacher Name */}
+                  <div className="space-y-2">
+                    <Label htmlFor="teacher-name" className="font-semibold">
+                      {tForm("fields.teacherName")}
+                    </Label>
+                    <Input
+                      id="teacher-name"
+                      value={teacherName}
+                      onChange={(e) => setTeacherName(e.target.value)}
+                      placeholder={tForm("fields.teacherNamePlaceholder")}
+                      disabled={!isIndependent && isContextLocked}
+                    />
+                  </div>
+
+                  {/* Exam Category */}
+                  <div className="space-y-2">
+                    <Label className="font-semibold">{tForm("fields.category")}</Label>
+                    <Select
+                      value={category}
+                      onValueChange={(val) => setCategory(val as ExamCategory)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder={tForm("fields.selectCategory")} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="final">{t("category.final")}</SelectItem>
+                        <SelectItem value="midterm">{t("category.midterm")}</SelectItem>
+                        <SelectItem value="test">{t("category.test")}</SelectItem>
+                        <SelectItem value="yearWork">{t("category.yearWork")}</SelectItem>
+                        <SelectItem value="comprehensive">{t("category.comprehensive")}</SelectItem>
+                        <SelectItem value="unit">{t("category.unit")}</SelectItem>
+                        <SelectItem value="quiz">{t("category.quiz")}</SelectItem>
+                        <SelectItem value="placement">{t("category.placement")}</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </FormSectionCard>
+
+              {/* Section 3: Advanced Settings */}
+              <FormSectionCard
+                title={tForm("sections.advanced")}
+                description={tForm("sections.advancedDesc")}
+                icon={Settings}
+              >
+                <div className="space-y-4">
+                  <FormToggleSetting
+                    id="show-model-answers"
+                    title={tForm("fields.showModelAnswers")}
+                    subtitle={tForm("fields.showModelAnswersDesc")}
+                    icon={Eye}
+                    checked={showModelAnswers}
+                    onCheckedChange={setShowModelAnswers}
+                  />
+                  <FormToggleSetting
+                    id="randomize-questions-order"
+                    title={tForm("fields.randomizeQuestionsOrder")}
+                    subtitle={tForm("fields.randomizeQuestionsOrderDesc")}
+                    icon={Shuffle}
+                    checked={randomizeQuestionsOrder}
+                    onCheckedChange={setRandomizeQuestionsOrder}
+                  />
+                  <FormToggleSetting
+                    id="randomize-mcq-choices"
+                    title={tForm("fields.randomizeMCQChoices")}
+                    subtitle={tForm("fields.randomizeMCQChoicesDesc")}
+                    icon={ListOrdered}
+                    checked={randomizeMCQChoices}
+                    onCheckedChange={setRandomizeMCQChoices}
+                  />
+                </div>
+              </FormSectionCard>
+
+              {/* Section 4: Classification & Linkage */}
+              <FormSectionCard
+                title={tForm("sections.classification")}
+                description={tForm("sections.classificationDesc")}
+                icon={FileQuestion}
+              >
+                <div className="space-y-6">
+                  <FormToggleSetting
+                    id="is-independent-exam"
+                    title={tForm("fields.isIndependent")}
+                    subtitle={tForm("fields.isIndependentDesc")}
+                    icon={FileQuestion}
+                    checked={isIndependent}
+                    onCheckedChange={(val) => {
+                      if (isContextLocked) return;
+                      setIsIndependent(val);
+                    }}
+                    disabled={isContextLocked}
+                  />
+
+                  {isIndependent ? (
+                    /* Venue selection for independent exam */
+                    <div className="space-y-2 max-w-sm pt-2">
+                      <Label className="font-semibold">{tForm("fields.venue")}</Label>
+                      <Select value={venue} onValueChange={(v) => setVenue(v as ExamVenue)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder={tForm("fields.selectVenue")} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="online">{tCourses("venue.online")}</SelectItem>
+                          <SelectItem value="center">{tCourses("venue.center")}</SelectItem>
+                          <SelectItem value="all">{tCourses("venue.all")}</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  ) : (
+                    /* Linked Course, Section, and Lesson dropdowns */
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2 border-t border-border/40">
+                      {/* Linked Course */}
+                      <div className="space-y-2">
+                        <Label className="font-semibold">{tForm("fields.linkedCourse")}</Label>
+                        <Select
+                          value={selectedCourseId}
+                          onValueChange={handleCourseChange}
+                          disabled={isContextLocked}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder={tForm("fields.selectCourse")} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {availableCourses.map((course) => (
+                              <SelectItem key={course.id} value={course.id}>
+                                {course.title}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {/* Linked Section */}
+                      <div className="space-y-2">
+                        <Label className="font-semibold">{tForm("fields.linkedSection")}</Label>
+                        <Select
+                          value={selectedSectionId}
+                          onValueChange={handleSectionChange}
+                          disabled={
+                            !selectedCourseId || (isContextLocked && Boolean(paramSectionId))
+                          }
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder={tForm("fields.selectSection")} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {availableSections.map((sec) => (
+                              <SelectItem key={sec.id} value={sec.id}>
+                                {sec.title}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      {/* Linked Lesson */}
+                      <div className="space-y-2">
+                        <Label className="font-semibold">{tForm("fields.linkedLesson")}</Label>
+                        <Select
+                          value={selectedLessonId}
+                          onValueChange={setSelectedLessonId}
+                          disabled={
+                            !selectedSectionId || (isContextLocked && Boolean(paramLessonId))
+                          }
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder={tForm("fields.selectLesson")} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {availableLessons.map((les) => (
+                              <SelectItem key={les.id} value={les.id}>
+                                {les.title}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </FormSectionCard>
+
+              {/* Action Buttons Step 1 */}
+              <div className="flex items-center justify-between gap-4 pt-4 border-t border-border/60">
+                <Button asChild variant="outline" disabled={isSubmitting}>
+                  <Link href={`/${locale}/dashboard/exams`}>{tForm("actions.cancel")}</Link>
+                </Button>
+
+                <div className="flex items-center gap-3">
+                  <Button
+                    variant="outline"
+                    onClick={() => handleSave("draft")}
+                    disabled={isSubmitting || !title.trim()}
+                  >
+                    <span>{tForm("actions.saveDraft")}</span>
+                  </Button>
+
+                  <Button
+                    onClick={handleProceedToStep2}
+                    disabled={isSubmitting || !title.trim()}
+                    className="gap-2 font-semibold"
+                  >
+                    <span>{tForm("actions.nextStep")}</span>
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ── STEP 2: SECTIONS AND QUESTIONS ────────────────────────────────────── */}
+          {currentStep === 2 && (
+            <div className="space-y-6">
+              {/* 4 ACTION BUTTONS AT TOP */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {topButtons.map((btn) => {
+                  const Icon = btn.icon;
+                  const isActive = activeDialog === btn.key;
+                  return (
+                    <button
+                      key={btn.key}
+                      type="button"
+                      onClick={() => {
+                        if (btn.key === "question") {
+                          setEditingQuestion(null);
+                          setTargetQuestionSectionId(examSections[0]?.id || "");
+                        }
+                        setActiveDialog(btn.key);
+                      }}
+                      className={cn(
+                        "py-3.5 px-4 rounded-xl font-semibold text-sm transition-all flex items-center justify-center gap-2.5 border shadow-2xs group cursor-pointer",
+                        isActive
+                          ? "bg-primary text-white border-primary shadow-xs"
+                          : "bg-card text-primary border-input hover:bg-primary hover:text-white hover:border-primary",
+                      )}
+                    >
+                      <Icon className="size-4 shrink-0" />
+                      <span>{btn.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Sections & Questions List */}
+              <FormSectionCard
+                title={tStep2("title")}
+                description={tStep2("subtitle")}
+                icon={BookOpen}
+                contentClassName="space-y-4"
+              >
+                {examSections.length === 0 ? (
+                  <div className="py-12 px-4 text-center border-2 border-dashed rounded-xl bg-muted/20 space-y-3">
+                    <FolderPlus className="size-10 text-muted-foreground mx-auto" />
+                    <p className="text-sm font-medium text-muted-foreground max-w-md mx-auto leading-relaxed">
+                      {tStep2("noSections")}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {examSections.map((sec, sIdx) => {
+                      const sectionPoints = sec.questions.reduce(
+                        (acc, q) => acc + (q.grade || 1),
+                        0,
+                      );
+                      return (
+                        <div key={sec.id} className="border rounded-xl p-4 bg-muted/20 space-y-3">
+                          {/* Section Header */}
+                          <div className="flex items-center justify-between font-semibold text-foreground text-base">
+                            <span className="flex items-center gap-2">
+                              <span className="size-6 rounded-full bg-primary/10 text-primary text-xs flex items-center justify-center font-bold">
+                                {sIdx + 1}
+                              </span>
+                              {sec.title}
+                            </span>
+
+                            <div className="flex items-center gap-2 text-xs font-normal text-muted-foreground">
+                              <span>
+                                {tStep2("questionsCount", { count: sec.questions.length })}
+                              </span>
+                              <span>•</span>
+                              <span>{tStep2("pointsCount", { count: sectionPoints })}</span>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => {
+                                  setEditingQuestion(null);
+                                  setTargetQuestionSectionId(sec.id);
+                                  setActiveDialog("question");
+                                }}
+                                className="h-7 px-2 text-xs text-primary hover:bg-primary/10 gap-1 ms-2"
+                              >
+                                <Plus className="size-3.5" />
+                                <span>{tStep2("buttons.addQuestion")}</span>
+                              </Button>
+                            </div>
+                          </div>
+
+                          {/* Section Questions */}
+                          {sec.questions.length > 0 ? (
+                            <div className="ps-6 rtl:ps-0 rtl:pe-6 space-y-2 border-s rtl:border-s-0 rtl:border-e border-border">
+                              {sec.questions.map((q, qIdx) => (
+                                <div
+                                  key={q.id}
+                                  className="flex flex-col sm:flex-row sm:items-center justify-between text-xs py-2.5 px-3 rounded-lg bg-background border gap-2"
+                                >
+                                  <div className="flex items-center gap-2.5 flex-wrap">
+                                    {q.type === "mcq" && (
+                                      <ListOrdered className="size-4 text-primary shrink-0" />
+                                    )}
+                                    {q.type === "true/false" && (
+                                      <HelpCircle className="size-4 text-amber-500 shrink-0" />
+                                    )}
+                                    {q.type === "text" && (
+                                      <BookOpen className="size-4 text-emerald-500 shrink-0" />
+                                    )}
+
+                                    <span className="font-semibold text-foreground">
+                                      {qIdx + 1}. {q.questionName}
+                                    </span>
+
+                                    {/* Badges */}
+                                    <Badge
+                                      variant="outline"
+                                      className="text-[10px] bg-primary/5 text-primary border-primary/20"
+                                    >
+                                      {t(
+                                        `questionDialog.types.${q.type === "mcq" ? "mcq" : q.type === "true/false" ? "trueFalse" : "text"}`,
+                                      )}
+                                    </Badge>
+
+                                    <Badge
+                                      variant="outline"
+                                      className="text-[10px] bg-muted/50 text-muted-foreground"
+                                    >
+                                      {t(`questionDialog.difficulties.${q.difficulty}`)}
+                                    </Badge>
+
+                                    <Badge
+                                      variant="outline"
+                                      className="text-[10px] bg-emerald-500/10 text-emerald-600 border-emerald-500/20"
+                                    >
+                                      {tStep2("pointsCount", { count: q.grade || 1 })}
+                                    </Badge>
+                                  </div>
+
+                                  <div className="flex items-center gap-1 self-end sm:self-center">
+                                    <Button
+                                      type="button"
+                                      variant="ghost"
+                                      size="icon-xs"
+                                      onClick={() => {
+                                        setEditingQuestion({ question: q, sectionId: sec.id });
+                                        setActiveDialog("question");
+                                      }}
+                                      className="text-muted-foreground hover:text-primary"
+                                    >
+                                      <Edit2 className="size-3.5" />
+                                    </Button>
+                                    <Button
+                                      type="button"
+                                      variant="ghost"
+                                      size="icon-xs"
+                                      onClick={() => handleDeleteQuestion(sec.id, q.id)}
+                                      className="text-muted-foreground hover:text-destructive"
+                                    >
+                                      <Trash2 className="size-3.5" />
+                                    </Button>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <p className="text-xs text-muted-foreground italic ps-6 rtl:ps-0 rtl:pe-6">
+                              {tStep2("noQuestions")}
+                            </p>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </FormSectionCard>
+
+              {/* Action Buttons Step 2 */}
+              <div className="flex items-center justify-between pt-2 border-t border-border/60">
+                <Button
+                  variant="outline"
+                  type="button"
+                  onClick={() => setCurrentStep(1)}
+                  disabled={isSubmitting}
+                >
+                  {tForm("actions.backToStep1")}
+                </Button>
+
+                <div className="flex items-center gap-3">
+                  <Button
+                    variant="outline"
+                    onClick={() => handleSave("draft")}
+                    disabled={isSubmitting || !title.trim()}
+                  >
+                    <span>{tForm("actions.saveDraft")}</span>
+                  </Button>
+
+                  <Button
+                    type="button"
+                    onClick={() => handleSave("published")}
+                    disabled={isSubmitting || !title.trim()}
+                    className="gap-2 font-semibold"
+                  >
+                    <CheckCircle2 className="size-4" />
+                    <span>
+                      {mode === "create"
+                        ? tForm("actions.createExam")
+                        : tForm("actions.saveChanges")}
+                    </span>
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+        </main>
+      </div>
+
+      {/* DIALOG 1: ADD SECTION */}
+      <Dialog
+        open={activeDialog === "addSection"}
+        onOpenChange={(open) => !open && setActiveDialog(null)}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{tStep2("addSectionDialog.title")}</DialogTitle>
+            <DialogDescription>{tStep2("addSectionDialog.subtitle")}</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="sec-title-input" className="text-sm font-medium text-foreground">
+                {tStep2("addSectionDialog.titleLabel")}
+              </Label>
+              <Input
+                id="sec-title-input"
+                value={newSecTitle}
+                onChange={(e) => setNewSecTitle(e.target.value)}
+                placeholder={tStep2("addSectionDialog.titlePlaceholder")}
+              />
+            </div>
+          </div>
+          <DialogFooter className="gap-2">
+            <Button variant="outline" type="button" onClick={() => setActiveDialog(null)}>
+              {tForm("actions.cancel")}
+            </Button>
+            <Button type="button" onClick={handleAddSection} disabled={!newSecTitle.trim()}>
+              {tStep2("addSectionDialog.create")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* DIALOG 2: QUESTION DIALOG (ADD & EDIT) */}
+      <QuestionDialog
+        open={activeDialog === "question"}
+        onOpenChange={(open) => {
+          if (!open) setEditingQuestion(null);
+          setActiveDialog(open ? "question" : null);
+        }}
+        sections={examSections}
+        initialQuestion={editingQuestion?.question || null}
+        initialSectionId={editingQuestion?.sectionId || targetQuestionSectionId}
+        examGrade={grade}
+        examSubject={subject}
+        examTeacherName={teacherName}
+        onSave={handleSaveQuestion}
+      />
+
+      {/* DIALOG 3: ARRANGE SECTIONS */}
+      <ArrangeSectionsDialog
+        open={activeDialog === "arrange"}
+        onOpenChange={(open) => !open && setActiveDialog(null)}
+        items={examSections}
+        onReorder={setExamSections}
+      />
+
+      {/* DIALOG 4: IMPORT FROM EXCEL DISCLAIMER */}
+      <ExcelImportDisclaimerDialog
+        open={activeDialog === "excel"}
+        onOpenChange={(open) => !open && setActiveDialog(null)}
+      />
+    </div>
+  );
+}

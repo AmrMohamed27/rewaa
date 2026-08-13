@@ -40,7 +40,7 @@ export function LastBillingRequestsCard({
             badge={
               <Badge
                 variant="outline"
-                className="text-xs bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20"
+                className="text-xs bg-amber-500/10 text-amber-600 border-amber-500/20"
               >
                 {t("pendingRequestsCount", { count: billingRequests.length })}
               </Badge>

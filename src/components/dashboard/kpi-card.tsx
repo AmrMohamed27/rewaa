@@ -19,8 +19,8 @@ export function TrendIndicator({ value, label, direction }: TrendProps) {
     <div
       className={cn(
         "flex items-center gap-1 text-xs font-medium",
-        isPositive && "text-green-600 dark:text-green-400",
-        isNegative && "text-red-600 dark:text-red-400",
+        isPositive && "text-green-600",
+        isNegative && "text-red-600",
         isNeutral && "text-muted-foreground",
       )}
     >

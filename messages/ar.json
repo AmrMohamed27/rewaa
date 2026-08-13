@@ -121,6 +121,7 @@
     "courses": "الدورات",
     "lectures": "المحاضرات",
     "exams": "الامتحانات",
+    "questions": "بنك الأسئلة",
     "students": "الطلاب",
     "lessons": "الدروس",
     "billing": "الفواتير والاشتراكات",
@@ -658,7 +659,7 @@
     },
     "category": {
       "final": "نهائي",
-      "midterm": "منتصف الفصل",
+      "midterm": "منتصف القسم",
       "test": "اختبار",
       "yearWork": "أعمال السنة",
       "comprehensive": "شامل",
@@ -691,6 +692,303 @@
     "empty": {
       "title": "لم يتم العثور على امتحانات",
       "description": "جرّب تعديل نتائج البحث أو خيارات التصفية المعروضة."
+    },
+    "form": {
+      "createTitle": "إضافة امتحان جديد",
+      "editTitle": "تعديل الامتحان",
+      "createSubtitle": "إعداد إعدادات الامتحان، البيانات الأكاديمية، وخيارات الربط بالدورات.",
+      "editSubtitle": "تعديل تفاصيل الامتحان، الحد الأقصى للأسئلة والإعدادات.",
+      "sections": {
+        "basicInfo": "البيانات الأساسية",
+        "basicInfoDesc": "حدد عنوان الامتحان، الوصف التفصيلي، المدة الزمنية، نسبة النجاح، والحد الأقصى للأسئلة.",
+        "academic": "البيانات الأكاديمية والمعلم",
+        "academicDesc": "اختر المرحلة الدراسية، المادة العلمية، واسم المعلم المسؤول.",
+        "advanced": "الإعدادات المتقدمة للامتحان",
+        "advancedDesc": "تحديد خيارات إظهار الإجابات والترتيب العشوائي للأسئلة والخيارات.",
+        "classification": "التصنيف والربط بالدورات",
+        "classificationDesc": "حدد ما إذا كان الامتحان مستقلاً أو مرتبطاً بدورة، فصل، أو درس معين."
+      },
+      "fields": {
+        "title": "عنوان الامتحان",
+        "titlePlaceholder": "مثال: امتحان الفيزياء الشامل - منتصف القسم",
+        "description": "الوصف والتعليمات",
+        "descriptionPlaceholder": "اكتب تعليمات الامتحان، الضوابط، أو نطاق الأسئلة...",
+        "triesAllowed": "عدد محاولات الإجابة المتاحة",
+        "durationMinutes": "مدة الامتحان (بالدقائق)",
+        "passingPercentage": "درجة النجاح (%)",
+        "numberOfQuestions": "الحد الأقصى لعدد الأسئلة",
+        "grade": "المرحلة الدراسية",
+        "selectGrade": "اختر المرحلة الدراسية...",
+        "subject": "المادة الدراسية",
+        "selectSubject": "اختر المادة...",
+        "teacherName": "اسم المعلم / المحاضر",
+        "teacherNamePlaceholder": "مثال: أ. محمد عبد المعبود",
+        "category": "تصنيف الامتحان",
+        "selectCategory": "اختر التصنيف...",
+        "showModelAnswers": "إظهار الإجابات النموذجية للطلاب",
+        "showModelAnswersDesc": "السماح للطلاب برؤية الإجابات النموذجية والشروح التفصيلية بعد انتهاء الامتحان.",
+        "randomizeQuestionsOrder": "ترتيب الأسئلة عشوائياً",
+        "randomizeQuestionsOrderDesc": "عرض الأسئلة بترتيب عشوائي مختلف لكل طالب عند بدء الامتحان.",
+        "randomizeMCQChoices": "ترتيب خيارات الاختيار من متعدد عشوائياً",
+        "randomizeMCQChoicesDesc": "تغيير ترتيب خيارات الإجابة داخل أسئلة الاختيار من متعدد.",
+        "isIndependent": "امتحان مستقل",
+        "isIndependentDesc": "قم بالتفعيل إذا كان هذا الامتحان مستقلاً وغير مرتبط بدورة أو درس معين.",
+        "venue": "مكان الحضور",
+        "selectVenue": "اختر مكان الحضور...",
+        "linkedCourse": "الدورة التعليمية المرتبطة",
+        "selectCourse": "اختر الدورة...",
+        "linkedSection": "القسم المرتبط بالدورة",
+        "selectSection": "اختر القسم...",
+        "linkedLesson": "الدرس المرتبط (اختياري)",
+        "selectLesson": "اختر الدرس..."
+      },
+      "actions": {
+        "saveDraft": "حفظ كمسودة",
+        "createExam": "إنشاء الامتحان",
+        "saveChanges": "حفظ التغييرات",
+        "cancel": "إلغاء",
+        "saving": "جاري الحفظ...",
+        "nextStep": "التالي: الأقسام والأسئلة",
+        "backToStep1": "العودة لإعدادات الامتحان"
+      }
+    },
+    "step2": {
+      "title": "أقسام وأسئلة الامتحان",
+      "subtitle": "إضافة أقسام الامتحان وتعبئة الأسئلة والخيارات والدرجات لكل قسم.",
+      "buttons": {
+        "addSection": "إضافة قسم",
+        "addQuestion": "إضافة سؤال",
+        "arrangeSections": "ترتيب الأقسام",
+        "importExcel": "استيراد من Excel"
+      },
+      "addSectionDialog": {
+        "title": "إضافة قسم جديد للامتحان",
+        "subtitle": "أدخل عنوان القسم لتقسيم أسئلة الامتحان.",
+        "titleLabel": "عنوان القسم",
+        "titlePlaceholder": "مثال: القسم الأول - الأسئلة المباشرة",
+        "subtitleLabel": "وصف قصير (اختياري)",
+        "subtitlePlaceholder": "وصف أو تعليمات خاصة بهذا القسم...",
+        "create": "إضافة القسم"
+      },
+      "noSections": "لا توجد أقسام مضافة للامتحان بعد. قم بإضافة قسم جديد للبدء في تنظيم الأسئلة.",
+      "noQuestions": "لا توجد أسئلة مضافة في هذا القسم.",
+      "questionsCount": "{count, plural, =0 {لا أسئلة} zero {لا أسئلة} one {سؤال واحد} two {سؤالان} few {{count} أسئلة} many {{count} سؤالاً} other {{count} سؤال}}",
+      "pointsCount": "{count, plural, =0 {لا درجات} zero {لا درجات} one {درجة واحدة} two {درجتان} few {{count} درجات} many {{count} درجة} other {{count} درجة}}",
+      "excelImport": {
+        "title": "استيراد الأسئلة من ملف Excel",
+        "subtitle": "تعليمات وتنسيق البيانات المطلوب لاستيراد الأسئلة بنجاح.",
+        "noticeTitle": "ملاحظة هامة حول خاصية الاستيراد",
+        "noticeDescription": "سيتم تفعيل معالجة وقراءة ملفات Excel تلقائياً في التحديث القادم. يرجى التأكد من تجهيز بياناتك وفق التنسيق المعياري أدناه.",
+        "requirementsTitle": "شروط تنسيق الأعمدة المطلوبة في الملف:",
+        "req1": "العمود الأول (Section): اسم القسم أو القسم الذي ينتمي له السؤال.",
+        "req2": "العمود الثاني (QuestionName & Content): اسم السؤال ونص السؤال التفصيلي.",
+        "req3": "العمود الثالث (Type): نوع السؤال (mcq ، true/false ، text).",
+        "req4": "العمود الرابع والخامس (Options & Answer): الخيارات المتاحة والإجابة النموذجية الصحيحة.",
+        "gotIt": "فهمت ذلك"
+      }
+    },
+    "questionDialog": {
+      "addQuestionTitle": "إضافة سؤال جديد",
+      "editQuestionTitle": "تعديل السؤال",
+      "dialogSubtitle": "أدخل تفاصيل السؤال، النوع، الخيارات والإجابة النموذجية.",
+      "targetSection": "القسم المستهدف",
+      "selectSectionPlaceholder": "اختر القسم...",
+      "questionTypeSelector": "نوع السؤال",
+      "types": {
+        "mcq": "اختيار من متعدد",
+        "trueFalse": "صح أم خطأ",
+        "text": "سؤال مقالي"
+      },
+      "basicInfoGroup": "البيانات الأساسية للسؤال",
+      "questionName": "عنوان / اسم السؤال",
+      "questionNamePlaceholder": "مثال: السؤال الأول - قوانين نيوتن",
+      "questionContent": "نص السؤال التفصيلي",
+      "questionContentPlaceholder": "اكتب نص السؤال المعروض للطالب...",
+      "kindLabel": "تصنيف السؤال العلمي",
+      "questionKind": "تصنيف السؤال العلمي",
+      "kinds": {
+        "theoretical": "نظري",
+        "practical": "عملي / تطبيقي",
+        "applicationBased": "تطبيقي",
+        "analytical": "تحليلي",
+        "oral": "شفهي",
+        "skillBased": "مهاري"
+      },
+      "difficultyLabel": "مستوى الصعوبة",
+      "difficulty": "مستوى الصعوبة",
+      "difficulties": {
+        "easy": "سهل",
+        "medium": "متوسط",
+        "hard": "صعب"
+      },
+      "hasExplanationTitle": "إضافة شرح وتفسير للإجابة النموذجية",
+      "hasExplanationSubtitle": "عرض توضيح وتفسير علمي للطالب بعد ظهور نتيجة الامتحان.",
+      "explanationContent": "نص التفسير والشرح",
+      "explanationPlaceholder": "اكتب التفسير العلمي للإجابة...",
+      "autoFilledHeader": "البيانات الأكاديمية (مستوردة تلقائياً من الامتحان)",
+      "grade": "المرحلة",
+      "subject": "المادة",
+      "teacher": "المعلم",
+      "notSet": "غير محدد",
+      "requirementsGroup": "متطلبات الإجابة والدرجة",
+      "gradePoints": "درجة السؤال",
+      "selectCorrectTrueFalse": "حدد الإجابة الصحيحة:",
+      "trueOption": "صحيح (True)",
+      "falseOption": "خطأ (False)",
+      "mcqChoicesLabel": "خيارات السؤال وحدد الخيار الصحيح:",
+      "addChoice": "إضافة خيار",
+      "choicePlaceholder": "نص الخيار",
+      "markAsCorrect": "تحديد كإجابة صحيحة",
+      "modelAnswerLabel": "الإجابة النموذجية المقالية",
+      "modelAnswerPlaceholder": "اكتب الإجابة النموذجية للتصحيح...",
+      "actions": {
+        "cancel": "إلغاء",
+        "saveAndAddAnother": "حفظ وإضافة سؤال آخر",
+        "saveQuestion": "حفظ السؤال",
+        "saveChanges": "حفظ التغييرات"
+      }
+    },
+    "details": {
+      "backToExams": "العودة للامتحانات",
+      "editExam": "تعديل الامتحان",
+      "overview": "نظرة عامة والوصف",
+      "noDescription": "لم يتم إدخال وصف تفصيلي لهذا الامتحان.",
+      "sectionsTitle": "أقسام الامتحان وبنك الأسئلة",
+      "noSections": "لم يتم إضافة أقسام أو أسئلة لهذا الامتحان بعد.",
+      "questionsCount": "{count, plural, =0 {لا أسئلة} zero {لا أسئلة} one {سؤال واحد} two {سؤالان} few {{count} أسئلة} many {{count} سؤالاً} other {{count} سؤال}}",
+      "stats": {
+        "totalQuestions": "إجمالي الأسئلة",
+        "totalStudents": "عدد الطلاب",
+        "successRate": "معدل النجاح",
+        "timesUsed": "مرات الاستخدام"
+      },
+      "metadata": {
+        "title": "بيانات وإعدادات الامتحان",
+        "teacher": "المعلم / المحاضر",
+        "category": "تصنيف الامتحان",
+        "type": "نوع الامتحان",
+        "venue": "مكان الحضور",
+        "linkedCourse": "الدورة المرتبطة",
+        "triesAllowed": "المحاولات المتاحة",
+        "duration": "المدة بالدقائق",
+        "minutesSuffix": "{minutes, plural, =0 {0 دقيقة} zero {0 دقيقة} one {دقيقة واحدة} two {دقيقتان} few {{minutes} دقائق} many {{minutes} دقيقة} other {{minutes} دقيقة}}",
+        "passingPercentage": "نسبة النجاح المطلوبة",
+        "showModelAnswers": "إظهار الإجابات النموذجية",
+        "randomizeQuestions": "ترتيب الأسئلة عشوائياً",
+        "randomizeMCQ": "ترتيب الخيارات عشوائياً",
+        "yes": "نعم",
+        "no": "لا"
+      },
+      "questions": {
+        "gradePoints": "{points} درجات",
+        "modelAnswer": "الإجابة النموذجية",
+        "explanation": "شرح وتوضيح الإجابة",
+        "hint": "تلميح",
+        "type": {
+          "mcq": "اختيار من متعدد",
+          "text": "سؤال مقالي",
+          "true/false": "صح أم خطأ"
+        },
+        "difficulty": {
+          "easy": "سهل",
+          "medium": "متوسط",
+          "hard": "صعب"
+        },
+        "kind": {
+          "theoretical": "نظري",
+          "practical": "عملي",
+          "application-based": "تطبيقي",
+          "analytical": "تحليلي",
+          "oral": "شفهي",
+          "skill-based": "مهاري"
+        }
+      }
+    }
+  },
+  "questionsPage": {
+    "manageTitle": "بنك الأسئلة",
+    "manageSubtitle": "عرض، تصفية، وتصفح جميع الأسئلة المتاحة في المنصة.",
+    "addNewQuestion": "إضافة سؤال جديد",
+    "searchPlaceholder": "ابحث باسم السؤال، النص، الإجابة النموذجية أو اسم المعلم...",
+    "filterGrade": "كل المراحل",
+    "filterSubject": "كل المواد",
+    "allGrades": "جميع المراحل الدراسية",
+    "allSubjects": "جميع المواد الدراسية",
+    "clearFilters": "مسح الفلاتر",
+    "sort": {
+      "nameAsc": "الاسم (أ - ي)",
+      "nameDesc": "الاسم (ي - أ)",
+      "timesUsedDesc": "الأكثر استخداماً",
+      "timesUsedAsc": "الأقل استخداماً"
+    },
+    "table": {
+      "columns": {
+        "questionName": "اسم / عنوان السؤال",
+        "subject": "المادة",
+        "grade": "المرحلة الدراسية",
+        "type": "نوع السؤال",
+        "difficulty": "الصعوبة",
+        "timesUsed": "مرات الاستخدام بالامتحانات",
+        "actions": "الإجراءات"
+      },
+      "timesUsedCount": "{count, plural, =0 {لم يستخدم} zero {لم يستخدم} one {مرة واحدة} two {مرتان} few {{count} مرات} many {{count} مرة} other {{count} مرة}}"
+    },
+    "actions": {
+      "viewDetails": "عرض التفاصيل",
+      "edit": "تعديل السؤال",
+      "delete": "حذف السؤال"
+    },
+    "pagination": {
+      "showing": "{total, plural, =0 {عرض 0 سؤال} zero {عرض 0 سؤال} one {عرض سؤال واحد من أصل سؤال واحد} two {عرض سؤالين من أصل سؤالين} few {عرض {start} إلى {end} من أصل {total} أسئلة} many {عرض {start} إلى {end} من أصل {total} سؤالاً} other {عرض {start} إلى {end} من أصل {total} سؤال}}"
+    },
+    "empty": {
+      "title": "لم يتم العثور على أسئلة",
+      "description": "جرّب تعديل نتائج البحث أو اختيار مرحلة ومادة دراسية أخرى."
+    },
+    "details": {
+      "backToQuestions": "العودة لبنك الأسئلة",
+      "editQuestion": "تعديل السؤال",
+      "notFoundTitle": "لم يتم العثور على السؤال",
+      "notFoundDesc": "عذراً، السؤال المطلوب غير موجود أو تم حذفه.",
+      "contentTitle": "نص السؤال والخيارات",
+      "optionsHeader": "خيارات الإجابة:",
+      "explanationTitle": "التفسير العلمي والشرح",
+      "modelAnswer": "الإجابة النموذجية",
+      "trueValue": "صواب (صح)",
+      "falseValue": "خطأ",
+      "statsTitle": "احصائيات ومؤشرات استخدام السؤال",
+      "metadataTitle": "بيانات وإعدادات السؤال",
+      "teacher": "المعلم / المحاضر",
+      "subject": "المادة الدراسية",
+      "grade": "المرحلة الدراسية",
+      "type": "نوع السؤال",
+      "kind": "التصنيف العلمي",
+      "difficulty": "مستوى الصعوبة",
+      "points": "درجة السؤال الكلية",
+      "linkedExam": "الامتحان الأصلي المرتبط",
+      "pointsValue": "{count, plural, =0 {0 درجات} zero {0 درجات} one {درجة واحدة} two {درجتان} few {{count} درجات} many {{count} درجة} other {{count} درجة}}"
+    },
+    "editPage": {
+      "title": "تعديل السؤال",
+      "subtitle": "تعديل تفاصيل السؤال، الإجابة النموذجية وخيارات الإجابة.",
+      "saveChanges": "حفظ التعديلات",
+      "cancel": "إلغاء"
+    },
+    "newPage": {
+      "title": "إضافة سؤال جديد",
+      "subtitle": "إنشاء سؤال جديد وتخصيص المرحلة والمادة الدراسية والامتحان والمعلم.",
+      "saveQuestion": "حفظ السؤال",
+      "cancel": "إلغاء",
+      "academicGroupTitle": "تخصيص البيانات الأكاديمية والامتحان المعني",
+      "selectExam": "اختر الامتحان",
+      "selectExamPlaceholder": "اختر الامتحان التابع له السؤال...",
+      "noExam": "بدون امتحان مرابط (سؤال عام في بنك الأسئلة)",
+      "selectGrade": "المرحلة الدراسية",
+      "selectGradePlaceholder": "اختر المرحلة الدراسية...",
+      "selectSubject": "المادة الدراسية",
+      "selectSubjectPlaceholder": "اختر المادة الدراسية...",
+      "teacherName": "اسم المعلم / المحاضر",
+      "teacherNamePlaceholder": "مثال: أ. محمد أحمد"
     }
   },
   "lessons": {

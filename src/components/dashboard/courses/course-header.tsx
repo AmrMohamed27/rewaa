@@ -38,14 +38,16 @@ export function CourseHeader({ course }: CourseHeaderProps) {
         </div>
       </div>
 
-      <div className="flex items-center gap-2">
-        <Button asChild variant="outline" size="sm" className="gap-2">
-          <Link href={`/${locale}/dashboard/courses/${course.id}/edit`}>
-            <Pencil className="size-4" />
-            <span>{t("details.editCourse")}</span>
-          </Link>
-        </Button>
-      </div>
+      <Button
+        asChild
+        size="default"
+        className="gap-2 shrink-0 self-start sm:self-auto shadow-xs font-semibold"
+      >
+        <Link href={`/${locale}/dashboard/courses/${course.id}/edit`}>
+          <Pencil className="h-4 w-4" />
+          <span>{t("details.editCourse")}</span>
+        </Link>
+      </Button>
     </div>
   );
 }
