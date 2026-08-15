@@ -36,11 +36,6 @@ export const navConfig: NavConfig = {
       icon: LayoutDashboard,
     },
     {
-      label: "Lectures",
-      href: "/dashboard/lectures",
-      icon: Video,
-    },
-    {
       label: "Courses",
       href: "/dashboard/courses",
       icon: BookOpen,
