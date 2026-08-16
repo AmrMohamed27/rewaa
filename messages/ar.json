@@ -1343,5 +1343,82 @@
         "external": "خارجي"
       }
     }
+  },
+  "billingRequestsPage": {
+    "title": "طلبات الفواتير",
+    "description": "إدارة وتدقيق طلبات إثبات الدفع وسداد الفواتير المقدمة من الطلاب",
+    "stats": {
+      "totalPayments": "إجمالي المدفوعات",
+      "pendingRequests": "طلبات قيد الانتظار",
+      "acceptedRequests": "طلبات مقبولة",
+      "rejectedRequests": "طلبات مرفوضة"
+    },
+    "filters": {
+      "searchPlaceholder": "بحث باسم الطالب أو رقم الهاتف أو المعاملة...",
+      "tabs": {
+        "all": "الكل",
+        "pending": "قيد الانتظار",
+        "accepted": "مقبولة",
+        "rejected": "مرفوضة"
+      },
+      "sort": {
+        "label": "الترتيب حسب",
+        "newest": "الأحدث أولاً",
+        "oldest": "الأقدم أولاً",
+        "amountDesc": "المبلغ: الأعلى أولاً",
+        "amountAsc": "المبلغ: الأقل أولاً"
+      }
+    },
+    "table": {
+      "columns": {
+        "studentFullName": "اسم الطالب الكامل",
+        "studentPhoneNumber": "رقم هاتف الطالب",
+        "grade": "الصف الدراسي",
+        "amount": "المبلغ",
+        "course": "الدورة التعليمية",
+        "venue": "مكان الحضور",
+        "status": "الحالة",
+        "actions": "الإجراءات"
+      },
+      "viewDetails": "عرض التفاصيل",
+      "empty": {
+        "title": "لم يتم العثور على طلبات فواتير",
+        "description": "جرّب تعديل نتائج البحث أو خيارات التصفية."
+      }
+    },
+    "status": {
+      "pending": "قيد الانتظار",
+      "accepted": "مقبول",
+      "rejected": "مرفوض"
+    },
+    "modal": {
+      "title": "تفاصيل الطلب",
+      "studentInfo": "بيانات الطالب",
+      "fullName": "الاسم الكامل",
+      "phone": "رقم الهاتف",
+      "email": "البريد الإلكتروني",
+      "courseInfo": "بيانات الدورة",
+      "courseName": "اسم الدورة",
+      "amountRequired": "المبلغ المطلوب",
+      "transactionInfo": "بيانات المعاملة",
+      "date": "التاريخ",
+      "time": "الوقت",
+      "phoneUsed": "رقم الهاتف المستخدم في المعاملة",
+      "transactionProof": "إثبات المعاملة",
+      "screenshotNote": "صورة الإثبات المقدمة من الطالب",
+      "openFullScreen": "فتح الصورة بالحجم الكامل",
+      "rejectionReasonTitle": "سبب الرفض",
+      "rejectionReasonPlaceholder": "اكتب سبب رفض طلب الدفع لتوضيحه للطالب...",
+      "rejectConfirmTitle": "تأكيد رفض الطلب",
+      "rejectConfirmSubtitle": "يرجى كتابة سبب الرفض لإكمال العملية.",
+      "actions": {
+        "accept": "قبول الطلب",
+        "reject": "رفض الطلب",
+        "confirmReject": "تأكيد الرفض",
+        "cancel": "إلغاء",
+        "close": "إغلاق",
+        "viewInvoice": "عرض الفاتورة / طباعة"
+      }
+    }
   }
 }

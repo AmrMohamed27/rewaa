@@ -9,7 +9,7 @@ import { LogoIcon } from "@/components/landing/layout/logo";
 import { StudentInvoicePDF } from "@/components/pdf/StudentInvoicePDF";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogTitle } from "@/components/ui/dialog";
 import { Student, StudentTransaction } from "@/types/student";
 
 interface StudentInvoiceModalProps {
@@ -34,9 +34,13 @@ export function StudentInvoiceModal({
 
   if (!transaction) return null;
 
-  const fullName = [student.firstName, student.middleName, student.lastName, student.additionalName]
-    .filter(Boolean)
-    .join(" ");
+  const nameParts = [
+    student.firstName,
+    student.middleName,
+    student.lastName,
+    student.additionalName,
+  ].filter(Boolean);
+  const fullName = nameParts.length > 0 ? nameParts.join(" ") : student.firstName || "";
 
   const formattedDate = new Date(transaction.createdAt).toLocaleDateString(
     locale === "ar" ? "ar-EG" : "en-GB",
@@ -98,6 +102,9 @@ export function StudentInvoiceModal({
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-2xl max-h-[85vh] p-0 flex flex-col overflow-hidden">
+        <DialogTitle className="sr-only">
+          {tDetails("invoice.title")} #{transaction.id}
+        </DialogTitle>
         <div className="p-6 space-y-6 print:p-8 overflow-y-auto flex-1">
           {/* Printable Header with Logo & App Name */}
           <div className="flex items-center justify-between pb-6 border-b border-border">

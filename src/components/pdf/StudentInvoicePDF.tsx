@@ -164,9 +164,13 @@ interface PDFProps {
 
 export function StudentInvoicePDF({ student, transaction, locale, strings }: PDFProps) {
   const isRtl = locale === "ar";
-  const fullName = [student.firstName, student.middleName, student.lastName, student.additionalName]
-    .filter(Boolean)
-    .join(" ");
+  const nameParts = [
+    student.firstName,
+    student.middleName,
+    student.lastName,
+    student.additionalName,
+  ].filter(Boolean);
+  const fullName = nameParts.length > 0 ? nameParts.join(" ") : student.firstName || "";
 
   const isDeposit = transaction.type === "deposit" || transaction.type === "refund";
 

@@ -1343,5 +1343,82 @@
         "external": "External"
       }
     }
+  },
+  "billingRequestsPage": {
+    "title": "Billing Requests",
+    "description": "Manage and verify payment proof requests submitted by students",
+    "stats": {
+      "totalPayments": "Total Payments",
+      "pendingRequests": "Pending Requests",
+      "acceptedRequests": "Accepted Requests",
+      "rejectedRequests": "Rejected Requests"
+    },
+    "filters": {
+      "searchPlaceholder": "Search by student name, phone, or transaction ID...",
+      "tabs": {
+        "all": "All",
+        "pending": "Pending",
+        "accepted": "Accepted",
+        "rejected": "Rejected"
+      },
+      "sort": {
+        "label": "Sort by",
+        "newest": "Newest First",
+        "oldest": "Oldest First",
+        "amountDesc": "Amount: High to Low",
+        "amountAsc": "Amount: Low to High"
+      }
+    },
+    "table": {
+      "columns": {
+        "studentFullName": "Student Full Name",
+        "studentPhoneNumber": "Student Phone Number",
+        "grade": "Grade",
+        "amount": "Amount",
+        "course": "Course",
+        "venue": "Venue",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "viewDetails": "View Details",
+      "empty": {
+        "title": "No billing requests found",
+        "description": "Try adjusting your search query or filter options."
+      }
+    },
+    "status": {
+      "pending": "Pending",
+      "accepted": "Accepted",
+      "rejected": "Rejected"
+    },
+    "modal": {
+      "title": "Request Details",
+      "studentInfo": "Student Information",
+      "fullName": "Full Name",
+      "phone": "Phone Number",
+      "email": "Email Address",
+      "courseInfo": "Course Information",
+      "courseName": "Course Name",
+      "amountRequired": "Amount Required",
+      "transactionInfo": "Transaction Information",
+      "date": "Date",
+      "time": "Time",
+      "phoneUsed": "Phone Number Used",
+      "transactionProof": "Transaction Proof",
+      "screenshotNote": "Proof screenshot provided by student",
+      "openFullScreen": "Open Full Size Image",
+      "rejectionReasonTitle": "Rejection Reason",
+      "rejectionReasonPlaceholder": "Type the reason for rejecting this payment request...",
+      "rejectConfirmTitle": "Confirm Rejection",
+      "rejectConfirmSubtitle": "Please provide a reason to complete the rejection.",
+      "actions": {
+        "accept": "Accept Request",
+        "reject": "Reject Request",
+        "confirmReject": "Confirm Rejection",
+        "cancel": "Cancel",
+        "close": "Close",
+        "viewInvoice": "View Invoice / Print"
+      }
+    }
   }
 }

@@ -62,7 +62,7 @@ export const navConfig: NavConfig = {
     },
     {
       label: "Billing",
-      href: "/dashboard/billing",
+      href: "/dashboard/billing/requests",
       icon: CreditCard,
     },
     {

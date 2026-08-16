@@ -12,8 +12,6 @@ export const mockStudentsData: { ar: Student[]; en: Student[] } = {
       parentPhoneNumber: "+201098765432",
       gender: "male",
       email: "ahmed.ali@example.com",
-      image:
-        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=256&auto=format&fit=crop",
       password: "password123",
       country: "مصر",
       state: "القاهرة",
