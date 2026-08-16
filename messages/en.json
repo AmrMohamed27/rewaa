@@ -1220,6 +1220,36 @@
         "viewInvoice": "View Invoice",
         "downloadInvoice": "Download Invoice"
       },
+      "generateReport": "Student Report",
+      "reportModal": {
+        "title": "Comprehensive Student Report",
+        "downloadPdf": "Download Report PDF",
+        "generatingPdf": "Generating Report...",
+        "reportGeneratedAt": "Report generated at: {date}",
+        "currentYear": "Academic Year {year}",
+        "performanceStats": {
+          "title": "Performance & Statistics",
+          "subtitle": "Summary of student's academic activities and overall results",
+          "questionsAnswered": "Questions Answered",
+          "correctAndWrong": "{correct} Correct • {wrong} Wrong",
+          "examsPerformed": "Exams Completed",
+          "coursesEnrolled": "Courses Enrolled",
+          "avgPoints": "Average Points"
+        },
+        "examHistory": {
+          "title": "Exams History",
+          "subtitle": "Detailed list of exam results and scores",
+          "examName": "Exam Name",
+          "courseName": "Course Name",
+          "datePerformed": "Date Performed",
+          "tries": "Tries",
+          "result": "Result & Grade"
+        },
+        "coursesOverview": {
+          "title": "Enrolled Courses",
+          "subtitle": "Student's completion progress for each enrolled course"
+        }
+      },
       "invoice": {
         "title": "Financial Invoice",
         "subtitle": "Balance transaction receipt",

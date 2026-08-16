@@ -1,10 +1,12 @@
 "use client";
 
+import { pdf } from "@react-pdf/renderer";
 import { CheckCircle2, Download, Loader2 } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import * as React from "react";
 
 import { LogoIcon } from "@/components/landing/layout/logo";
+import { StudentInvoicePDF } from "@/components/pdf/StudentInvoicePDF";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";
@@ -24,10 +26,10 @@ export function StudentInvoiceModal({
   isOpen,
   onClose,
 }: StudentInvoiceModalProps) {
+  const locale = useLocale();
   const tDetails = useTranslations("studentsPage.details");
   const tModal = useTranslations("studentsPage.transactionModal");
 
-  const printRef = React.useRef<HTMLDivElement>(null);
   const [isGeneratingPdf, setIsGeneratingPdf] = React.useState(false);
 
   if (!transaction) return null;
@@ -36,57 +38,56 @@ export function StudentInvoiceModal({
     .filter(Boolean)
     .join(" ");
 
+  const formattedDate = new Date(transaction.createdAt).toLocaleDateString(
+    locale === "ar" ? "ar-EG" : "en-GB",
+    {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    },
+  );
+
+  const isDeposit = transaction.type === "deposit" || transaction.type === "refund";
+
   const handleDownloadPdf = async () => {
-    if (!printRef.current || isGeneratingPdf) return;
+    if (isGeneratingPdf) return;
 
     try {
       setIsGeneratingPdf(true);
-      const html2canvas = (await import("html2canvas")).default;
-      const { jsPDF } = await import("jspdf");
 
-      const canvas = await html2canvas(printRef.current, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        backgroundColor: "#ffffff",
-        onclone: (clonedDoc) => {
-          // Convert modern CSS colors (oklch, lab, oklab) to safe fallback RGB/hex for html2canvas
-          const allElements = clonedDoc.querySelectorAll("*");
-          allElements.forEach((el) => {
-            const htmlEl = el as HTMLElement;
-            if (htmlEl.style) {
-              const comp = window.getComputedStyle(htmlEl);
-              const sanitizeColor = (val: string) =>
-                val && (val.includes("lab") || val.includes("oklch") || val.includes("oklab"));
+      const strings = {
+        subtitle: tDetails("invoice.subtitle"),
+        billTo: tDetails("invoice.billTo"),
+        transactionDetails: tDetails("invoice.transactionDetails"),
+        transactionType: tModal(`types.${transaction.type}` as Parameters<typeof tModal>[0]),
+        statusCompleted: tDetails("invoice.statusCompleted"),
+        amountLabel: tDetails("invoice.amountLabel"),
+        currency: tDetails("currency"),
+        thankYou: tDetails("invoice.thankYou"),
+        officialReceipt: tDetails("invoice.officialReceipt"),
+        formattedDate,
+      };
 
-              if (sanitizeColor(comp.color)) {
-                htmlEl.style.color = "#0f172a";
-              }
-              if (sanitizeColor(comp.backgroundColor)) {
-                htmlEl.style.backgroundColor = htmlEl.classList.contains("bg-primary/10")
-                  ? "#e0f2fe"
-                  : "#f8fafc";
-              }
-              if (sanitizeColor(comp.borderColor)) {
-                htmlEl.style.borderColor = "#cbd5e1";
-              }
-            }
-          });
-        },
-      });
+      const blob = await pdf(
+        <StudentInvoicePDF
+          student={student}
+          transaction={transaction}
+          locale={locale}
+          strings={strings}
+        />,
+      ).toBlob();
 
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF({
-        orientation: "portrait",
-        unit: "mm",
-        format: "a4",
-      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `invoice-${transaction.id}.pdf`;
+      document.body.appendChild(link);
+      link.click();
 
-      const imgWidth = 210; // A4 width in mm
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-      pdf.addImage(imgData, "PNG", 0, 10, imgWidth, imgHeight);
-      pdf.save(`invoice-${transaction.id}.pdf`);
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Failed to generate PDF invoice:", error);
     } finally {
@@ -94,20 +95,10 @@ export function StudentInvoiceModal({
     }
   };
 
-  const formattedDate = new Date(transaction.createdAt).toLocaleDateString("ar-EG", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-
-  const isDeposit = transaction.type === "deposit" || transaction.type === "refund";
-
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-2xl max-h-[85vh] p-0 flex flex-col overflow-hidden">
-        <div ref={printRef} className="p-6 space-y-6 print:p-8 overflow-y-auto flex-1">
+        <div className="p-6 space-y-6 print:p-8 overflow-y-auto flex-1">
           {/* Printable Header with Logo & App Name */}
           <div className="flex items-center justify-between pb-6 border-b border-border">
             <div className="flex items-center gap-3">

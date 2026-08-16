@@ -1220,6 +1220,36 @@
         "viewInvoice": "عرض الفاتورة",
         "downloadInvoice": "تحميل الفاتورة"
       },
+      "generateReport": "تقرير الطالب",
+      "reportModal": {
+        "title": "تقرير الطالب الشامل",
+        "downloadPdf": "تحميل التقرير PDF",
+        "generatingPdf": "جاري تجهيز التقرير...",
+        "reportGeneratedAt": "تم إنشاء التقرير في: {date}",
+        "currentYear": "العام الدراسي {year}",
+        "performanceStats": {
+          "title": "الأداء والإحصائيات العامة",
+          "subtitle": "ملخص الأنشطة والنتائج الدراسية للطالب",
+          "questionsAnswered": "الأسئلة المجابة",
+          "correctAndWrong": "{correct} صحيحة • {wrong} خاطئة",
+          "examsPerformed": "الاختبارات المكتملة",
+          "coursesEnrolled": "الدورات المسجل بها",
+          "avgPoints": "متوسط النقاط والدرجات"
+        },
+        "examHistory": {
+          "title": "سجل الاختبارات المنجزة",
+          "subtitle": "تفاصيل نتائج ودرجات الطالب في جميع الاختبارات",
+          "examName": "اسم الاختبار",
+          "courseName": "الدورة التدريبية",
+          "datePerformed": "تاريخ الإجراء",
+          "tries": "عدد المحاولات",
+          "result": "النتيجة والتقييم"
+        },
+        "coursesOverview": {
+          "title": "الدورات التعليمية المسجلة",
+          "subtitle": "نسبة تقدم واستكمال الطالب في كل دورة"
+        }
+      },
       "invoice": {
         "title": "فاتورة مالية",
         "subtitle": "إيصال معاملة شحن/خصم رصيد",

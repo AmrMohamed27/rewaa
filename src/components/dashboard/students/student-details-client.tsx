@@ -7,10 +7,10 @@ import {
   BookOpen,
   Calendar,
   CheckCircle2,
-  Download,
   Edit2,
   Eye,
   FileCheck2,
+  FileText,
   GraduationCap,
   Mail,
   MapPin,
@@ -44,6 +44,7 @@ import { Exam } from "@/types/exam";
 import { RegistrationType, Student, StudentTransaction, TransactionType } from "@/types/student";
 import { BalanceTransactionDialog } from "./balance-transaction-dialog";
 import { StudentInvoiceModal } from "./student-invoice-modal";
+import { StudentReportModal } from "./student-report-modal";
 
 interface StudentDetailsClientProps {
   studentId: string;
@@ -105,6 +106,7 @@ export function StudentDetailsClient({ studentId }: StudentDetailsClientProps) {
   const [selectedInvoiceTransaction, setSelectedInvoiceTransaction] =
     React.useState<StudentTransaction | null>(null);
   const [isInvoiceOpen, setIsInvoiceOpen] = React.useState(false);
+  const [isReportOpen, setIsReportOpen] = React.useState(false);
 
   React.useEffect(() => {
     const found = getStudentById(locale, studentId);
@@ -305,6 +307,17 @@ export function StudentDetailsClient({ studentId }: StudentDetailsClientProps) {
                 <Edit2 className="size-3.5" />
                 <span>{tDetails("editStudent")}</span>
               </Link>
+            </Button>
+
+            {/* Generate Report Button */}
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => setIsReportOpen(true)}
+              className="gap-2 border-primary/30 text-primary hover:bg-primary/10 font-semibold"
+            >
+              <FileText className="size-3.5" />
+              <span>{tDetails("generateReport")}</span>
             </Button>
 
             {/* Manage Balance Button */}
@@ -640,15 +653,6 @@ export function StudentDetailsClient({ studentId }: StudentDetailsClientProps) {
                                 <Eye className="size-3.5" />
                                 <span>{tDetails("billingTab.viewInvoice")}</span>
                               </Button>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => handleOpenInvoice(tx)}
-                                className="h-8 gap-1 text-xs font-semibold"
-                              >
-                                <Download className="size-3.5" />
-                                <span>{tDetails("billingTab.downloadInvoice")}</span>
-                              </Button>
                             </div>
                           </TableCell>
                         </TableRow>
@@ -683,6 +687,16 @@ export function StudentDetailsClient({ studentId }: StudentDetailsClientProps) {
           }}
         />
       )}
+
+      {/* Student Comprehensive Report Modal */}
+      <StudentReportModal
+        student={student}
+        courses={courses}
+        exams={exams}
+        isOpen={isReportOpen}
+        onClose={() => setIsReportOpen(false)}
+        formatGrade={formatGrade}
+      />
     </div>
   );
 }
