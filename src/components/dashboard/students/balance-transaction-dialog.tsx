@@ -209,7 +209,7 @@ export function BalanceTransactionDialog({
                 <span>{tModal("newBalance")}</span>
                 <ArrowRight className="size-3.5 text-muted-foreground rtl:rotate-180" />
               </span>
-              <span className=" text-sm text-emerald-600 dark:text-emerald-400" dir="ltr">
+              <span className=" text-sm text-emerald-600" dir="ltr">
                 {projectedBalance} {tDetails("currency")}
               </span>
             </div>

@@ -51,10 +51,10 @@ interface StudentDetailsClientProps {
 }
 
 const REGISTRATION_TYPE_BADGES: Record<RegistrationType, string> = {
-  center: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
-  online: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20",
-  hybrid: "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20",
-  external: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
+  center: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20",
+  online: "bg-blue-500/10 text-blue-600 border-blue-500/20",
+  hybrid: "bg-purple-500/10 text-purple-600 border-purple-500/20",
+  external: "bg-amber-500/10 text-amber-600 border-amber-500/20",
 };
 
 function formatDate(iso?: string, locale: string = "ar") {
@@ -325,7 +325,7 @@ export function StudentDetailsClient({ studentId }: StudentDetailsClientProps) {
               size="sm"
               variant="outline"
               onClick={() => setIsTransactionOpen(true)}
-              className="gap-2 border-emerald-500/30 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-500/10 font-semibold"
+              className="gap-2 border-emerald-500/30 text-emerald-700 hover:bg-emerald-500/10 font-semibold"
             >
               <Wallet className="size-3.5" />
               <span>{tDetails("manageBalance")}</span>
@@ -351,7 +351,7 @@ export function StudentDetailsClient({ studentId }: StudentDetailsClientProps) {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         {/* Metric 1: Avg Score */}
         <DashboardCard className="p-4 flex flex-col items-center justify-center text-center gap-2 bg-card hover:border-primary/40 transition-colors">
-          <div className="size-11 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+          <div className="size-11 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center shrink-0">
             <Award className="size-5" />
           </div>
           <div className="space-y-0.5">
@@ -362,7 +362,7 @@ export function StudentDetailsClient({ studentId }: StudentDetailsClientProps) {
 
         {/* Metric 2: Current Balance */}
         <DashboardCard className="p-4 flex flex-col items-center justify-center text-center gap-2 bg-linear-to-br from-emerald-500/10 via-card to-card border-emerald-500/20">
-          <div className="size-11 rounded-xl bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+          <div className="size-11 rounded-xl bg-emerald-500/20 text-emerald-600 flex items-center justify-center shrink-0">
             <Wallet className="size-5" />
           </div>
           <div className="space-y-0.5">
@@ -390,7 +390,7 @@ export function StudentDetailsClient({ studentId }: StudentDetailsClientProps) {
 
         {/* Metric 4: Exams Performed */}
         <DashboardCard className="p-4 flex flex-col items-center justify-center text-center gap-2 bg-card hover:border-primary/40 transition-colors">
-          <div className="size-11 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0">
+          <div className="size-11 rounded-xl bg-purple-500/10 text-purple-600 flex items-center justify-center shrink-0">
             <FileCheck2 className="size-5" />
           </div>
           <div className="space-y-0.5">
@@ -423,11 +423,11 @@ export function StudentDetailsClient({ studentId }: StudentDetailsClientProps) {
           </div>
 
           <div className="flex items-center justify-between text-[11px] pt-1">
-            <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-semibold">
+            <span className="flex items-center gap-1 text-emerald-600 font-semibold">
               <span className="size-2 rounded-full bg-emerald-500 inline-block" />
               {correctQuestions} {tDetails("correctQuestions")}
             </span>
-            <span className="flex items-center gap-1 text-rose-600 dark:text-rose-400 font-semibold">
+            <span className="flex items-center gap-1 text-rose-600 font-semibold">
               <span className="size-2 rounded-full bg-rose-500 inline-block" />
               {wrongQuestions} {tDetails("wrongQuestions")}
             </span>
@@ -511,7 +511,7 @@ export function StudentDetailsClient({ studentId }: StudentDetailsClientProps) {
                           <FileCheck2 className="size-3.5 text-primary" />
                           {tDetails("coursesTab.examsPerformed", { count: courseExamsCount })}
                         </span>
-                        <span className="flex items-center gap-1.5 font-semibold text-emerald-600 dark:text-emerald-400">
+                        <span className="flex items-center gap-1.5 font-semibold text-emerald-600">
                           <CheckCircle2 className="size-3.5" />
                           {tDetails("coursesTab.correctQuestions", { count: courseCorrectAnswers })}
                         </span>

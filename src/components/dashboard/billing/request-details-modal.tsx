@@ -72,10 +72,10 @@ export function RequestDetailsModal({
 
   const statusBadgeVariant =
     request.status === "pending"
-      ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20"
+      ? "bg-amber-500/10 text-amber-600 border-amber-500/20"
       : request.status === "accepted"
-        ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
-        : "bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20";
+        ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20"
+        : "bg-red-500/10 text-red-600 border-red-500/20";
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -181,7 +181,7 @@ export function RequestDetailsModal({
             {/* If already rejected, display stored rejection reason */}
             {request.status === "rejected" && request.rejectionReason && (
               <div className="rounded-xl border border-red-500/30 p-4 bg-red-500/5 space-y-2">
-                <h3 className="text-xs font-bold text-red-600 dark:text-red-400 flex items-center gap-2">
+                <h3 className="text-xs font-bold text-red-600 flex items-center gap-2">
                   <AlertCircle className="size-4" />
                   {t("rejectionReasonTitle")}
                 </h3>
@@ -234,9 +234,7 @@ export function RequestDetailsModal({
         {isRejecting && (
           <div className="p-4 mx-6 mb-4 rounded-xl border border-red-500/30 bg-red-500/5 space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-200">
             <div className="flex items-center justify-between">
-              <h4 className="text-sm font-bold text-red-600 dark:text-red-400">
-                {t("rejectConfirmTitle")}
-              </h4>
+              <h4 className="text-sm font-bold text-red-600">{t("rejectConfirmTitle")}</h4>
               <span className="text-xs text-muted-foreground">{t("rejectConfirmSubtitle")}</span>
             </div>
             <Textarea

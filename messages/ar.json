@@ -1420,5 +1420,49 @@
         "viewInvoice": "عرض الفاتورة / طباعة"
       }
     }
+  },
+  "financialSummary": {
+    "title": "ملخص المالية",
+    "description": "استعراض الإيرادات والتحليلات المالية الشهرية لسنوات الخدمة",
+    "selectYear": "اختر السنة المالية",
+    "resetData": "إعادة ضبط البيانات",
+    "viewRequests": "طلبات الدفع والفواتير",
+    "stats": {
+      "todayPayments": "إجمالي مدفوعات اليوم",
+      "thisWeekPayments": "إجمالي مدفوعات هذا الأسبوع",
+      "thisMonthPayments": "إجمالي مدفوعات هذا الشهر",
+      "vsYesterday": "مقارنة بالأمس ({delta})",
+      "vsPrevWeek": "مقارنة بالأسبوع السابق ({delta})",
+      "vsPrevMonth": "مقارنة بالشهر السابق ({delta})"
+    },
+    "pivotTable": {
+      "title": "تقرير المدفوعات التفصيلي الشهري",
+      "printPdf": "طباعة PDF",
+      "export": "تصدير",
+      "exportCsv": "تصدير إلى CSV",
+      "exportPdf": "تصدير إلى PDF",
+      "weekRow": "الأسبوع {number}",
+      "totalRow": "الإجمالي",
+      "currentMonthBadge": "الشهر الحالي"
+    },
+    "months": {
+      "jan": "يناير",
+      "feb": "فبراير",
+      "mar": "مارس",
+      "apr": "أبريل",
+      "may": "مايو",
+      "jun": "يونيو",
+      "jul": "يوليو",
+      "aug": "أغسطس",
+      "sep": "سبتمبر",
+      "oct": "أكتوبر",
+      "nov": "نوفمبر",
+      "dec": "ديسمبر"
+    },
+    "summaryCards": {
+      "highestMonth": "أعلى شهر في المدفوعات",
+      "lowestMonth": "أقل شهر في المدفوعات",
+      "monthlyAverage": "المتوسط الشهري لـ 12 شهراً"
+    }
   }
 }

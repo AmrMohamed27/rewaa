@@ -1420,5 +1420,49 @@
         "viewInvoice": "View Invoice / Print"
       }
     }
+  },
+  "financialSummary": {
+    "title": "Financial Summary",
+    "description": "Overview of revenues and monthly financial analytics across service years",
+    "selectYear": "Select Financial Year",
+    "resetData": "Reset Data",
+    "viewRequests": "Billing Requests",
+    "stats": {
+      "todayPayments": "Total Payments Today",
+      "thisWeekPayments": "Total Payments This Week",
+      "thisMonthPayments": "Total Payments This Month",
+      "vsYesterday": "vs yesterday ({delta})",
+      "vsPrevWeek": "vs previous week ({delta})",
+      "vsPrevMonth": "vs previous month ({delta})"
+    },
+    "pivotTable": {
+      "title": "Monthly Payments Detailed Pivot Report",
+      "printPdf": "Print PDF",
+      "export": "Export",
+      "exportCsv": "Export to CSV",
+      "exportPdf": "Export to PDF",
+      "weekRow": "Week {number}",
+      "totalRow": "Total",
+      "currentMonthBadge": "Current Month"
+    },
+    "months": {
+      "jan": "Jan",
+      "feb": "Feb",
+      "mar": "Mar",
+      "apr": "Apr",
+      "may": "May",
+      "jun": "Jun",
+      "jul": "Jul",
+      "aug": "Aug",
+      "sep": "Sep",
+      "oct": "Oct",
+      "nov": "Nov",
+      "dec": "Dec"
+    },
+    "summaryCards": {
+      "highestMonth": "Highest Month",
+      "lowestMonth": "Lowest Month",
+      "monthlyAverage": "12-Month Average"
+    }
   }
 }

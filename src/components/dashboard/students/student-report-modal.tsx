@@ -245,7 +245,7 @@ export function StudentReportModal({
 
                 {/* Stat 2: Exams Performed */}
                 <div className="p-4 rounded-xl border border-border/60 bg-muted/30 text-center space-y-1 flex flex-col justify-center">
-                  <FileCheck2 className="size-5 text-purple-600 dark:text-purple-400 mx-auto" />
+                  <FileCheck2 className="size-5 text-purple-600 mx-auto" />
                   <p className="text-xl font-black text-foreground">{examsCount}</p>
                   <p className="text-xs font-semibold text-foreground">
                     {tReport("performanceStats.examsPerformed")}
@@ -254,7 +254,7 @@ export function StudentReportModal({
 
                 {/* Stat 3: Courses Enrolled */}
                 <div className="p-4 rounded-xl border border-border/60 bg-muted/30 text-center space-y-1 flex flex-col justify-center">
-                  <BookOpen className="size-5 text-emerald-600 dark:text-emerald-400 mx-auto" />
+                  <BookOpen className="size-5 text-emerald-600 mx-auto" />
                   <p className="text-xl font-black text-foreground">{student.coursesCount || 0}</p>
                   <p className="text-xs font-semibold text-foreground">
                     {tReport("performanceStats.coursesEnrolled")}

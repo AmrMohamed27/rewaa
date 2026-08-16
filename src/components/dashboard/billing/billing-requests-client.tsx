@@ -269,7 +269,7 @@ export function BillingRequestsClient() {
             <span className="text-xs font-medium text-muted-foreground">
               {t("stats.pendingRequests")}
             </span>
-            <div className="size-9 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center">
+            <div className="size-9 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center">
               <Clock className="size-5" />
             </div>
           </div>
@@ -284,7 +284,7 @@ export function BillingRequestsClient() {
             <span className="text-xs font-medium text-muted-foreground">
               {t("stats.acceptedRequests")}
             </span>
-            <div className="size-9 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+            <div className="size-9 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center">
               <CheckCircle2 className="size-5" />
             </div>
           </div>
@@ -299,7 +299,7 @@ export function BillingRequestsClient() {
             <span className="text-xs font-medium text-muted-foreground">
               {t("stats.rejectedRequests")}
             </span>
-            <div className="size-9 rounded-xl bg-red-500/10 text-red-600 dark:text-red-400 flex items-center justify-center">
+            <div className="size-9 rounded-xl bg-red-500/10 text-red-600 flex items-center justify-center">
               <XCircle className="size-5" />
             </div>
           </div>
@@ -428,10 +428,10 @@ export function BillingRequestsClient() {
                 filteredAndSortedRequests.map((req) => {
                   const statusBadgeVariant =
                     req.status === "pending"
-                      ? "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20"
+                      ? "bg-amber-500/10 text-amber-600 border-amber-500/20"
                       : req.status === "accepted"
-                        ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
-                        : "bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20";
+                        ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20"
+                        : "bg-red-500/10 text-red-600 border-red-500/20";
 
                   return (
                     <TableRow key={req.id} className="hover:bg-muted/30 transition-colors">
