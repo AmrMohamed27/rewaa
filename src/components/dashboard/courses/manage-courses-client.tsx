@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
-import { BookOpen, Plus, RotateCcw } from "lucide-react";
+import { Barcode, BookOpen, Plus, RotateCcw } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
@@ -198,6 +198,17 @@ export function ManageCoursesClient() {
           >
             <RotateCcw className="h-4 w-4" />
             <span>{t("resetCourses")}</span>
+          </Button>
+          <Button
+            asChild
+            variant="outline"
+            size="default"
+            className="gap-2 shadow-xs font-semibold"
+          >
+            <Link href={`/${locale}/dashboard/courses/codes`}>
+              <Barcode className="h-4 w-4" />
+              <span>{t("activationCodes")}</span>
+            </Link>
           </Button>
           <Button asChild size="default" className="gap-2 shadow-sm font-semibold">
             <Link href={`/${locale}/dashboard/courses/new`}>

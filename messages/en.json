@@ -269,6 +269,8 @@
     "manageTitle": "Manage Courses",
     "manageSubtitle": "Create, manage, and publish educational courses for the platform",
     "addNewCourse": "Add a new Course",
+    "activationCodes": "Activation Codes",
+    "courseActivationCodes": "Course Activation Codes",
     "searchPlaceholder": "Search course, subject...",
     "tabs": {
       "all": "All",
@@ -1463,6 +1465,159 @@
       "highestMonth": "Highest Month",
       "lowestMonth": "Lowest Month",
       "monthlyAverage": "12-Month Average"
+    }
+  },
+  "codeGroupsPage": {
+    "title": "Activation Code Groups",
+    "subtitle": "Manage and monitor course activation code groups",
+    "createButton": "Create new codes",
+    "resetData": "Reset Data",
+    "stats": {
+      "totalCodes": "Total Codes Across Platform",
+      "totalCodesDesc": "Across all courses & groups",
+      "soldCodes": "Sold Codes Across Platform",
+      "soldCodesDesc": "Purchased by students",
+      "usedCodes": "Used Codes Across Platform",
+      "usedCodesDesc": "Activated by students",
+      "availableCodes": "Available Codes Across Platform",
+      "availableCodesDesc": "Available for activation"
+    },
+    "filters": {
+      "searchPlaceholder": "Search by course title...",
+      "allCourses": "All Courses",
+      "sortBy": "Sort by",
+      "newest": "Newest",
+      "oldest": "Oldest",
+      "priceDesc": "Price (Highest first)",
+      "priceAsc": "Price (Lowest first)",
+      "totalCodesDescSort": "Total Codes (Most first)",
+      "resetFilters": "Reset Filters"
+    },
+    "table": {
+      "courseName": "Course Name",
+      "codePrice": "Code Price",
+      "totalCodes": "Total Codes",
+      "availableCodes": "Available",
+      "soldCodes": "Sold",
+      "usedCodes": "Used",
+      "createdAt": "Date of Creation",
+      "actions": "Actions",
+      "viewDetails": "View Details",
+      "noData": "No code groups found"
+    },
+    "addDialog": {
+      "title": "Add Code Group",
+      "description": "Enter details for the new course activation code group",
+      "selectCourse": "Select Course",
+      "selectCoursePlaceholder": "Choose target course",
+      "unitPrice": "Unit Price",
+      "unitPricePlaceholder": "e.g. 450",
+      "amount": "Amount (Available Quantity)",
+      "amountPlaceholder": "e.g. 100",
+      "codePrefix": "Code Prefix (Optional)",
+      "codePrefixPlaceholder": "e.g. RW-PHYS-",
+      "codePrefixHint": "Optional prefix used when generating random activation codes for this group",
+      "expiryDate": "Expiry Date",
+      "save": "Save",
+      "cancel": "Cancel",
+      "currency": "EGP"
+    }
+  },
+  "groupCodesPage": {
+    "title": "Course Code Group Details",
+    "subtitle": "View and manage activation codes for this group",
+    "resetData": "Reset Data",
+    "backToGroups": "Code Groups",
+    "stats": {
+      "totalCodes": "Total Codes in Group",
+      "totalCodesDesc": "Total codes in this group",
+      "soldCodes": "Sold Codes in Group",
+      "soldCodesDesc": "Purchased codes",
+      "usedCodes": "Used Codes in Group",
+      "usedCodesDesc": "Activated codes",
+      "availableCodes": "Available Codes in Group",
+      "availableCodesDesc": "Available for activation"
+    },
+    "tabs": {
+      "all": "All",
+      "available": "Available",
+      "sold": "Sold",
+      "used": "Used"
+    },
+    "filters": {
+      "searchPlaceholder": "Search by code or serial ID...",
+      "sortBy": "Sort by",
+      "newest": "Newest",
+      "oldest": "Oldest",
+      "costDesc": "Cost (Highest first)",
+      "costAsc": "Cost (Lowest first)",
+      "resetFilters": "Reset Filters"
+    },
+    "table": {
+      "serialNumber": "Serial Number / ID",
+      "codeValue": "Code Value",
+      "courseName": "Course Name",
+      "cost": "Cost",
+      "status": "Status",
+      "expiryDate": "Expiry Date",
+      "actions": "Actions",
+      "copySuccess": "Code Copied!",
+      "copyTitle": "Copy Code",
+      "noData": "No activation codes found"
+    },
+    "statusLabels": {
+      "available": "Available",
+      "sold": "Sold",
+      "used": "Used"
+    },
+    "actions": {
+      "modifyInfo": "Modify Code Info",
+      "markAsSold": "Mark as Sold",
+      "markAsUsed": "Mark as Used",
+      "deleteCode": "Delete Code"
+    },
+    "editDialog": {
+      "title": "Modify Code Info",
+      "description": "Modify code value, cost, status, or expiry date",
+      "codeLabel": "Code Value",
+      "costLabel": "Cost",
+      "statusLabel": "Status",
+      "expiryDateLabel": "Expiry Date",
+      "save": "Save Changes",
+      "cancel": "Cancel",
+      "currency": "EGP"
+    },
+    "createCode": "Create Code",
+    "createBatch": "Create Batch of Codes",
+    "createDialog": {
+      "title": "Create New Code",
+      "description": "Code string will be randomly generated according to group pattern. You can set cost and expiry date.",
+      "codeLabel": "Generated Code Value",
+      "costLabel": "Cost",
+      "expiryDateLabel": "Expiry Date",
+      "regenerate": "Regenerate",
+      "create": "Create Code",
+      "cancel": "Cancel",
+      "currency": "EGP"
+    },
+    "batchDialog": {
+      "title": "Create Batch of Activation Codes",
+      "description": "Specify quantity and prefix to randomly generate a batch of activation codes at once.",
+      "quantityLabel": "Number of Codes (Quantity)",
+      "quantityPlaceholder": "e.g. 50",
+      "prefixLabel": "Code Prefix",
+      "prefixPlaceholder": "e.g. RW-PHYS-",
+      "costLabel": "Cost (Per Code)",
+      "expiryDateLabel": "Expiry Date",
+      "create": "Generate Batch",
+      "cancel": "Cancel",
+      "currency": "EGP"
+    },
+    "deleteDialog": {
+      "title": "Delete Activation Code?",
+      "description": "Are you sure you want to delete activation code \"{code}\"? This action cannot be undone.",
+      "cancel": "Cancel",
+      "confirm": "Delete Code"
     }
   }
 }

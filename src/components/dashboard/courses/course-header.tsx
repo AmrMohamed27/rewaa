@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, Pencil } from "lucide-react";
+import { ArrowLeft, Barcode, Pencil } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -38,16 +38,21 @@ export function CourseHeader({ course }: CourseHeaderProps) {
         </div>
       </div>
 
-      <Button
-        asChild
-        size="default"
-        className="gap-2 shrink-0 self-start sm:self-auto shadow-xs font-semibold"
-      >
-        <Link href={`/${locale}/dashboard/courses/${course.id}/edit`}>
-          <Pencil className="h-4 w-4" />
-          <span>{t("details.editCourse")}</span>
-        </Link>
-      </Button>
+      <div className="flex items-center gap-3 shrink-0 self-start sm:self-auto">
+        <Button asChild variant="outline" size="default" className="gap-2 shadow-xs font-semibold">
+          <Link href={`/${locale}/dashboard/courses/${course.id}/codes`}>
+            <Barcode className="h-4 w-4" />
+            <span>{t("courseActivationCodes")}</span>
+          </Link>
+        </Button>
+
+        <Button asChild size="default" className="gap-2 shadow-xs font-semibold">
+          <Link href={`/${locale}/dashboard/courses/${course.id}/edit`}>
+            <Pencil className="h-4 w-4" />
+            <span>{t("details.editCourse")}</span>
+          </Link>
+        </Button>
+      </div>
     </div>
   );
 }

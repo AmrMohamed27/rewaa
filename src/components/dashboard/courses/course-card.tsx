@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Course } from "@/types/course";
 import {
+  Barcode,
   BookOpen,
   Check,
   Copy,
@@ -72,7 +73,7 @@ export function CourseCard({
               {t("status.published")}
             </span>
           ) : (
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-warning-bg text-warning  backdrop-blur-xs">
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-warning-bg text-warning backdrop-blur-xs">
               {t("status.draft")}
             </span>
           )}
@@ -152,7 +153,7 @@ export function CourseCard({
             <Button
               onClick={() => onPublishToggle(course.id)}
               size="sm"
-              className="flex-1 font-bold text-sm  py-3.5! cursor-pointer"
+              className="flex-1 font-bold text-sm py-3.5! cursor-pointer"
             >
               {t("card.publishNow")}
             </Button>
@@ -180,6 +181,15 @@ export function CourseCard({
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link
+                      href={`/${locale}/dashboard/courses/${course.id}/codes`}
+                      className="flex items-center gap-2"
+                    >
+                      <Barcode className="h-4 w-4" />
+                      <span>{t("activationCodes")}</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link
                       href={`/${locale}/dashboard/courses/${course.id}/edit`}
                       className="flex items-center gap-2"
                     >
@@ -197,6 +207,15 @@ export function CourseCard({
                 </>
               ) : (
                 <>
+                  <DropdownMenuItem asChild>
+                    <Link
+                      href={`/${locale}/dashboard/courses/${course.id}/codes`}
+                      className="flex items-center gap-2"
+                    >
+                      <Barcode className="h-4 w-4" />
+                      <span>{t("activationCodes")}</span>
+                    </Link>
+                  </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => onCopyLink(course.id)}
                     className="flex items-center gap-2"

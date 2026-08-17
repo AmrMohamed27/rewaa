@@ -269,6 +269,8 @@
     "manageTitle": "إدارة الدورات",
     "manageSubtitle": "إنشاء وإدارة ونشر الدورات الخاصة بالمنصة",
     "addNewCourse": "إضافة دورة جديدة",
+    "activationCodes": "أكواد التفعيل",
+    "courseActivationCodes": "أكواد تفعيل الدورة",
     "searchPlaceholder": "بحث عن دورة أو مادة...",
     "tabs": {
       "all": "الكل",
@@ -1463,6 +1465,159 @@
       "highestMonth": "أعلى شهر في المدفوعات",
       "lowestMonth": "أقل شهر في المدفوعات",
       "monthlyAverage": "المتوسط الشهري لـ 12 شهراً"
+    }
+  },
+  "codeGroupsPage": {
+    "title": "مجموعات أكواد التفعيل",
+    "subtitle": "إدارة ومتابعة مجموعات الأكواد الخاصة بالدورات",
+    "createButton": "إنشاء أكواد جديدة",
+    "resetData": "إعادة ضبط البيانات",
+    "stats": {
+      "totalCodes": "إجمالي الأكواد",
+      "totalCodesDesc": "عبر كافة الدورات والمجموعات",
+      "soldCodes": "الأكواد المباعة",
+      "soldCodesDesc": "تم شراؤها من الطلاب",
+      "usedCodes": "الأكواد المستخدمة",
+      "usedCodesDesc": "تم تفعيلها بالفعل",
+      "availableCodes": "الأكواد المتاحة",
+      "availableCodesDesc": "متاحة للشراء والتفعيل"
+    },
+    "filters": {
+      "searchPlaceholder": "البحث باسم الدورة...",
+      "allCourses": "جميع الدورات",
+      "sortBy": "الترتيب حسب",
+      "newest": "الأحدث إنشاءً",
+      "oldest": "الأقدم إنشاءً",
+      "priceDesc": "السعر (الأعلى أولاً)",
+      "priceAsc": "السعر (الأقل أولاً)",
+      "totalCodesDescSort": "الأكواد (الأكثر أولاً)",
+      "resetFilters": "إعادة ضبط الفلاتر"
+    },
+    "table": {
+      "courseName": "اسم الدورة",
+      "codePrice": "سعر الكود",
+      "totalCodes": "إجمالي الأكواد",
+      "availableCodes": "الأكواد المتاحة",
+      "soldCodes": "المباعة",
+      "usedCodes": "المستخدمة",
+      "createdAt": "تاريخ الإنشاء",
+      "actions": "الإجراءات",
+      "viewDetails": "عرض التفاصيل",
+      "noData": "لا توجد مجموعات أكواد مطابقة"
+    },
+    "addDialog": {
+      "title": "إضافة مجموعة أكواد",
+      "description": "أدخل تفاصيل مجموعة الأكواد الجديدة للدورة المحددة",
+      "selectCourse": "اختيار الدورة",
+      "selectCoursePlaceholder": "اختر الدورة المخصصة",
+      "unitPrice": "سعر الكود",
+      "unitPricePlaceholder": "مثال: 450",
+      "amount": "العدد المتاح (الكمية)",
+      "amountPlaceholder": "مثال: 100",
+      "codePrefix": "بادئة الأكواد (اختياري)",
+      "codePrefixPlaceholder": "مثال: RW-PHYS-",
+      "codePrefixHint": "بادئة اختيارية تُستخدم عند توليد أكواد تفعيل جديدة لهذه المجموعة",
+      "expiryDate": "تاريخ انتهاء الصلاحية",
+      "save": "حفظ",
+      "cancel": "إلغاء",
+      "currency": "ج.م"
+    }
+  },
+  "groupCodesPage": {
+    "title": "أكواد مجموعة الدورة",
+    "subtitle": "عرض وتعديل تفاصيل وأكواد التفعيل التابعة للمجموعة",
+    "resetData": "إعادة ضبط البيانات",
+    "backToGroups": "مجموعات الأكواد",
+    "stats": {
+      "totalCodes": "إجمالي الأكواد بالمجموعة",
+      "totalCodesDesc": "عدد كافة الأكواد بالمجموعة",
+      "soldCodes": "الأكواد المباعة بالمجموعة",
+      "soldCodesDesc": "الأكواد التي تم شراؤها",
+      "usedCodes": "الأكواد المستخدمة بالمجموعة",
+      "usedCodesDesc": "الأكواد التي تم تفعيلها",
+      "availableCodes": "الأكواد المتاحة بالمجموعة",
+      "availableCodesDesc": "الأكواد المتاحة للتفعيل"
+    },
+    "tabs": {
+      "all": "الكل",
+      "available": "المتاحة",
+      "sold": "المباعة",
+      "used": "المستخدمة"
+    },
+    "filters": {
+      "searchPlaceholder": "البحث بالرمز أو الرقم التسلسلي...",
+      "sortBy": "الترتيب حسب",
+      "newest": "الأحدث إنشاءً",
+      "oldest": "الأقدم إنشاءً",
+      "costDesc": "التكلفة (الأعلى أولاً)",
+      "costAsc": "التكلفة (الأقل أولاً)",
+      "resetFilters": "إعادة ضبط الفلاتر"
+    },
+    "table": {
+      "serialNumber": "الرقم التسلسلي",
+      "codeValue": "رمز الكود",
+      "courseName": "اسم الدورة",
+      "cost": "التكلفة",
+      "status": "الحالة",
+      "expiryDate": "تاريخ الانتهاء",
+      "actions": "الإجراءات",
+      "copySuccess": "تم نسخ الكود!",
+      "copyTitle": "نسخ الكود",
+      "noData": "لا توجد أكواد تفعيل مطابقة"
+    },
+    "statusLabels": {
+      "available": "متاح",
+      "sold": "مباع",
+      "used": "مستخدم"
+    },
+    "actions": {
+      "modifyInfo": "تعديل بيانات الكود",
+      "markAsSold": "تحديد كمباع",
+      "markAsUsed": "تحديد كمستخدم",
+      "deleteCode": "حذف الكود"
+    },
+    "editDialog": {
+      "title": "تعديل بيانات الكود",
+      "description": "قم بتعديل رمز الكود، التكلفة، الحالة، أو تاريخ انتهاء الصلاحية",
+      "codeLabel": "رمز الكود",
+      "costLabel": "التكلفة",
+      "statusLabel": "الحالة",
+      "expiryDateLabel": "تاريخ انتهاء الصلاحية",
+      "save": "حفظ التغييرات",
+      "cancel": "إلغاء",
+      "currency": "ج.م"
+    },
+    "createCode": "إنشاء كود",
+    "createBatch": "إنشاء دفعة أكواد",
+    "createDialog": {
+      "title": "إنشاء كود جديد",
+      "description": "سيتم توليد رمز الكود تلقائياً وفقاً لنمط المجموعة، يمكنك ضبط التكلفة وتاريخ الانتهاء",
+      "codeLabel": "رمز الكود المولّد",
+      "costLabel": "التكلفة",
+      "expiryDateLabel": "تاريخ انتهاء الصلاحية",
+      "regenerate": "توليد كود آخر",
+      "create": "إنشاء الكود",
+      "cancel": "إلغاء",
+      "currency": "ج.م"
+    },
+    "batchDialog": {
+      "title": "إنشاء دفعة أكواد تفعيل",
+      "description": "حدد عدد الأكواد والبادئة للتوليد التلقائي لدفعة من الأكواد المتاحة دفعة واحدة",
+      "quantityLabel": "عدد الأكواد (الكمية)",
+      "quantityPlaceholder": "مثال: 50",
+      "prefixLabel": "بادئة الأكواد",
+      "prefixPlaceholder": "مثال: RW-PHYS-",
+      "costLabel": "التكلفة (للكود الواحد)",
+      "expiryDateLabel": "تاريخ انتهاء الصلاحية",
+      "create": "إنشاء الدفعة",
+      "cancel": "إلغاء",
+      "currency": "ج.م"
+    },
+    "deleteDialog": {
+      "title": "تأكيد حذف الكود؟",
+      "description": "هل أنت متأكد من رغبتك في حذف الكود \"{code}\"؟ لا يمكن التراجع عن هذا الإجراء.",
+      "cancel": "إلغاء",
+      "confirm": "تأكيد الحذف"
     }
   }
 }
