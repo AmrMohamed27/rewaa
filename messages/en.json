@@ -1619,5 +1619,270 @@
       "cancel": "Cancel",
       "confirm": "Delete Code"
     }
+  },
+  "settings": {
+    "title": "Platform Settings",
+    "subtitle": "Manage teachers, grade levels, subjects, and assistant accounts for your platform.",
+    "tabs": {
+      "platformSettings": "Platform Settings",
+      "platformInfo": "Platform Information",
+      "announcements": "Announcements"
+    },
+    "teachers": {
+      "title": "Teachers",
+      "subtitle": "Manage teacher accounts and assigned subjects & grades",
+      "addTeacher": "Add Teacher",
+      "resetTeachers": "Reset Data",
+      "columns": {
+        "image": "Image",
+        "name": "Teacher Name",
+        "phone": "Phone Number",
+        "subjects": "Subject(s)",
+        "actions": "Actions"
+      },
+      "noTeachers": "No teachers added yet.",
+      "dialog": {
+        "titleAdd": "Add New Teacher",
+        "titleEdit": "Edit Teacher",
+        "description": "Fill in the teacher details below.",
+        "imageUpload": "Upload Profile Image",
+        "imageChange": "Change Profile Image",
+        "imageUrlPlaceholder": "or enter image URL",
+        "nameLabel": "Teacher Name",
+        "namePlaceholder": "e.g. Dr. Ahmed Hassan",
+        "phoneLabel": "Phone Number",
+        "phonePlaceholder": "+20 100 123 4567",
+        "gradesLabel": "Grades",
+        "subjectsLabel": "Subjects",
+        "selectGrades": "Select grades...",
+        "selectSubjects": "Select subjects...",
+        "save": "Save Teacher",
+        "cancel": "Cancel"
+      },
+      "deleteDialog": {
+        "title": "Delete Teacher?",
+        "description": "Are you sure you want to delete teacher \"{name}\"? This action cannot be undone.",
+        "cancel": "Cancel",
+        "confirm": "Delete Teacher"
+      }
+    },
+    "grades": {
+      "title": "Grades",
+      "subtitle": "Platform academic grade levels",
+      "addGrade": "New Grade",
+      "resetGrades": "Reset Grades",
+      "columns": {
+        "name": "Grade Name",
+        "studentsCount": "Students",
+        "coursesCount": "Courses",
+        "teachersCount": "Teachers",
+        "actions": "Actions"
+      },
+      "noGrades": "No grades created yet.",
+      "dialog": {
+        "titleAdd": "Create New Grade",
+        "titleEdit": "Edit Grade",
+        "description": "Specify grade name and school year from 1 to 12.",
+        "nameLabel": "Grade Name",
+        "namePlaceholder": "e.g. Grade 10 - General",
+        "yearLabel": "Corresponding Year (1-12)",
+        "yearPlaceholder": "Select year (1 to 12)",
+        "save": "Save Grade",
+        "cancel": "Cancel"
+      },
+      "deleteDialog": {
+        "title": "Delete Grade Level?",
+        "description": "Are you sure you want to delete grade level \"{name}\"? This action cannot be undone.",
+        "cancel": "Cancel",
+        "confirm": "Delete Grade"
+      }
+    },
+    "subjects": {
+      "title": "Subjects",
+      "subtitle": "Platform educational subjects",
+      "addSubject": "New Subject",
+      "resetSubjects": "Reset Subjects",
+      "columns": {
+        "name": "Subject Name",
+        "coursesCount": "Courses",
+        "teachersCount": "Teachers",
+        "actions": "Actions"
+      },
+      "noSubjects": "No subjects created yet.",
+      "dialog": {
+        "titleAdd": "Create New Subject",
+        "titleEdit": "Edit Subject",
+        "description": "Enter the subject name below.",
+        "nameLabel": "Subject Name",
+        "namePlaceholder": "e.g. Physics",
+        "save": "Save Subject",
+        "cancel": "Cancel"
+      },
+      "deleteDialog": {
+        "title": "Delete Subject?",
+        "description": "Are you sure you want to delete subject \"{name}\"? This action cannot be undone.",
+        "cancel": "Cancel",
+        "confirm": "Delete Subject"
+      }
+    },
+    "assistants": {
+      "title": "Assistants",
+      "subtitle": "Manage assistant accounts and platform administrative permissions",
+      "addAssistant": "Add Assistant",
+      "resetAssistants": "Reset Data",
+      "columns": {
+        "name": "Assistant Name",
+        "phone": "Phone Number",
+        "permissions": "Permissions",
+        "actions": "Actions"
+      },
+      "noAssistants": "No assistants added yet.",
+      "dialog": {
+        "titleAdd": "Add New Assistant",
+        "titleEdit": "Edit Assistant",
+        "description": "Fill in the assistant details and assign platform permissions below.",
+        "nameLabel": "Assistant Name",
+        "namePlaceholder": "e.g. Omar Khaled",
+        "nationalIdLabel": "National ID Number (14 digits)",
+        "nationalIdPlaceholder": "29801011234567",
+        "nationalIdError": "National ID must be exactly 14 digits.",
+        "phoneLabel": "Phone Number",
+        "phonePlaceholder": "+20 109 876 5432",
+        "passwordLabel": "Password",
+        "passwordPlaceholder": "••••••••",
+        "passwordEditPlaceholder": "Leave blank to keep existing password",
+        "permissionsLabel": "Permissions",
+        "permissionsError": "Please select at least one permission.",
+        "permissions": {
+          "manage-courses": "Manage Courses",
+          "manage-exams-and-questions": "Manage Exams & Questions",
+          "manage-students": "Manage Students",
+          "manage-billing": "Manage Billing"
+        },
+        "save": "Save Assistant",
+        "cancel": "Cancel"
+      },
+      "deleteDialog": {
+        "title": "Delete Assistant?",
+        "description": "Are you sure you want to delete assistant \"{name}\"? This action cannot be undone.",
+        "cancel": "Cancel",
+        "confirm": "Delete Assistant"
+      },
+      "resetPasswordDialog": {
+        "title": "Reset Password",
+        "description": "Set a new password for assistant \"{name}\".",
+        "newPasswordLabel": "New Password",
+        "newPasswordPlaceholder": "Enter new password",
+        "cancel": "Cancel",
+        "confirm": "Save Password"
+      }
+    },
+    "platformInfo": {
+      "communication": {
+        "title": "Phone Numbers & Communication Channels",
+        "subtitle": "Manage support contact numbers and social media channel links",
+        "edit": "Edit",
+        "save": "Save Changes",
+        "cancel": "Cancel",
+        "reset": "Reset to Default",
+        "addLink": "Add Link",
+        "customLinksTitle": "Additional Custom Links",
+        "fields": {
+          "supportPhone": "Support Phone Number",
+          "whatsappPhone": "WhatsApp Phone Number",
+          "facebookUrl": "Facebook Link",
+          "instagramUrl": "Instagram Link",
+          "tiktokUrl": "TikTok Link"
+        },
+        "addLinkDialog": {
+          "title": "Add New Communication Link",
+          "description": "Enter the URL link and custom label to display on the platform.",
+          "labelField": "Link Title (Label)",
+          "labelPlaceholder": "e.g. Official Telegram Channel",
+          "urlField": "URL Link",
+          "urlPlaceholder": "https://t.me/example",
+          "validationRequired": "Please enter both the label and the URL link.",
+          "cancel": "Cancel",
+          "confirm": "Add Link"
+        }
+      },
+      "whoWeAre": {
+        "title": "Who We Are",
+        "subtitle": "Brief overview and educational vision of the platform",
+        "edit": "Edit",
+        "save": "Save Changes",
+        "cancel": "Cancel",
+        "reset": "Reset to Default",
+        "placeholder": "Enter platform overview in Markdown format..."
+      },
+      "terms": {
+        "title": "Terms & Conditions",
+        "subtitle": "Platform usage terms, conditions, and intellectual property policies",
+        "edit": "Edit",
+        "save": "Save Changes",
+        "cancel": "Cancel",
+        "reset": "Reset to Default",
+        "placeholder": "Enter terms & conditions in Markdown format..."
+      }
+    },
+    "announcements": {
+      "title": "Announcements & Notices",
+      "subtitle": "Manage platform banner announcements and featured notices",
+      "addAnnouncement": "New Announcement",
+      "resetAnnouncements": "Reset Data",
+      "activeCountBadge": "{count} / {max} active",
+      "noAnnouncements": "No announcements created yet.",
+      "deactivatedNotice": "Older announcement \"{name}\" was automatically deactivated to maintain the limit of 3 active announcements.",
+      "statusActive": "Active",
+      "statusInactive": "Inactive",
+      "columns": {
+        "cover": "Cover",
+        "title": "Title",
+        "url": "URL",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "actions": {
+        "viewDetails": "View Details",
+        "edit": "Edit Announcement",
+        "markActive": "Mark as Active",
+        "markInactive": "Mark as Inactive",
+        "delete": "Delete Announcement"
+      },
+      "dialog": {
+        "titleAdd": "Create New Announcement",
+        "titleEdit": "Edit Announcement",
+        "descriptionHint": "Upload a cover image, title, and detailed description below.",
+        "coverImageLabel": "Announcement Cover Image",
+        "uploadCoverPrompt": "Click or drag an image here to upload",
+        "uploadCoverFormats": "PNG, JPG, WEBP up to 5MB",
+        "changeCoverImage": "Change Cover Image",
+        "imageUrlPlaceholder": "or enter direct image URL",
+        "titleLabel": "Announcement Title",
+        "titlePlaceholder": "e.g. Launch of Final Revision Courses",
+        "titleRequired": "Announcement title is required.",
+        "descriptionLabel": "Description & Details (Markdown supported)",
+        "descriptionPlaceholder": "Enter detailed announcement content here...",
+        "descriptionRequired": "Announcement description is required.",
+        "urlLabel": "Target URL / Link",
+        "urlPlaceholder": "https://rewaa.edu/offers/term-2",
+        "optional": "Optional",
+        "maxActiveWarningTitle": "Maximum Active Limit Warning",
+        "maxActiveWarningDesc": "Activating this announcement will automatically de-activate \"{name}\". You can re-activate it later.",
+        "save": "Save Announcement",
+        "cancel": "Cancel"
+      },
+      "detailsDialog": {
+        "active": "Currently Active",
+        "inactive": "Inactive",
+        "link": "Associated Link"
+      },
+      "deleteDialog": {
+        "title": "Delete Announcement?",
+        "description": "Are you sure you want to delete announcement \"{title}\"? This action cannot be undone.",
+        "cancel": "Cancel",
+        "confirm": "Delete Announcement"
+      }
+    }
   }
 }

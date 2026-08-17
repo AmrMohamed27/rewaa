@@ -1619,5 +1619,270 @@
       "cancel": "إلغاء",
       "confirm": "تأكيد الحذف"
     }
+  },
+  "settings": {
+    "title": "إعدادات المنصة",
+    "subtitle": "إدارة حسابات المعلمين، الصفوف الدراسية، المواد والمساعدين للمنصة.",
+    "tabs": {
+      "platformSettings": "إعدادات المنصة",
+      "platformInfo": "بيانات المنصة",
+      "announcements": "الإعلانات"
+    },
+    "teachers": {
+      "title": "المعلمون",
+      "subtitle": "إدارة حسابات المعلمين والمواد والصفوف المسندة لهم",
+      "addTeacher": "إضافة معلم",
+      "resetTeachers": "استعادة البيانات الافتراضية",
+      "columns": {
+        "image": "الصورة",
+        "name": "اسم المعلم",
+        "phone": "رقم الهاتف",
+        "subjects": "المادة / المواد",
+        "actions": "الإجراءات"
+      },
+      "noTeachers": "لا يوجد معلمون حالياً.",
+      "dialog": {
+        "titleAdd": "إضافة معلم جديد",
+        "titleEdit": "تعديل بيانات المعلم",
+        "description": "أدخل بيانات المعلم أدناه.",
+        "imageUpload": "رفع صورة المعلم",
+        "imageChange": "تغيير صورة المعلم",
+        "imageUrlPlaceholder": "أو أدخل رابط الصورة المباشر",
+        "nameLabel": "اسم المعلم",
+        "namePlaceholder": "مثال: د. أحمد حسن",
+        "phoneLabel": "رقم الهاتف",
+        "phonePlaceholder": "01001234567",
+        "gradesLabel": "الصفوف الدراسية",
+        "subjectsLabel": "المواد الدراسية",
+        "selectGrades": "اختر الصفوف الدراسية...",
+        "selectSubjects": "اختر المواد الدراسية...",
+        "save": "حفظ المعلم",
+        "cancel": "إلغاء"
+      },
+      "deleteDialog": {
+        "title": "حذف المعلم؟",
+        "description": "هل أنت متأكد من رغبتك في حذف المعلم \"{name}\"؟ لا يمكن التراجع عن هذا الإجراء.",
+        "cancel": "إلغاء",
+        "confirm": "تأكيد الحذف"
+      }
+    },
+    "grades": {
+      "title": "الصفوف الدراسية",
+      "subtitle": "إدارة المراحل والصفوف الدراسية",
+      "addGrade": "صف جديد",
+      "resetGrades": "إعادة تعيين الصفوف",
+      "columns": {
+        "name": "اسم الصف",
+        "studentsCount": "الطلاب",
+        "coursesCount": "الدورات",
+        "teachersCount": "المعلمون",
+        "actions": "الإجراءات"
+      },
+      "noGrades": "لا توجد صفوف مضافة بعد.",
+      "dialog": {
+        "titleAdd": "إنشاء صف دراسي جديد",
+        "titleEdit": "تعديل الصف الدراسي",
+        "description": "حدد اسم الصف والسنة الدراسية المناظرة من 1 إلى 12.",
+        "nameLabel": "اسم الصف الدراسي",
+        "namePlaceholder": "مثال: الصف الأول الثانوي",
+        "yearLabel": "السنة الدراسية المناظرة (1-12)",
+        "yearPlaceholder": "اختر السنة (1 إلى 12)",
+        "save": "حفظ الصف",
+        "cancel": "إلغاء"
+      },
+      "deleteDialog": {
+        "title": "حذف الصف الدراسي؟",
+        "description": "هل أنت متأكد من رغبتك في حذف الصف الدراسي \"{name}\"؟ لا يمكن التراجع عن هذا الإجراء.",
+        "cancel": "إلغاء",
+        "confirm": "تأكيد الحذف"
+      }
+    },
+    "subjects": {
+      "title": "المواد الدراسية",
+      "subtitle": "إدارة المواد المقررة على المنصة",
+      "addSubject": "مادة جديدة",
+      "resetSubjects": "إعادة تعيين المواد",
+      "columns": {
+        "name": "اسم المادة",
+        "coursesCount": "الدورات",
+        "teachersCount": "المعلمون",
+        "actions": "الإجراءات"
+      },
+      "noSubjects": "لا توجد مواد مضافة بعد.",
+      "dialog": {
+        "titleAdd": "إنشاء مادة جديدة",
+        "titleEdit": "تعديل المادة",
+        "description": "أدخل اسم المادة التعليمية أدناه.",
+        "nameLabel": "اسم المادة",
+        "namePlaceholder": "مثال: الفيزياء",
+        "save": "حفظ المادة",
+        "cancel": "إلغاء"
+      },
+      "deleteDialog": {
+        "title": "حذف المادة؟",
+        "description": "هل أنت متأكد من رغبتك في حذف المادة \"{name}\"؟ لا يمكن التراجع عن هذا الإجراء.",
+        "cancel": "إلغاء",
+        "confirm": "تأكيد الحذف"
+      }
+    },
+    "assistants": {
+      "title": "المساعدون",
+      "subtitle": "إدارة حسابات المساعدين وصلاحياتهم على المنصة",
+      "addAssistant": "إضافة مساعد",
+      "resetAssistants": "استعادة البيانات الافتراضية",
+      "columns": {
+        "name": "اسم المساعد",
+        "phone": "رقم الهاتف",
+        "permissions": "الصلاحيات",
+        "actions": "الإجراءات"
+      },
+      "noAssistants": "لا يوجد مساعدون حالياً.",
+      "dialog": {
+        "titleAdd": "إضافة مساعد جديد",
+        "titleEdit": "تعديل بيانات المساعد",
+        "description": "أدخل بيانات المساعد وحدد الصلاحيات الممنوحة له أدناه.",
+        "nameLabel": "اسم المساعد",
+        "namePlaceholder": "مثال: عمر خالد",
+        "nationalIdLabel": "الرقم القومي (14 رقم)",
+        "nationalIdPlaceholder": "29801011234567",
+        "nationalIdError": "يجب أن يتكون الرقم القومي من 14 رقماً بالضبط.",
+        "phoneLabel": "رقم الهاتف",
+        "phonePlaceholder": "01098765432",
+        "passwordLabel": "كلمة المرور",
+        "passwordPlaceholder": "••••••••",
+        "passwordEditPlaceholder": "اتركه فارغاً للإبقاء على كلمة المرور الحالية",
+        "permissionsLabel": "الصلاحيات",
+        "permissionsError": "يرجى اختيار صلاحية واحدة على الأقل.",
+        "permissions": {
+          "manage-courses": "إدارة الدورات",
+          "manage-exams-and-questions": "إدارة الامتحانات والأسئلة",
+          "manage-students": "إدارة الطلاب",
+          "manage-billing": "إدارة الفواتير والاشتراكات"
+        },
+        "save": "حفظ المساعد",
+        "cancel": "إلغاء"
+      },
+      "deleteDialog": {
+        "title": "حذف المساعد؟",
+        "description": "هل أنت متأكد من رغبتك في حذف المساعد \"{name}\"؟ لا يمكن التراجع عن هذا الإجراء.",
+        "cancel": "إلغاء",
+        "confirm": "تأكيد الحذف"
+      },
+      "resetPasswordDialog": {
+        "title": "إعادة تعيين كلمة المرور",
+        "description": "حدد كلمة مرور جديدة للمساعد \"{name}\".",
+        "newPasswordLabel": "كلمة المرور الجديدة",
+        "newPasswordPlaceholder": "أدخل كلمة المرور الجديدة",
+        "cancel": "إلغاء",
+        "confirm": "حفظ كلمة المرور"
+      }
+    },
+    "platformInfo": {
+      "communication": {
+        "title": "أرقام التواصل وقنوات الاتصال",
+        "subtitle": "إدارة أرقام هاتف الدعم الفني وروابط التواصل الاجتماعي",
+        "edit": "تعديل",
+        "save": "حفظ التغييرات",
+        "cancel": "إلغاء",
+        "reset": "استعادة الافتراضي",
+        "addLink": "إضافة رابط",
+        "customLinksTitle": "روابط مخصصة إضافية",
+        "fields": {
+          "supportPhone": "رقم هاتف الدعم",
+          "whatsappPhone": "رقم هاتف الواتساب",
+          "facebookUrl": "رابط الفيسبوك",
+          "instagramUrl": "رابط الإنستغرام",
+          "tiktokUrl": "رابط التيك توك"
+        },
+        "addLinkDialog": {
+          "title": "إضافة رابط تواصل جديد",
+          "description": "أدخل عنوان الرابط واللابل المخصص للظهور على المنصة.",
+          "labelField": "عنوان الرابط (الاسم)",
+          "labelPlaceholder": "مثال: قناة التليجرام الرسمية",
+          "urlField": "رابط URL",
+          "urlPlaceholder": "https://t.me/example",
+          "validationRequired": "يرجى كتابة اسم الرابط والـ URL.",
+          "cancel": "إلغاء",
+          "confirm": "إضافة الرابط"
+        }
+      },
+      "whoWeAre": {
+        "title": "من نحن",
+        "subtitle": "نبذة ترحيبية وتعريفية عن المنصة ورؤيتها التعليمية",
+        "edit": "تعديل",
+        "save": "حفظ التغييرات",
+        "cancel": "إلغاء",
+        "reset": "استعادة الافتراضي",
+        "placeholder": "أدخل نبذة تعريفية عن المنصة بأسلوب ماركداون..."
+      },
+      "terms": {
+        "title": "الشروط والأحكام",
+        "subtitle": "قواعد واستخدام المنصة وحقوق الملكية الفكرية",
+        "edit": "تعديل",
+        "save": "حفظ التغييرات",
+        "cancel": "إلغاء",
+        "reset": "استعادة الافتراضي",
+        "placeholder": "أدخل الشروط والأحكام بأسلوب ماركداون..."
+      }
+    },
+    "announcements": {
+      "title": "الإعلانات والتنويهات",
+      "subtitle": "إدارة الشريط الإعلاني والإشعارات البارزة على المنصة",
+      "addAnnouncement": "إعلـان جديد",
+      "resetAnnouncements": "استعادة الافتراضي",
+      "activeCountBadge": "{count} / {max} نشط",
+      "noAnnouncements": "لا توجد إعلانات مضافة حالياً.",
+      "deactivatedNotice": "تم إلغاء تفعيل الإعلان القديم \"{name}\" تلقائياً للحفاظ على حد الـ 3 إعلانات النشطة.",
+      "statusActive": "نشط",
+      "statusInactive": "غير نشط",
+      "columns": {
+        "cover": "الغلاف",
+        "title": "عنوان الإعلان",
+        "url": "الرابط",
+        "status": "الحالة",
+        "actions": "الإجراءات"
+      },
+      "actions": {
+        "viewDetails": "عرض التفاصيل",
+        "edit": "تعديل الإعلان",
+        "markActive": "تفعيل الإعلان",
+        "markInactive": "إلغاء التفعيل",
+        "delete": "حذف الإعلان"
+      },
+      "dialog": {
+        "titleAdd": "إنشاء إعلان جديد",
+        "titleEdit": "تعديل بيانات الإعلان",
+        "descriptionHint": "أدخل صورة الغلاف، العنوان الرئيسي، والشرح التفصيلي للإعلان أدناه.",
+        "coverImageLabel": "صورة غلاف الإعلان",
+        "uploadCoverPrompt": "انقر هنا أو اسحب صورة الغلاف لتحميلها",
+        "uploadCoverFormats": "PNG, JPG, WEBP بحجم أقصى 5MB",
+        "changeCoverImage": "تغيير صورة الغلاف",
+        "imageUrlPlaceholder": "أو أدخل رابط صورة مباشر (URL)",
+        "titleLabel": "عنوان الإعلان",
+        "titlePlaceholder": "مثال: انطلاق دورات المراجعة النهائية",
+        "titleRequired": "يرجى كتابة عنوان الإعلان.",
+        "descriptionLabel": "تفاصيل وشرح الإعلان",
+        "descriptionPlaceholder": "اكتب الشرح التفصيلي للإعلان هنا...",
+        "descriptionRequired": "يرجى كتابة تفاصيل الإعلان.",
+        "urlLabel": "الرابط الخارجي أو التفصيلي",
+        "urlPlaceholder": "https://rewaa.edu/offers/term-2",
+        "optional": "اختياري",
+        "maxActiveWarningTitle": "تنبيه الحد الأقصى للإعلانات النشطة",
+        "maxActiveWarningDesc": "تفعيل هذا الإعلان سيؤدي تلقائياً إلى إلغاء تفعيل الإعلان \"{name}\". يمكنك إعادة تفعيله لاحقاً.",
+        "save": "حفظ الإعلان",
+        "cancel": "إلغاء"
+      },
+      "detailsDialog": {
+        "active": "نشط حالياً على المنصة",
+        "inactive": "غير نشط",
+        "link": "الرابط المرتبط"
+      },
+      "deleteDialog": {
+        "title": "حذف الإعلان؟",
+        "description": "هل أنت متأكد من رغبتك في حذف الإعلان \"{title}\"؟ لا يمكن التراجع عن هذا الإجراء.",
+        "cancel": "إلغاء",
+        "confirm": "تأكيد الحذف"
+      }
+    }
   }
 }
