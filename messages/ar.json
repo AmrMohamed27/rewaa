@@ -346,16 +346,19 @@
       "teacher": "المعلم",
       "grade": "المرحلة الدراسية",
       "subject": "المادة",
-      "period": "نظام الاشتراكات",
+      "period": "تصنيف الكورسات",
       "venue": "مكان الحضور",
       "createdAt": "تاريخ الإنشاء",
       "timeLimit": "مدة الصلاحية",
       "timeLimitDays": "{days, plural, =0 {لا أيام} zero {لا أيام} one {يوم واحد} two {يومين} few {{days} أيام} many {{days} يوماً} other {{days} يوم}}",
       "noTimeLimit": "وصول دائم غير محدود",
-      "groupsSplit": "تقسيم مجموعات",
-      "groupsSplitYes": "مقسم لمجموعات",
-      "groupsSplitNo": "مجموعة واحدة",
+      "sectionsSplit": "تقسيم الأقسام",
+      "sectionsSplitYes": "مقسم لأقسام",
+      "sectionsSplitNo": "قسم واحد",
       "offerLabel": "العرض المتاح",
+      "offerPeriod": "فترة العرض",
+      "offerStartDate": "بداية العرض",
+      "offerEndDate": "نهاية العرض",
       "previewVideo": "الفيديو التعريفي",
       "noPreviewVideo": "لا يوجد فيديو تعريفي لهذه الدورة",
       "totalSections": "{count, plural, =0 {لا أقسام} zero {لا أقسام} one {قسم واحد} two {قسمين} few {{count} أقسام} many {{count} قسمًا} other {{count} قسم}}",
@@ -405,7 +408,14 @@
       "periodOptions": {
         "monthly": "شهري",
         "yearly": "سنوي",
-        "termBased": "ترم"
+        "termBased": "ترم",
+        "addPeriod": "إضافة تصنيف جديد",
+        "addPeriodDialogTitle": "إضافة تصنيف كورس جديد",
+        "addPeriodDialogDesc": "أدخل اسم التصنيف الجديد الذي تريد إضافته وتطبيقه على هذا الكورس.",
+        "periodNameLabel": "اسم التصنيف",
+        "periodNamePlaceholder": "مثال: فصل دراسي صيفي، 6 أشهر...",
+        "cancel": "إلغاء",
+        "savePeriod": "إضافة التصنيف"
       },
       "currencies": {
         "EGP": "جنيه مصري (EGP)",
@@ -433,8 +443,8 @@
           "description": "تفاصيل الدورة الأساسية كالعنوان والشرح ورابط الفيديو التعريفي وصورة الغلاف."
         },
         "categoryInfo": {
-          "title": "معلومات التصنيف",
-          "description": "المرحلة الدراسية، المادة العلمية، اسم المعلم المحاضر، ونظام الاشتراك."
+          "title": "إعدادات التصنيف",
+          "description": "المرحلة الدراسية، المادة العلمية، اسم المعلم المحاضر، وتصنيف الكورس."
         },
         "priceInfo": {
           "title": "معلومات السعر",
@@ -460,9 +470,10 @@
         "subject": "المادة",
         "selectSubject": "اختر المادة...",
         "teacherName": "اسم المعلم / المحاضر",
+        "selectTeacher": "اختر المعلم...",
         "teacherNamePlaceholder": "مثال: د. أحمد حسن",
-        "period": "نظام الاشتراك",
-        "selectPeriod": "اختر نظام الاشتراك...",
+        "period": "تصنيف الكورس",
+        "selectPeriod": "اختر تصنيف الكورس...",
         "isFree": "دورة مجانية",
         "isFreeSubtitle": "قم بالتفعيل إذا كانت الدورة متاح مشاهدتها للطلاب مجاناً بدون رسوم.",
         "coursePrice": "سعر الدورة",
@@ -470,12 +481,14 @@
         "hasOffer": "يوجد عرض / خصم",
         "hasOfferSubtitle": "قم بالتفعيل لتحديد نسبة مئوية لخصم السعر الأصلي للدورة.",
         "offerPercentage": "نسبة الخصم (%)",
+        "offerStartDate": "تاريخ بداية العرض",
+        "offerEndDate": "تاريخ نهاية العرض",
         "hasTimeLimit": "تحديد مدة صلاحية الوصول",
         "hasTimeLimitSubtitle": "تقييد الفترة الزمنية المتاحة للطالب لمشاهدة الدورة بعد الاشتراك.",
         "timeLimitValue": "مدة الصلاحية (بالأيام)",
         "timeLimitDaysSuffix": "أيام",
-        "isSplitToGroups": "تقسيم المشتركين إلى مجموعات",
-        "isSplitToGroupsSubtitle": "تنظيم الطلاب المنضمين للدورة في مجموعات دراسية منفصلة.",
+        "isSplitToSections": "تقسيم الدروس إلى أقسام",
+        "isSplitToSectionsSubtitle": "قم بالتفعيل لتقسيم دروس الدورة إلى أقسام متعددة بدلاً من قسم واحد رئيسي.",
         "venue": "مكان الحضور",
         "venueSubtitle": "اختر ما إذا كانت الدورة تدرس أونلاين فقط، أم في السنتر، أم متاحة بالخيارين."
       },
@@ -506,6 +519,9 @@
         "subtitle": "قم بإضافة الأقسام، الدروس، الفيديوهات، والامتحانات لبناء محتوى الدورة التعليمية المتكامل.",
         "noSections": "لم يتم إضافة أي أقسام بعد. انقر على 'إضافة قسم' أعلاه للبدء في بناء المحتوى.",
         "noLessons": "لم يتم إضافة دروس في هذا القسم بعد.",
+        "pdfsBadge": "ملفات ({count})",
+        "examLinkedBadge": "مرتبط بامتحان",
+        "scheduledBadge": "مجدول",
         "addSectionDialog": {
           "title": "إضافة قسم جديد",
           "subtitle": "أدخل تفاصيل القسم وشروط الامتحانات.",
@@ -544,10 +560,10 @@
             "courseDependent": "ربط هذا الدرس مباشرة بدورة تعليمية موجودة."
           },
           "typeOptions": {
-            "videoAndText": "فيديو وشرح مكتوب",
-            "videoAndTextDesc": "درس يحتوي على محاضرة مرئية بالإضافة إلى محتوى نصي",
-            "text": "شرح مكتوب فقط",
-            "textDesc": "درس يقتصر على الشرح النصي والمواد القراءية فقط"
+            "videoAndText": "فيديو وملفات",
+            "videoAndTextDesc": "درس يحتوي على محاضرة مرئية بالإضافة إلى ملفات",
+            "text": "ملفات فقط",
+            "textDesc": "درس يقتصر على الملفات فقط"
           },
           "lessonTitle": "عنوان الدرس",
           "lessonTitlePlaceholder": "مثال: الدرس الأول: المعادلات الأساسية",
@@ -561,6 +577,7 @@
           "gradeLevel": "المرحلة الدراسية",
           "subject": "المادة",
           "teacherName": "اسم المعلم",
+          "selectTeacher": "اختر المعلم...",
           "teacherNamePlaceholder": "مثال: د. أحمد حسن",
           "hasPdfAttachments": "إرفاق ملفات PDF",
           "hasPdfAttachmentsSubtitle": "عند تفعيل هذا الخيار، يجب إرفاق ملف PDF واحد على الأقل للطلاب.",
@@ -604,7 +621,7 @@
           "subtitle": "إنشاء محتوى الامتحان وتحديد درجات النجاح.",
           "targetSection": "القسم التابع له",
           "selectSection": "اختر القسم...",
-          "examTitle": "عنوان الامتحان",
+          "examTitle": "اسم الامتحان",
           "examTitlePlaceholder": "مثال: امتحان شامل على القسم الأول",
           "passingScore": "نسبة النجاح (%)",
           "totalGrade": "الدرجة الكلية"
@@ -702,7 +719,7 @@
       "editSubtitle": "تعديل تفاصيل الامتحان، الحد الأقصى للأسئلة والإعدادات.",
       "sections": {
         "basicInfo": "البيانات الأساسية",
-        "basicInfoDesc": "حدد عنوان الامتحان، الوصف التفصيلي، المدة الزمنية، نسبة النجاح، والحد الأقصى للأسئلة.",
+        "basicInfoDesc": "حدد اسم الامتحان، الوصف التفصيلي، المدة الزمنية، نسبة النجاح، والحد الأقصى للأسئلة.",
         "academic": "البيانات الأكاديمية والمعلم",
         "academicDesc": "اختر المرحلة الدراسية، المادة العلمية، واسم المعلم المسؤول.",
         "advanced": "الإعدادات المتقدمة للامتحان",
@@ -711,11 +728,11 @@
         "classificationDesc": "حدد ما إذا كان الامتحان مستقلاً أو مرتبطاً بدورة، فصل، أو درس معين."
       },
       "fields": {
-        "title": "عنوان الامتحان",
+        "title": "اسم الامتحان",
         "titlePlaceholder": "مثال: امتحان الفيزياء الشامل - منتصف القسم",
         "description": "الوصف والتعليمات",
         "descriptionPlaceholder": "اكتب تعليمات الامتحان، الضوابط، أو نطاق الأسئلة...",
-        "triesAllowed": "عدد محاولات الإجابة المتاحة",
+        "triesAllowed": "عدد المحاولات المسموح بها",
         "durationMinutes": "مدة الامتحان (بالدقائق)",
         "passingPercentage": "درجة النجاح (%)",
         "numberOfQuestions": "الحد الأقصى لعدد الأسئلة",
@@ -724,6 +741,7 @@
         "subject": "المادة الدراسية",
         "selectSubject": "اختر المادة...",
         "teacherName": "اسم المعلم / المحاضر",
+        "selectTeacher": "اختر المعلم...",
         "teacherNamePlaceholder": "مثال: أ. محمد عبد المعبود",
         "category": "تصنيف الامتحان",
         "selectCategory": "اختر التصنيف...",
@@ -1013,8 +1031,8 @@
       "titleDesc": "العنوان (ي - أ)"
     },
     "card": {
-      "videoText": "فيديو وشرح مكتوب",
-      "textOnly": "شرح مكتوب فقط",
+      "videoText": "فيديو وملفات",
+      "textOnly": "ملفات فقط",
       "independent": "درس مستقل",
       "courseDependent": "دورة: {courseTitle}",
       "published": "منشور",

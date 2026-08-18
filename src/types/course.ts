@@ -1,4 +1,4 @@
-export type CoursePeriod = "monthly" | "yearly" | "termBased";
+export type CoursePeriod = "monthly" | "yearly" | "termBased" | (string & {});
 export type CourseVenue = "center" | "online" | "all";
 export type LessonType = "videoAndText" | "text";
 export type LessonCategory = "independent" | "course-dependent";
@@ -50,8 +50,11 @@ export interface CourseSection {
   id: string;
   title: string;
   isDraft: boolean;
+  status?: LessonPublishStatus;
+  scheduledPublishDate?: string;
   isLinkedToExam: boolean;
   linkedExamId?: string; // FK → Exam.id (replaces embedded ExamContent)
+  linkedExamTitle?: string;
   isRequiredPassExamForNextSection: boolean;
   lessons: Lesson[];
 }
@@ -73,9 +76,11 @@ export interface Course {
   currency: string;
   hasOffer: boolean;
   offerPercentage?: string;
+  offerStartDate?: string;
+  offerEndDate?: string;
   hasTimeLimit: boolean;
   timeLimitValue?: number;
-  isSplitToGroups: boolean;
+  isSplitToSections: boolean;
   venue: CourseVenue;
   numberOfParticipants: number;
   isDraft: boolean;

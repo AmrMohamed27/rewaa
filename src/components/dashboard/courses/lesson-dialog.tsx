@@ -1,8 +1,7 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
-import { useState, useEffect } from "react";
-import { useTranslations } from "next-intl";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -11,10 +10,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { FormToggleSetting } from "@/components/ui/form-toggle-setting";
 import { FormMarkdownEditor } from "@/components/ui/form-markdown-editor";
+import { FormRadioGroup } from "@/components/ui/form-radio-group";
+import { FormToggleSetting } from "@/components/ui/form-toggle-setting";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -22,32 +21,32 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 import {
   CourseSection,
+  CourseVenue,
   Lesson,
   LessonAttachment,
-  CourseVenue,
-  LessonType,
+  LessonCategory,
   LessonPublishStatus,
+  LessonType,
 } from "@/types/course";
 import {
-  Video,
-  FileText,
-  Upload,
-  FileCheck,
-  ImageIcon,
-  GraduationCap,
-  BookOpen,
-  User,
-  MapPin,
-  Calendar,
-  Lock,
-  Trash2,
   AlertCircle,
+  BookOpen,
+  Calendar,
+  FileCheck,
+  FileText,
+  ImageIcon,
+  MapPin,
   Sparkles,
+  Trash2,
+  Upload,
+  Video,
 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
 
 interface ParentCourseContext {
   grade: string;
@@ -63,6 +62,7 @@ interface LessonDialogProps {
   initialLesson?: Lesson | null;
   initialSectionId?: string;
   parentCourseContext: ParentCourseContext;
+  hideLessonCategory?: boolean;
   onSave: (sectionId: string, lesson: Lesson) => void;
 }
 
@@ -81,12 +81,11 @@ export function LessonDialog({
   initialLesson,
   initialSectionId,
   parentCourseContext,
+  hideLessonCategory = true,
   onSave,
 }: LessonDialogProps) {
   const t = useTranslations("courses.new.step2.addLessonDialog");
   const tCourses = useTranslations("courses");
-  const tGrades = useTranslations("courses.new.grades");
-  const tSubjects = useTranslations("courses.new.subjects");
 
   // Form State
   const [targetSectionId, setTargetSectionId] = useState("");
@@ -110,6 +109,7 @@ export function LessonDialog({
 
   // Organization and publish status
   const [venue, setVenue] = useState<CourseVenue>(parentCourseContext.venue || "all");
+  const [lessonCategory, setLessonCategory] = useState<LessonCategory>("course-dependent");
   const [publishStatus, setPublishStatus] = useState<LessonPublishStatus>("published");
   const [scheduledPublishDate, setScheduledPublishDate] = useState("");
 
@@ -142,6 +142,7 @@ export function LessonDialog({
         setIsRequiredPassExam(Boolean(initialLesson.isRequiredPassExam));
 
         setVenue(initialLesson.venue || parentCourseContext.venue || "all");
+        setLessonCategory(initialLesson.lessonCategory || "course-dependent");
         setPublishStatus(initialLesson.publishStatus || "published");
         setScheduledPublishDate(initialLesson.scheduledPublishDate || "");
       } else {
@@ -164,6 +165,7 @@ export function LessonDialog({
         setIsRequiredPassExam(false);
 
         setVenue(parentCourseContext.venue || "all");
+        setLessonCategory("course-dependent");
         setPublishStatus("published");
         setScheduledPublishDate("");
       }
@@ -267,37 +269,13 @@ export function LessonDialog({
 
       // Organization & publish status
       venue,
-      lessonCategory: "course-dependent", // Locked to course-dependent when creating inside course
+      lessonCategory,
       publishStatus,
       scheduledPublishDate: publishStatus === "scheduled" ? scheduledPublishDate : undefined,
     };
 
     onSave(targetSectionId, updatedLesson);
     onOpenChange(false);
-  };
-
-  // Helper for grade translation
-  const getGradeDisplay = (gKey: string) => {
-    if (!gKey) return "";
-    try {
-      return tGrades.has(gKey as Parameters<typeof tGrades.has>[0])
-        ? tGrades(gKey as Parameters<typeof tGrades>[0])
-        : gKey;
-    } catch {
-      return gKey;
-    }
-  };
-
-  // Helper for subject translation
-  const getSubjectDisplay = (sKey: string) => {
-    if (!sKey) return "";
-    try {
-      return tSubjects.has(sKey as Parameters<typeof tSubjects.has>[0])
-        ? tSubjects(sKey as Parameters<typeof tSubjects>[0])
-        : sKey;
-    } catch {
-      return sKey;
-    }
   };
 
   return (
@@ -318,7 +296,7 @@ export function LessonDialog({
               {t("targetSection")} <span className="text-destructive">*</span>
             </label>
             <Select value={targetSectionId} onValueChange={setTargetSectionId} required>
-              <SelectTrigger id="les-target-sec">
+              <SelectTrigger id="les-target-sec" className="w-full">
                 <SelectValue placeholder={t("selectSection")} />
               </SelectTrigger>
               <SelectContent>
@@ -494,57 +472,6 @@ export function LessonDialog({
             </div>
           </div>
 
-          {/* GROUP 4: ACADEMIC INFORMATION (AUTO-FILLED FROM COURSE) */}
-          <div className="space-y-3 p-4 rounded-xl border bg-primary/5 border-primary/20">
-            <div className="flex items-center justify-between">
-              <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
-                <GraduationCap className="size-4 text-primary" />
-                {t("groups.academic")}
-              </h3>
-              <span className="text-[11px] font-semibold text-primary bg-primary/10 px-2.5 py-1 rounded-full border border-primary/20 flex items-center gap-1">
-                <Lock className="size-3" />
-                {t("autoFilledBadge")}
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              {/* Grade */}
-              <div className="flex flex-col gap-1 bg-background p-3 rounded-lg border">
-                <span className="text-xs text-muted-foreground font-medium flex items-center gap-1">
-                  <GraduationCap className="size-3.5" />
-                  {t("gradeLevel")}
-                </span>
-                <span className="text-sm font-bold text-foreground truncate">
-                  {getGradeDisplay(parentCourseContext.grade) || parentCourseContext.grade || "N/A"}
-                </span>
-              </div>
-
-              {/* Subject */}
-              <div className="flex flex-col gap-1 bg-background p-3 rounded-lg border">
-                <span className="text-xs text-muted-foreground font-medium flex items-center gap-1">
-                  <BookOpen className="size-3.5" />
-                  {t("subject")}
-                </span>
-                <span className="text-sm font-bold text-foreground truncate">
-                  {getSubjectDisplay(parentCourseContext.subject) ||
-                    parentCourseContext.subject ||
-                    "N/A"}
-                </span>
-              </div>
-
-              {/* Teacher */}
-              <div className="flex flex-col gap-1 bg-background p-3 rounded-lg border">
-                <span className="text-xs text-muted-foreground font-medium flex items-center gap-1">
-                  <User className="size-3.5" />
-                  {t("teacherName")}
-                </span>
-                <span className="text-sm font-bold text-foreground truncate">
-                  {parentCourseContext.teacherName || "N/A"}
-                </span>
-              </div>
-            </div>
-          </div>
-
           {/* GROUP 5: ATTACHMENTS AND EXAMS */}
           <div className="space-y-4 p-4 rounded-xl border bg-muted/20">
             <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
@@ -576,7 +503,7 @@ export function LessonDialog({
 
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-semibold text-foreground">
-                    PDF Files ({pdfFiles.length})
+                    {t("pdfFilesCount", { count: pdfFiles.length })}
                   </span>
                   <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-primary/10 hover:bg-primary/20 text-primary text-xs font-semibold transition-colors">
                     <Upload className="size-3.5" />
@@ -615,7 +542,7 @@ export function LessonDialog({
                   </div>
                 ) : (
                   <p className="text-xs text-muted-foreground italic text-center py-2 border border-dashed rounded-md">
-                    No PDF files attached yet. Click upload to attach at least 1 PDF.
+                    {t("noPdfFiles")}
                   </p>
                 )}
               </div>
@@ -635,7 +562,7 @@ export function LessonDialog({
               <div className="space-y-3 p-3 rounded-lg bg-background border animate-in fade-in slide-in-from-top-1">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-semibold text-foreground">
-                    Explanatory Images ({imageFiles.length})
+                    {t("explanatoryImagesCount", { count: imageFiles.length })}
                   </span>
                   <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-primary/10 hover:bg-primary/20 text-primary text-xs font-semibold transition-colors">
                     <Upload className="size-3.5" />
@@ -675,7 +602,7 @@ export function LessonDialog({
                   </div>
                 ) : (
                   <p className="text-xs text-muted-foreground italic text-center py-2 border border-dashed rounded-md">
-                    No explanatory images added yet.
+                    {t("noExplanatoryImages")}
                   </p>
                 )}
               </div>
@@ -727,72 +654,59 @@ export function LessonDialog({
           </div>
 
           {/* GROUP 6: ORGANIZATION AND PUBLISH STATUS */}
-          <div className="space-y-4 p-4 rounded-xl border bg-muted/20">
+          <div className="space-y-5 p-4 rounded-xl border bg-muted/20">
             <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
               <MapPin className="size-4 text-primary" />
               {t("groups.organization")}
             </h3>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {/* Venue */}
-              <div className="flex flex-col gap-2">
-                <label htmlFor="les-venue-select" className="text-sm font-medium text-foreground">
-                  {t("venue")}
-                </label>
-                <Select value={venue} onValueChange={(v) => setVenue(v as CourseVenue)}>
-                  <SelectTrigger id="les-venue-select">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="online">{tCourses("venue.online")}</SelectItem>
-                    <SelectItem value="center">{tCourses("venue.center")}</SelectItem>
-                    <SelectItem value="all">{tCourses("venue.all")}</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+            {/* Venue Radio Group */}
+            <FormRadioGroup
+              name="les-venue"
+              title={t("venue")}
+              value={venue}
+              onValueChange={(val) => setVenue(val as CourseVenue)}
+              gridClassName="grid-cols-1 sm:grid-cols-3"
+              options={[
+                { id: "online", label: tCourses("venue.online") },
+                { id: "center", label: tCourses("venue.center") },
+                { id: "all", label: tCourses("venue.all") },
+              ]}
+            />
 
-              {/* Lesson Category (Disabled / Locked to course-dependent when in course) */}
-              <div className="flex flex-col gap-2">
-                <label className="text-sm font-medium text-foreground flex items-center justify-between">
-                  <span>{t("lessonCategory")}</span>
-                  <span className="text-[10px] text-muted-foreground flex items-center gap-1 font-normal">
-                    <Lock className="size-3 text-muted-foreground" />
-                    {t("locked")}
-                  </span>
-                </label>
-                <div className="h-10 px-3 py-2 rounded-md border bg-muted/50 text-muted-foreground text-sm font-medium flex items-center justify-between">
-                  <span>{t("categoryOptions.courseDependent")}</span>
-                  <Lock className="size-3.5 opacity-60" />
-                </div>
-                <span className="text-[11px] text-muted-foreground">
-                  {t("categoryDisabledNote")}
-                </span>
-              </div>
-            </div>
+            {/* Publish Status Radio Group */}
+            <FormRadioGroup
+              name="les-publish-status"
+              title={t("publishStatus")}
+              value={publishStatus}
+              onValueChange={(val) => setPublishStatus(val as LessonPublishStatus)}
+              gridClassName="grid-cols-1 sm:grid-cols-3"
+              options={[
+                { id: "published", label: t("statusOptions.published") },
+                { id: "draft", label: t("statusOptions.draft") },
+                { id: "scheduled", label: t("statusOptions.scheduled") },
+              ]}
+            />
 
-            {/* Publish Status */}
-            <div className="flex flex-col gap-2">
-              <label htmlFor="les-publish-status" className="text-sm font-medium text-foreground">
-                {t("publishStatus")}
-              </label>
-              <Select
-                value={publishStatus}
-                onValueChange={(val) => setPublishStatus(val as LessonPublishStatus)}
-              >
-                <SelectTrigger id="les-publish-status">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="published">{t("statusOptions.published")}</SelectItem>
-                  <SelectItem value="draft">{t("statusOptions.draft")}</SelectItem>
-                  <SelectItem value="scheduled">{t("statusOptions.scheduled")}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            {/* Lesson Category Radio Group */}
+            {!hideLessonCategory && (
+              <FormRadioGroup
+                name="les-category"
+                title={t("lessonCategory")}
+                subtitle={t("categoryDisabledNote")}
+                value={lessonCategory}
+                onValueChange={(val) => setLessonCategory(val as LessonCategory)}
+                gridClassName="grid-cols-1 sm:grid-cols-2"
+                options={[
+                  { id: "course-dependent", label: t("categoryOptions.courseDependent") },
+                  { id: "independent", label: t("categoryOptions.independent") },
+                ]}
+              />
+            )}
 
             {/* Scheduled Date Time Input */}
             {publishStatus === "scheduled" && (
-              <div className="flex flex-col gap-2 animate-in fade-in slide-in-from-top-1">
+              <div className="flex flex-col gap-2 animate-in fade-in slide-in-from-top-1 pt-2">
                 <label
                   htmlFor="les-scheduled-date"
                   className="text-sm font-medium text-foreground flex items-center gap-1.5"

@@ -10,6 +10,19 @@ interface CourseSidebarProps {
 
 export function CourseSidebar({ course }: CourseSidebarProps) {
   const t = useTranslations("courses");
+  const tNew = useTranslations("courses.new");
+
+  const formatGrade = (gradeKey: string) => {
+    return tNew.has(`grades.${gradeKey}` as Parameters<typeof tNew.has>[0])
+      ? tNew(`grades.${gradeKey}` as Parameters<typeof tNew>[0])
+      : gradeKey;
+  };
+
+  const formatSubject = (subjectKey: string) => {
+    return tNew.has(`subjects.${subjectKey}` as Parameters<typeof tNew.has>[0])
+      ? tNew(`subjects.${subjectKey}` as Parameters<typeof tNew>[0])
+      : subjectKey;
+  };
 
   return (
     <DashboardCard className="p-6 space-y-4">
@@ -25,17 +38,21 @@ export function CourseSidebar({ course }: CourseSidebarProps) {
 
         <div className="flex justify-between py-1 border-b border-border/40">
           <span className="text-muted-foreground">{t("details.grade")}</span>
-          <span className="font-semibold text-foreground">{course.grade}</span>
+          <span className="font-semibold text-foreground">{formatGrade(course.grade)}</span>
         </div>
 
         <div className="flex justify-between py-1 border-b border-border/40">
           <span className="text-muted-foreground">{t("details.subject")}</span>
-          <span className="font-semibold text-foreground">{course.subject}</span>
+          <span className="font-semibold text-foreground">{formatSubject(course.subject)}</span>
         </div>
 
         <div className="flex justify-between py-1 border-b border-border/40">
           <span className="text-muted-foreground">{t("details.period")}</span>
-          <span className="font-semibold text-foreground">{t(`period.${course.period}`)}</span>
+          <span className="font-semibold text-foreground">
+            {["monthly", "yearly", "termBased"].includes(course.period)
+              ? t(`period.${course.period}`)
+              : course.period}
+          </span>
         </div>
 
         <div className="flex justify-between py-1 border-b border-border/40">
@@ -59,17 +76,35 @@ export function CourseSidebar({ course }: CourseSidebarProps) {
         </div>
 
         <div className="flex justify-between py-1 border-b border-border/40">
-          <span className="text-muted-foreground">{t("details.groupsSplit")}</span>
+          <span className="text-muted-foreground">{t("details.sectionsSplit")}</span>
           <span className="font-semibold text-foreground">
-            {course.isSplitToGroups ? t("details.groupsSplitYes") : t("details.groupsSplitNo")}
+            {course.isSplitToSections
+              ? t("details.sectionsSplitYes")
+              : t("details.sectionsSplitNo")}
           </span>
         </div>
 
-        {course.hasOffer && course.offerPercentage && (
-          <div className="flex justify-between py-1 border-b border-border/40">
-            <span className="text-muted-foreground">{t("details.offerLabel")}</span>
-            <span className="font-bold text-emerald-600">{course.offerPercentage}</span>
-          </div>
+        {course.hasOffer && (
+          <>
+            {course.offerPercentage && (
+              <div className="flex justify-between py-1 border-b border-border/40">
+                <span className="text-muted-foreground">{t("details.offerLabel")}</span>
+                <span className="font-bold text-emerald-600">{course.offerPercentage}</span>
+              </div>
+            )}
+            {course.offerStartDate && (
+              <div className="flex justify-between py-1 border-b border-border/40">
+                <span className="text-muted-foreground">{t("details.offerStartDate")}</span>
+                <span className="font-semibold text-foreground">{course.offerStartDate}</span>
+              </div>
+            )}
+            {course.offerEndDate && (
+              <div className="flex justify-between py-1 border-b border-border/40">
+                <span className="text-muted-foreground">{t("details.offerEndDate")}</span>
+                <span className="font-semibold text-foreground">{course.offerEndDate}</span>
+              </div>
+            )}
+          </>
         )}
       </div>
     </DashboardCard>

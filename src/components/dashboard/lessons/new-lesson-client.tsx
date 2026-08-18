@@ -18,6 +18,8 @@ import {
 } from "@/components/ui/select";
 import { getStoredCourses } from "@/lib/courses-storage";
 import { getStoredLessons, saveStoredLessons } from "@/lib/lessons-storage";
+import { getStoredTeachers } from "@/lib/settings-storage";
+import { Teacher } from "@/types/settings";
 import {
   Course,
   Lesson,
@@ -71,6 +73,16 @@ export function NewLessonClient({ initialLessonId }: NewLessonClientProps = {}) 
 
   // Load available courses for selection when category is course-dependent
   const [courses, setCourses] = useState<Course[]>([]);
+  const [availableTeachers, setAvailableTeachers] = useState<Teacher[]>([]);
+
+  useEffect(() => {
+    const loadTeachers = () => {
+      setAvailableTeachers(getStoredTeachers());
+    };
+    loadTeachers();
+    window.addEventListener("rewaa_teachers_updated", loadTeachers);
+    return () => window.removeEventListener("rewaa_teachers_updated", loadTeachers);
+  }, []);
 
   // Form State
   const [type, setType] = useState<LessonType>("videoAndText");
@@ -614,21 +626,27 @@ export function NewLessonClient({ initialLessonId }: NewLessonClientProps = {}) 
             </Select>
           </div>
 
-          {/* Teacher Name */}
+          {/* Teacher Select */}
           <div className="flex flex-col gap-2">
             <label
-              htmlFor="academic-teacher"
+              htmlFor="academic-teacher-select"
               className="text-sm font-medium text-foreground flex items-center gap-1.5"
             >
               <User className="size-4 text-muted-foreground" />
               {tDialog("teacherName")}
             </label>
-            <Input
-              id="academic-teacher"
-              value={teacherName}
-              onChange={(e) => setTeacherName(e.target.value)}
-              placeholder={tDialog("teacherNamePlaceholder")}
-            />
+            <Select value={teacherName} onValueChange={(val) => setTeacherName(val)}>
+              <SelectTrigger id="academic-teacher-select">
+                <SelectValue placeholder={tDialog("selectTeacher")} />
+              </SelectTrigger>
+              <SelectContent>
+                {availableTeachers.map((tch) => (
+                  <SelectItem key={tch.id} value={tch.name}>
+                    {tch.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Venue */}

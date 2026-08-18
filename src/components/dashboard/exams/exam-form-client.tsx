@@ -51,6 +51,8 @@ import {
 } from "@/components/ui/select";
 import { getStoredCourses } from "@/lib/courses-storage";
 import { getStoredExams, saveStoredExams } from "@/lib/exams-storage";
+import { getStoredTeachers } from "@/lib/settings-storage";
+import { Teacher } from "@/types/settings";
 import { cn } from "@/lib/utils";
 import { Course } from "@/types/course";
 import {
@@ -91,10 +93,20 @@ export function ExamFormClient({ mode, initialData }: ExamFormClientProps) {
 
   // Available courses for linking dropdowns
   const [availableCourses, setAvailableCourses] = React.useState<Course[]>([]);
+  const [availableTeachers, setAvailableTeachers] = React.useState<Teacher[]>([]);
 
   React.useEffect(() => {
     setAvailableCourses(getStoredCourses(locale));
   }, [locale]);
+
+  React.useEffect(() => {
+    const loadTeachers = () => {
+      setAvailableTeachers(getStoredTeachers());
+    };
+    loadTeachers();
+    window.addEventListener("rewaa_teachers_updated", loadTeachers);
+    return () => window.removeEventListener("rewaa_teachers_updated", loadTeachers);
+  }, []);
 
   // Form State - Step 1
   const [title, setTitle] = React.useState(initialData?.title || "");
@@ -383,13 +395,15 @@ export function ExamFormClient({ mode, initialData }: ExamFormClientProps) {
       {/* Main layout: Timeline Sidebar (4 cols) + Form Content (8 cols) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Reusable Vertical Timeline Sidebar */}
-        <FormTimelineSidebar
-          timelineTitle={tCourses("new.timelineTitle")}
-          steps={timelineSteps}
-          currentStep={currentStep}
-          disclaimerTitle={tCourses("new.disclaimerTitle")}
-          disclaimerDescription={tCourses("new.disclaimerDescription")}
-        />
+        <div className="lg:col-span-4 order-2 lg:order-1">
+          <FormTimelineSidebar
+            timelineTitle={tCourses("new.timelineTitle")}
+            steps={timelineSteps}
+            currentStep={currentStep}
+            disclaimerTitle={tCourses("new.disclaimerTitle")}
+            disclaimerDescription={tCourses("new.disclaimerDescription")}
+          />
+        </div>
 
         {/* Main Form Content Area */}
         <main className="lg:col-span-8 order-1 lg:order-2">
@@ -428,7 +442,7 @@ export function ExamFormClient({ mode, initialData }: ExamFormClientProps) {
                   </div>
 
                   {/* Numeric Settings Grid */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 pt-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-6 pt-2">
                     {/* Tries Allowed */}
                     <div className="space-y-2">
                       <Label htmlFor="tries-allowed" className="text-xs font-semibold">
@@ -541,18 +555,27 @@ export function ExamFormClient({ mode, initialData }: ExamFormClientProps) {
                     </Select>
                   </div>
 
-                  {/* Teacher Name */}
+                  {/* Teacher Select */}
                   <div className="space-y-2">
-                    <Label htmlFor="teacher-name" className="font-semibold">
+                    <Label htmlFor="teacher-select" className="font-semibold">
                       {tForm("fields.teacherName")}
                     </Label>
-                    <Input
-                      id="teacher-name"
+                    <Select
                       value={teacherName}
-                      onChange={(e) => setTeacherName(e.target.value)}
-                      placeholder={tForm("fields.teacherNamePlaceholder")}
+                      onValueChange={(val) => setTeacherName(val)}
                       disabled={!isIndependent && isContextLocked}
-                    />
+                    >
+                      <SelectTrigger id="teacher-select">
+                        <SelectValue placeholder={tForm("fields.selectTeacher")} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {availableTeachers.map((tch) => (
+                          <SelectItem key={tch.id} value={tch.name}>
+                            {tch.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
 
                   {/* Exam Category */}

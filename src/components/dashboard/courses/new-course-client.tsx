@@ -15,7 +15,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { getStoredCourses, saveStoredCourses } from "@/lib/courses-storage";
+import {
+  getStoredCourses,
+  getStoredCustomPeriods,
+  saveStoredCourses,
+  saveStoredCustomPeriod,
+} from "@/lib/courses-storage";
+import { getStoredTeachers } from "@/lib/settings-storage";
+import { Teacher } from "@/types/settings";
 import { cn } from "@/lib/utils";
 import { Course } from "@/types/course";
 import "@mdxeditor/editor/style.css";
@@ -30,10 +37,10 @@ import {
   Layers,
   Loader2,
   MapPin,
+  Plus,
   Tag,
   Upload,
   User,
-  Users,
   Video,
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
@@ -75,17 +82,72 @@ export function NewCourseClient({ initialCourseId }: NewCourseClientProps = {}) 
   const [grade, setGrade] = useState("");
   const [subject, setSubject] = useState("");
   const [teacherName, setTeacherName] = useState("");
-  const [period, setPeriod] = useState<"monthly" | "yearly" | "termBased">("monthly");
+  const [period, setPeriod] = useState<string>("monthly");
+  const [customPeriods, setCustomPeriods] = useState<{ id: string; name: string }[]>([]);
+  const [isAddPeriodOpen, setIsAddPeriodOpen] = useState(false);
+  const [newPeriodName, setNewPeriodName] = useState("");
+
+  const handleAddPeriod = () => {
+    const name = newPeriodName.trim();
+    if (!name) return;
+
+    saveStoredCustomPeriod(name);
+
+    setCustomPeriods((prev) =>
+      prev.some((p) => p.id === name) ? prev : [...prev, { id: name, name }],
+    );
+
+    setNewPeriodName("");
+    setIsAddPeriodOpen(false);
+
+    // Delay setting the period to allow the new <SelectItem> to mount in the DOM first
+    setTimeout(() => {
+      setPeriod(name);
+    }, 50);
+  };
+
+  // Teachers state
+  const [availableTeachers, setAvailableTeachers] = useState<Teacher[]>([]);
+
+  useEffect(() => {
+    const loadTeachers = () => {
+      setAvailableTeachers(getStoredTeachers());
+    };
+    loadTeachers();
+    window.addEventListener("rewaa_teachers_updated", loadTeachers);
+    return () => window.removeEventListener("rewaa_teachers_updated", loadTeachers);
+  }, []);
+
+  // Load custom periods from local storage & listen for updates
+  useEffect(() => {
+    const loadPeriods = () => {
+      const stored = getStoredCustomPeriods();
+      if (stored.length > 0) {
+        setCustomPeriods((prev) => {
+          const map = new Map(prev.map((p) => [p.id, p]));
+          stored.forEach((name) => {
+            if (!map.has(name)) map.set(name, { id: name, name });
+          });
+          return Array.from(map.values());
+        });
+      }
+    };
+    loadPeriods();
+    window.addEventListener("rewaa_periods_updated", loadPeriods);
+    return () => window.removeEventListener("rewaa_periods_updated", loadPeriods);
+  }, []);
 
   const [isFree, setIsFree] = useState(false);
   const [coursePrice, setCoursePrice] = useState<number | "">("");
   const [currency, setCurrency] = useState("EGP");
   const [hasOffer, setHasOffer] = useState(false);
   const [offerPercentage, setOfferPercentage] = useState<number | "">("");
+  const [offerStartDate, setOfferStartDate] = useState("");
+  const [offerEndDate, setOfferEndDate] = useState("");
 
   const [hasTimeLimit, setHasTimeLimit] = useState(false);
   const [timeLimitValue, setTimeLimitValue] = useState<number | "">("");
-  const [isSplitToGroups, setIsSplitToGroups] = useState(false);
+  const [isSplitToSections, setIsSplitToSections] = useState(true);
   const [venue, setVenue] = useState<"online" | "center" | "all">("all");
 
   // Active step state: 1 = Info & Price, 2 = Curriculum & Lectures
@@ -113,11 +175,16 @@ export function NewCourseClient({ initialCourseId }: NewCourseClientProps = {}) 
       setTeacherName(existing.teacherName || "");
 
       // Period parsing
-      const exPeriod = (existing.period || "").toLowerCase();
-      if (exPeriod.includes("year")) {
-        setPeriod("yearly");
-      } else if (exPeriod.includes("term")) {
-        setPeriod("termBased");
+      const rawPeriod = existing.period || "";
+      if (["monthly", "yearly", "termBased"].includes(rawPeriod)) {
+        setPeriod(rawPeriod);
+      } else if (rawPeriod) {
+        setCustomPeriods((prev) =>
+          prev.some((p) => p.id === rawPeriod)
+            ? prev
+            : [...prev, { id: rawPeriod, name: rawPeriod }],
+        );
+        setPeriod(rawPeriod);
       } else {
         setPeriod("monthly");
       }
@@ -130,9 +197,13 @@ export function NewCourseClient({ initialCourseId }: NewCourseClientProps = {}) 
         const parsedPct = parseInt(existing.offerPercentage.replace(/\D/g, ""), 10);
         setOfferPercentage(isNaN(parsedPct) ? "" : parsedPct);
       }
+      setOfferStartDate(existing.offerStartDate || "");
+      setOfferEndDate(existing.offerEndDate || "");
       setHasTimeLimit(Boolean(existing.hasTimeLimit));
       setTimeLimitValue(existing.timeLimitValue ?? "");
-      setIsSplitToGroups(Boolean(existing.isSplitToGroups));
+      setIsSplitToSections(
+        existing.isSplitToSections !== undefined ? Boolean(existing.isSplitToSections) : true,
+      );
       setVenue(existing.venue || "all");
 
       // Matching for Grade
@@ -212,11 +283,37 @@ export function NewCourseClient({ initialCourseId }: NewCourseClientProps = {}) 
 
     const existingCourse = existingCourses.find((c) => c.id === courseIdToUse);
     const finalCoverImage = resolveCoverImage();
+    const courseTitle = title || (locale === "ar" ? "مسودة دورة جديدة" : "New Course Draft");
+
+    let finalSections: CourseSection[] = existingCourse?.sections || [];
+    if (!isSplitToSections) {
+      if (finalSections.length === 0) {
+        finalSections = [
+          {
+            id: `sec-default-${courseIdToUse}`,
+            title: courseTitle,
+            isDraft: false,
+            isLinkedToExam: false,
+            isRequiredPassExamForNextSection: false,
+            lessons: [],
+          },
+        ];
+      } else {
+        const allLessons = finalSections.flatMap((s) => s.lessons);
+        finalSections = [
+          {
+            ...finalSections[0],
+            title: courseTitle,
+            lessons: allLessons,
+          },
+        ];
+      }
+    }
 
     const updatedCourse: Course = {
       id: courseIdToUse,
       coverImage: finalCoverImage,
-      title: title || (locale === "ar" ? "مسودة دورة جديدة" : "New Course Draft"),
+      title: courseTitle,
       description: description || "",
       previewVideoLink: previewVideoLink || undefined,
       subject: subject
@@ -234,13 +331,15 @@ export function NewCourseClient({ initialCourseId }: NewCourseClientProps = {}) 
       currency: currency,
       hasOffer: hasOffer,
       offerPercentage: hasOffer && offerPercentage ? `${offerPercentage}%` : undefined,
+      offerStartDate: hasOffer && offerStartDate ? offerStartDate : undefined,
+      offerEndDate: hasOffer && offerEndDate ? offerEndDate : undefined,
       hasTimeLimit: hasTimeLimit,
       timeLimitValue: hasTimeLimit && timeLimitValue ? Number(timeLimitValue) : undefined,
-      isSplitToGroups: isSplitToGroups,
+      isSplitToSections: isSplitToSections,
       venue: venue,
       numberOfParticipants: existingCourse?.numberOfParticipants || 0,
       isDraft: existingCourse ? existingCourse.isDraft : true,
-      sections: existingCourse?.sections || [],
+      sections: finalSections,
     };
 
     try {
@@ -325,27 +424,29 @@ export function NewCourseClient({ initialCourseId }: NewCourseClientProps = {}) 
         </div>
       )}
 
-      {/* Main layout: Sidebar + Form */}
+      {/* Main layout: Sidebar (3 cols) + Form (9 cols) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Reusable Vertical Timeline Sidebar */}
-        <FormTimelineSidebar
-          timelineTitle={t("timelineTitle")}
-          steps={steps}
-          currentStep={currentStep}
-          disclaimerTitle={t("disclaimerTitle")}
-          disclaimerDescription={t("disclaimerDescription")}
-        />
+        <div className="lg:col-span-3 order-2 lg:order-1">
+          <FormTimelineSidebar
+            timelineTitle={t("timelineTitle")}
+            steps={steps}
+            currentStep={currentStep}
+            disclaimerTitle={t("disclaimerTitle")}
+            disclaimerDescription={t("disclaimerDescription")}
+          />
+        </div>
 
-        {/* Main Form Area (8 cols on lg) */}
-        <main className="lg:col-span-8 order-1 lg:order-2">
+        {/* Main Form Area (9 cols on lg) */}
+        <main className="lg:col-span-9 order-1 lg:order-2">
           {currentStep === 1 ? (
-            <form onSubmit={(e) => handleSubmit(e, false)} className="space-y-6">
+            <form onSubmit={(e) => handleSubmit(e, false)} className="space-y-8">
               {/* 1. MAIN INFORMATION */}
               <FormSectionCard
                 title={t("sections.mainInfo.title")}
                 description={t("sections.mainInfo.description")}
                 icon={BookOpen}
-                contentClassName="space-y-4"
+                contentClassName="space-y-8"
               >
                 {/* Title */}
                 <div className="flex flex-col gap-2">
@@ -484,40 +585,61 @@ export function NewCourseClient({ initialCourseId }: NewCourseClientProps = {}) 
                   </Select>
                 </div>
 
-                {/* Teacher Name */}
+                {/* Teacher Select */}
                 <div className="flex flex-col gap-2">
                   <label
-                    htmlFor="teacher-name"
+                    htmlFor="teacher-select"
                     className="text-sm font-medium text-foreground flex items-center gap-1.5"
                   >
                     <User className="size-4 text-muted-foreground" />
                     {t("fields.teacherName")} <span className="text-destructive">*</span>
                   </label>
-                  <Input
-                    id="teacher-name"
-                    value={teacherName}
-                    onChange={(e) => setTeacherName(e.target.value)}
-                    placeholder={t("fields.teacherNamePlaceholder")}
-                    className="h-8 py-2"
-                    required
-                  />
+                  <Select value={teacherName} onValueChange={(val) => setTeacherName(val)}>
+                    <SelectTrigger id="teacher-select" className="w-full">
+                      <SelectValue placeholder={t("fields.selectTeacher")} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {availableTeachers.map((tch) => (
+                        <SelectItem key={tch.id} value={tch.name}>
+                          {tch.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
-                {/* Period - Removed `|| undefined` */}
+                {/* Period */}
                 <div className="flex flex-col gap-2">
                   <label className="text-sm font-medium text-foreground">
                     {t("fields.period")} <span className="text-destructive">*</span>
                   </label>
-                  <Select value={period} onValueChange={(val) => setPeriod(val as typeof period)}>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder={t("fields.selectPeriod")} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="monthly">{t("periodOptions.monthly")}</SelectItem>
-                      <SelectItem value="yearly">{t("periodOptions.yearly")}</SelectItem>
-                      <SelectItem value="termBased">{t("periodOptions.termBased")}</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <div className="flex items-center gap-2">
+                    <Select value={period} onValueChange={(val) => setPeriod(val)}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder={t("fields.selectPeriod")} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="monthly">{t("periodOptions.monthly")}</SelectItem>
+                        <SelectItem value="yearly">{t("periodOptions.yearly")}</SelectItem>
+                        <SelectItem value="termBased">{t("periodOptions.termBased")}</SelectItem>
+                        {customPeriods.map((cp) => (
+                          <SelectItem key={cp.id} value={cp.id}>
+                            {cp.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Button
+                      type="button"
+                      variant="default"
+                      size="icon"
+                      className="shrink-0 h-9 w-9"
+                      onClick={() => setIsAddPeriodOpen(true)}
+                      title={t("periodOptions.addPeriod") || "إضافة فترة جديدة"}
+                    >
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
               </FormSectionCard>
 
@@ -587,27 +709,59 @@ export function NewCourseClient({ initialCourseId }: NewCourseClientProps = {}) 
                   onCheckedChange={setHasOffer}
                 />
 
-                {/* offerPercentage (conditional) */}
+                {/* Offer details (conditional) */}
                 {hasOffer && (
-                  <div className="flex flex-col gap-2 animate-in fade-in slide-in-from-top-1 max-w-sm">
-                    <label
-                      htmlFor="offer-percentage"
-                      className="text-sm font-medium text-foreground"
-                    >
-                      {t("fields.offerPercentage")} <span className="text-destructive">*</span>
-                    </label>
-                    <Input
-                      id="offer-percentage"
-                      type="number"
-                      min="1"
-                      max="100"
-                      value={offerPercentage}
-                      onChange={(e) =>
-                        setOfferPercentage(e.target.value ? Number(e.target.value) : "")
-                      }
-                      placeholder="20"
-                      required={hasOffer}
-                    />
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 animate-in fade-in slide-in-from-top-1">
+                    <div className="flex flex-col gap-2">
+                      <label
+                        htmlFor="offer-percentage"
+                        className="text-sm font-medium text-foreground"
+                      >
+                        {t("fields.offerPercentage")} <span className="text-destructive">*</span>
+                      </label>
+                      <Input
+                        id="offer-percentage"
+                        type="number"
+                        min="1"
+                        max="100"
+                        value={offerPercentage}
+                        onChange={(e) =>
+                          setOfferPercentage(e.target.value ? Number(e.target.value) : "")
+                        }
+                        placeholder="20"
+                        required={hasOffer}
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                      <label
+                        htmlFor="offer-start-date"
+                        className="text-sm font-medium text-foreground"
+                      >
+                        {t("fields.offerStartDate")}
+                      </label>
+                      <Input
+                        id="offer-start-date"
+                        type="date"
+                        value={offerStartDate}
+                        onChange={(e) => setOfferStartDate(e.target.value)}
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                      <label
+                        htmlFor="offer-end-date"
+                        className="text-sm font-medium text-foreground"
+                      >
+                        {t("fields.offerEndDate")}
+                      </label>
+                      <Input
+                        id="offer-end-date"
+                        type="date"
+                        value={offerEndDate}
+                        onChange={(e) => setOfferEndDate(e.target.value)}
+                      />
+                    </div>
                   </div>
                 )}
               </FormSectionCard>
@@ -651,14 +805,14 @@ export function NewCourseClient({ initialCourseId }: NewCourseClientProps = {}) 
                   </div>
                 )}
 
-                {/* isSplitToGroups Toggle */}
+                {/* isSplitToSections Toggle */}
                 <FormToggleSetting
-                  id="is-split-to-groups-toggle"
-                  title={t("fields.isSplitToGroups")}
-                  subtitle={t("fields.isSplitToGroupsSubtitle")}
-                  icon={Users}
-                  checked={isSplitToGroups}
-                  onCheckedChange={setIsSplitToGroups}
+                  id="is-split-to-sections-toggle"
+                  title={t("fields.isSplitToSections")}
+                  subtitle={t("fields.isSplitToSectionsSubtitle")}
+                  icon={Layers}
+                  checked={isSplitToSections}
+                  onCheckedChange={setIsSplitToSections}
                 />
 
                 {/* Venue (Radio Group with 3 options) */}
@@ -691,28 +845,14 @@ export function NewCourseClient({ initialCourseId }: NewCourseClientProps = {}) 
 
               {/* CTA Buttons */}
               <div className="flex items-center justify-end gap-3 pt-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={(e) => handleSubmit(e, true)}
-                  disabled={isSavingDraft || isSubmitting}
-                >
-                  {isSavingDraft
-                    ? initialCourseId
-                      ? t("actions.savingChanges")
-                      : t("actions.savingDraft")
-                    : initialCourseId
-                      ? t("actions.saveChanges")
-                      : t("actions.saveDraft")}
-                </Button>
                 <Button type="submit" disabled={isSubmitting || isSavingDraft}>
-                  {isSubmitting
-                    ? initialCourseId
-                      ? t("actions.updating")
-                      : t("actions.creating")
-                    : initialCourseId
-                      ? t("actions.updateCourse")
-                      : t("actions.createCourse")}
+                  {isSubmitting ? (
+                    <Loader2 className="size-4 animate-spin" />
+                  ) : initialCourseId ? (
+                    t("actions.saveAndPublish")
+                  ) : (
+                    t("actions.createCourse")
+                  )}
                 </Button>
               </div>
             </form>
@@ -728,6 +868,46 @@ export function NewCourseClient({ initialCourseId }: NewCourseClientProps = {}) 
           )}
         </main>
       </div>
+      {/* Add New Period Dialog */}
+      <Dialog open={isAddPeriodOpen} onOpenChange={setIsAddPeriodOpen}>
+        <DialogContent className="sm:max-w-106.25">
+          <DialogHeader>
+            <DialogTitle>{t("periodOptions.addPeriodDialogTitle")}</DialogTitle>
+            <DialogDescription>{t("periodOptions.addPeriodDialogDesc")}</DialogDescription>
+          </DialogHeader>
+          <div className="py-4 space-y-2">
+            <label className="text-sm font-medium text-foreground">
+              {t("periodOptions.periodNameLabel")}
+            </label>
+            <Input
+              value={newPeriodName}
+              onChange={(e) => setNewPeriodName(e.target.value)}
+              placeholder={t("periodOptions.periodNamePlaceholder")}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  handleAddPeriod();
+                }
+              }}
+            />
+          </div>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                setNewPeriodName("");
+                setIsAddPeriodOpen(false);
+              }}
+            >
+              {t("periodOptions.cancel")}
+            </Button>
+            <Button type="button" disabled={!newPeriodName.trim()} onClick={handleAddPeriod}>
+              {t("periodOptions.savePeriod")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
@@ -735,6 +915,7 @@ export function NewCourseClient({ initialCourseId }: NewCourseClientProps = {}) 
 import { LessonDialog } from "./lesson-dialog";
 
 /* STEP 2 COMPONENT WITH 4 ACTION BUTTONS AND DIALOGS */
+
 import {
   Dialog,
   DialogContent,
@@ -743,7 +924,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { CourseSection, CourseVenue, Lesson } from "@/types/course";
+import { getStoredExams, saveStoredExams } from "@/lib/exams-storage";
+import { CourseSection, CourseVenue, Lesson, LessonPublishStatus } from "@/types/course";
+import { Exam } from "@/types/exam";
 import {
   ArrowDown,
   ArrowUp,
@@ -776,6 +959,7 @@ function Step2CurriculumView({
 
   // State for sections list
   const [sections, setSections] = useState<CourseSection[]>([]);
+  const [availableExams, setAvailableExams] = useState<Exam[]>([]);
   const [activeDialog, setActiveDialog] = useState<
     "section" | "lesson" | "exam" | "arrange" | null
   >(null);
@@ -791,13 +975,48 @@ function Step2CurriculumView({
     venue: "all" as CourseVenue,
   });
 
+  const [isSplitToSections, setIsSplitToSections] = useState(true);
+
+  // Load stored exams for exam select dropdown
+  useEffect(() => {
+    setAvailableExams(getStoredExams(locale));
+  }, [locale]);
+
   // Load existing sections and parent course info
   useEffect(() => {
     if (!courseId) return;
     const courses = getStoredCourses(locale);
     const existing = courses.find((c) => c.id === courseId);
     if (existing) {
-      if (existing.sections) setSections(existing.sections);
+      const courseIsSplit = existing.isSplitToSections !== false;
+      setIsSplitToSections(courseIsSplit);
+
+      let loadedSections = existing.sections || [];
+      if (!courseIsSplit) {
+        const courseTitle = existing.title || (locale === "ar" ? "قسم الدورة" : "Course Section");
+        if (loadedSections.length === 0) {
+          loadedSections = [
+            {
+              id: `sec-default-${courseId}`,
+              title: courseTitle,
+              isDraft: false,
+              isLinkedToExam: false,
+              isRequiredPassExamForNextSection: false,
+              lessons: [],
+            },
+          ];
+        } else {
+          const allLessons = loadedSections.flatMap((s) => s.lessons);
+          loadedSections = [
+            {
+              ...loadedSections[0],
+              title: courseTitle,
+              lessons: allLessons,
+            },
+          ];
+        }
+      }
+      setSections(loadedSections);
       setParentCourseContext({
         grade: existing.grade || "",
         subject: existing.subject || "",
@@ -809,14 +1028,20 @@ function Step2CurriculumView({
 
   // Dialog Form states: Section
   const [newSecTitle, setNewSecTitle] = useState("");
+  const [newSecStatus, setNewSecStatus] = useState<LessonPublishStatus>("draft");
+  const [newSecScheduledDate, setNewSecScheduledDate] = useState("");
   const [newSecIsLinkedExam, setNewSecIsLinkedExam] = useState(false);
+  const [newSecLinkedExamId, setNewSecLinkedExamId] = useState("");
   const [newSecIsReqPass, setNewSecIsReqPass] = useState(false);
 
   // Dialog Form states: Exam
+  const [isCreatingNewExam, setIsCreatingNewExam] = useState(false);
   const [newExamTargetSecId, setNewExamTargetSecId] = useState("");
+  const [newExamSelectedId, setNewExamSelectedId] = useState("");
   const [newExamTitle, setNewExamTitle] = useState("");
-  const [newExamPassingScore, setNewExamPassingScore] = useState<number | "">(70);
-  const [newExamTotalGrade, setNewExamTotalGrade] = useState<number | "">(100);
+  const [newExamStatus, setNewExamStatus] = useState<LessonPublishStatus>("published");
+  const [newExamScheduledDate, setNewExamScheduledDate] = useState("");
+  const [newExamIsReqPass, setNewExamIsReqPass] = useState(false);
 
   // Sync sections to localStorage course object
   const syncSectionsToStorage = (updatedSections: CourseSection[]) => {
@@ -841,19 +1066,27 @@ function Step2CurriculumView({
   const handleAddSection = () => {
     if (!newSecTitle.trim()) return;
     const secId = `sec-${Math.floor(1000 + Math.random() * 9000)}`;
+    const selectedExam = availableExams.find((e) => e.id === newSecLinkedExamId);
     const newSec: CourseSection = {
       id: secId,
       title: newSecTitle,
-      isDraft: false,
+      isDraft: newSecStatus === "draft",
+      status: newSecStatus,
+      scheduledPublishDate: newSecStatus === "scheduled" ? newSecScheduledDate : undefined,
       isLinkedToExam: newSecIsLinkedExam,
-      isRequiredPassExamForNextSection: newSecIsReqPass,
+      linkedExamId: newSecIsLinkedExam ? newSecLinkedExamId || undefined : undefined,
+      linkedExamTitle: newSecIsLinkedExam ? selectedExam?.title : undefined,
+      isRequiredPassExamForNextSection: newSecIsLinkedExam ? newSecIsReqPass : false,
       lessons: [],
     };
     const updated = [...sections, newSec];
     setSections(updated);
     syncSectionsToStorage(updated);
     setNewSecTitle("");
+    setNewSecStatus("draft");
+    setNewSecScheduledDate("");
     setNewSecIsLinkedExam(false);
+    setNewSecLinkedExamId("");
     setNewSecIsReqPass(false);
     setActiveDialog(null);
   };
@@ -889,30 +1122,76 @@ function Step2CurriculumView({
   };
 
   const handleAddExam = () => {
-    if (!newExamTitle.trim() || !newExamTargetSecId) return;
-    const updated = sections.map((sec) => {
+    if (!newExamTargetSecId) return;
+
+    let examIdToLink = newExamSelectedId;
+    let examTitleToLink = availableExams.find((e) => e.id === newExamSelectedId)?.title;
+
+    if (isCreatingNewExam) {
+      if (!newExamTitle.trim()) return;
+      const createdExamId = `exam-${Math.floor(1000 + Math.random() * 9000)}`;
+      const createdExam: Exam = {
+        id: createdExamId,
+        title: newExamTitle.trim(),
+        description: "",
+        subject: parentCourseContext.subject || "General",
+        grade: parentCourseContext.grade || "General",
+        teacherName: parentCourseContext.teacherName || "Teacher",
+        venue: parentCourseContext.venue || "all",
+        category: "test",
+        examType: "course-dependent",
+        courseId: courseId,
+        sectionId: newExamTargetSecId,
+        triesAllowed: 1,
+        durationMinutes: 60,
+        passingPercentage: 70,
+        showModelAnswers: true,
+        randomizeQuestionsOrder: false,
+        randomizeMCQChoices: false,
+        examSections: [],
+        numberOfQuestions: 0,
+        numberOfStudents: 0,
+        successRate: 0,
+        timesUsed: 0,
+        publishStatus: newExamStatus || "published",
+        createdAt: new Date().toISOString(),
+        scheduledAt: newExamStatus === "scheduled" ? newExamScheduledDate : undefined,
+      };
+
+      const updatedExams = [createdExam, ...availableExams];
+      saveStoredExams(locale, updatedExams);
+      setAvailableExams(updatedExams);
+
+      examIdToLink = createdExamId;
+      examTitleToLink = createdExam.title;
+    }
+
+    if (!examIdToLink) return;
+
+    const updatedSections = sections.map((sec) => {
       if (sec.id === newExamTargetSecId) {
         return {
           ...sec,
           isLinkedToExam: true,
-          linkedExam: {
-            sectionId: sec.id,
-            examContent: {
-              id: `exam-${Math.floor(1000 + Math.random() * 9000)}`,
-              title: newExamTitle,
-              passingScore: Number(newExamPassingScore) || 70,
-              totalGrade: Number(newExamTotalGrade) || 100,
-              questions: [],
-            },
-          },
+          linkedExamId: examIdToLink,
+          linkedExamTitle: examTitleToLink,
+          isRequiredPassExamForNextSection: newExamIsReqPass,
         };
       }
       return sec;
     });
-    setSections(updated);
-    syncSectionsToStorage(updated);
+
+    setSections(updatedSections);
+    syncSectionsToStorage(updatedSections);
+
+    // Reset state
+    setIsCreatingNewExam(false);
     setNewExamTitle("");
+    setNewExamSelectedId("");
     setNewExamTargetSecId("");
+    setNewExamStatus("published");
+    setNewExamScheduledDate("");
+    setNewExamIsReqPass(false);
     setActiveDialog(null);
   };
 
@@ -927,12 +1206,14 @@ function Step2CurriculumView({
     syncSectionsToStorage(updated);
   };
 
-  const buttons = [
+  const allButtons = [
     { key: "section", label: t("actions.addSection"), icon: FolderPlus },
     { key: "lesson", label: t("actions.addLesson"), icon: VideoIcon },
     { key: "exam", label: t("actions.addExam"), icon: FileQuestion },
     { key: "arrange", label: t("actions.arrangeSections"), icon: ListOrdered },
   ] as const;
+
+  const buttons = isSplitToSections ? allButtons : allButtons.filter((b) => b.key !== "section");
 
   return (
     <div className="space-y-6">
@@ -1016,27 +1297,31 @@ function Step2CurriculumView({
 
                           {/* Badges for Lesson attributes */}
                           <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
-                            {les.type === "text" ? "Text" : "Video & Text"}
+                            {les.type === "text"
+                              ? t("step2.addLessonDialog.typeOptions.text")
+                              : t("step2.addLessonDialog.typeOptions.videoAndText")}
                           </span>
 
                           {(les.hasPdfAttachments || (les.pdfFiles && les.pdfFiles.length > 0)) && (
                             <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 font-medium flex items-center gap-1">
                               <Paperclip className="size-3" />
-                              PDFs ({(les.pdfFiles || []).length || 1})
+                              {t("step2.pdfsBadge", {
+                                count: (les.pdfFiles || []).length || 1,
+                              })}
                             </span>
                           )}
 
                           {les.isLinkedToExam && (
                             <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 font-medium flex items-center gap-1">
                               <FileQuestion className="size-3" />
-                              Exam Linked
+                              {t("step2.examLinkedBadge")}
                             </span>
                           )}
 
                           {les.publishStatus === "scheduled" && (
                             <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-600 font-medium flex items-center gap-1">
                               <ClockIcon className="size-3" />
-                              Scheduled
+                              {t("step2.scheduledBadge")}
                             </span>
                           )}
                         </div>
@@ -1058,12 +1343,15 @@ function Step2CurriculumView({
                       </div>
                     ))}
 
-                    {/* Linked Exam FK item under lessons */}
+                    {/* Linked Exam item under lessons */}
                     {sec.isLinkedToExam && sec.linkedExamId && (
                       <div className="flex items-center justify-between text-xs py-1.5 px-3 rounded-lg bg-warning/10 border border-warning/20">
                         <span className="font-medium text-warning flex items-center gap-2">
                           <FileQuestion className="size-3.5 text-warning" />
-                          {t("step2.addSectionDialog.isLinkedToExam")}: #{sec.linkedExamId}
+                          {t("step2.addSectionDialog.isLinkedToExam")}:{" "}
+                          {availableExams.find((e) => e.id === sec.linkedExamId)?.title ||
+                            sec.linkedExamTitle ||
+                            `#${sec.linkedExamId}`}
                         </span>
                       </div>
                     )}
@@ -1101,6 +1389,7 @@ function Step2CurriculumView({
             <DialogDescription>{t("step2.addSectionDialog.subtitle")}</DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-2">
+            {/* Title */}
             <div className="flex flex-col gap-2">
               <label htmlFor="sec-title" className="text-sm font-medium text-foreground">
                 {t("step2.addSectionDialog.sectionTitle")}
@@ -1112,22 +1401,95 @@ function Step2CurriculumView({
                 placeholder={t("step2.addSectionDialog.sectionTitlePlaceholder")}
               />
             </div>
+
+            {/* Status */}
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-medium text-foreground">
+                {locale === "ar" ? "حالة النشر" : "Publish Status"}
+              </label>
+              <Select
+                value={newSecStatus}
+                onValueChange={(val) => setNewSecStatus(val as LessonPublishStatus)}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="draft">{locale === "ar" ? "مسودة" : "Draft"}</SelectItem>
+                  <SelectItem value="published">
+                    {locale === "ar" ? "منشور" : "Published"}
+                  </SelectItem>
+                  <SelectItem value="scheduled">
+                    {locale === "ar" ? "مجدول" : "Scheduled"}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Schedule Date (Only if status is scheduled) */}
+            {newSecStatus === "scheduled" && (
+              <div className="flex flex-col gap-2 animate-in fade-in slide-in-from-top-1">
+                <label htmlFor="sec-schedule-date" className="text-sm font-medium text-foreground">
+                  {locale === "ar" ? "تاريخ النشر المجدول" : "Scheduled Publish Date"}
+                </label>
+                <Input
+                  id="sec-schedule-date"
+                  type="date"
+                  value={newSecScheduledDate}
+                  onChange={(e) => setNewSecScheduledDate(e.target.value)}
+                />
+              </div>
+            )}
+
+            {/* Toggle: Link to Exam */}
             <FormToggleSetting
               id="link-exam-toggle"
               title={t("step2.addSectionDialog.isLinkedToExam")}
-              subtitle={t("step2.addSectionDialog.isLinkedToExamSubtitle")}
               checked={newSecIsLinkedExam}
               onCheckedChange={setNewSecIsLinkedExam}
+              className="bg-transparent border-0 p-0"
             />
+
+            {/* Select Exam (shown when link to exam is on) */}
             {newSecIsLinkedExam && (
-              <FormToggleSetting
-                id="req-pass-toggle"
-                title={t("step2.addSectionDialog.isRequiredPassExam")}
-                subtitle={t("step2.addSectionDialog.isRequiredPassExamSubtitle")}
-                checked={newSecIsReqPass}
-                onCheckedChange={setNewSecIsReqPass}
-              />
+              <div className="flex flex-col gap-2 animate-in fade-in slide-in-from-top-1">
+                <label className="text-sm font-medium text-foreground">
+                  {locale === "ar" ? "اختر الامتحان" : "Select Exam"}
+                </label>
+                <Select value={newSecLinkedExamId} onValueChange={setNewSecLinkedExamId}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue
+                      placeholder={
+                        t("step2.addLessonDialog.selectExam") ||
+                        (locale === "ar" ? "اختر الامتحان..." : "Select exam...")
+                      }
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availableExams.length === 0 ? (
+                      <div className="p-2 text-xs text-muted-foreground text-center">
+                        {locale === "ar" ? "لا توجد امتحانات متاحة" : "No exams available"}
+                      </div>
+                    ) : (
+                      availableExams.map((ex) => (
+                        <SelectItem key={ex.id} value={ex.id}>
+                          {ex.title}
+                        </SelectItem>
+                      ))
+                    )}
+                  </SelectContent>
+                </Select>
+              </div>
             )}
+
+            {/* Toggle: Exam pass required */}
+            <FormToggleSetting
+              id="req-pass-toggle"
+              title={t("step2.addSectionDialog.isRequiredPassExam")}
+              checked={newSecIsReqPass}
+              onCheckedChange={setNewSecIsReqPass}
+              className="bg-transparent border-0 p-0"
+            />
           </div>
           <DialogFooter className="gap-2">
             <Button variant="outline" type="button" onClick={() => setActiveDialog(null)}>
@@ -1154,20 +1516,45 @@ function Step2CurriculumView({
         onSave={handleSaveLesson}
       />
 
-      {/* DIALOG 3: ADD EXAM */}
+      {/* DIALOG 3: ADD / LINK EXAM */}
       <Dialog
         open={activeDialog === "exam"}
-        onOpenChange={(open) => !open && setActiveDialog(null)}
+        onOpenChange={(open) => {
+          if (!open) {
+            setIsCreatingNewExam(false);
+            setNewExamTitle("");
+            setNewExamSelectedId("");
+            setNewExamTargetSecId("");
+            setNewExamStatus("published");
+            setNewExamScheduledDate("");
+            setNewExamIsReqPass(false);
+          }
+          setActiveDialog(open ? "exam" : null);
+        }}
       >
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>{t("step2.addExamDialog.title")}</DialogTitle>
-            <DialogDescription>{t("step2.addExamDialog.subtitle")}</DialogDescription>
+            <DialogTitle>
+              {isCreatingNewExam
+                ? locale === "ar"
+                  ? "إنشاء امتحان جديد"
+                  : "Create New Exam"
+                : t("step2.addExamDialog.title")}
+            </DialogTitle>
+            <DialogDescription>
+              {isCreatingNewExam
+                ? locale === "ar"
+                  ? "أدخل تفاصيل الامتحان الجديد لإنشائه وربطه بالقسم"
+                  : "Enter details for the new exam to create and link to section"
+                : t("step2.addExamDialog.subtitle")}
+            </DialogDescription>
           </DialogHeader>
+
           <div className="space-y-4 py-2">
+            {/* 1. Target Section Select */}
             <div className="flex flex-col gap-2">
               <label htmlFor="exam-sec" className="text-sm font-medium text-foreground">
-                {t("step2.addExamDialog.targetSection")}
+                {t("step2.addExamDialog.targetSection")} <span className="text-destructive">*</span>
               </label>
               <Select value={newExamTargetSecId} onValueChange={setNewExamTargetSecId}>
                 <SelectTrigger id="exam-sec">
@@ -1182,54 +1569,142 @@ function Step2CurriculumView({
                 </SelectContent>
               </Select>
             </div>
+
+            {/* 2. Exam Select + Plus Button (or New Exam Title Input if creating new) */}
+            {!isCreatingNewExam ? (
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-medium text-foreground">
+                  {locale === "ar" ? "اختر الامتحان" : "Select Exam"}{" "}
+                  <span className="text-destructive">*</span>
+                </label>
+                <div className="flex items-center gap-2">
+                  <Select value={newExamSelectedId} onValueChange={setNewExamSelectedId}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue
+                        placeholder={
+                          t("step2.addLessonDialog.selectExam") ||
+                          (locale === "ar" ? "اختر الامتحان..." : "Select exam...")
+                        }
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {availableExams.length === 0 ? (
+                        <div className="p-2 text-xs text-muted-foreground text-center">
+                          {locale === "ar" ? "لا توجد امتحانات متاحة" : "No exams available"}
+                        </div>
+                      ) : (
+                        availableExams.map((ex) => (
+                          <SelectItem key={ex.id} value={ex.id}>
+                            {ex.title}
+                          </SelectItem>
+                        ))
+                      )}
+                    </SelectContent>
+                  </Select>
+                  <Button
+                    type="button"
+                    variant="default"
+                    size="icon"
+                    className="shrink-0 h-9 w-9"
+                    onClick={() => setIsCreatingNewExam(true)}
+                    title={locale === "ar" ? "إنشاء امتحان جديد" : "Create new exam"}
+                  >
+                    <Plus className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-2 animate-in fade-in slide-in-from-top-1">
+                <div className="flex items-center justify-between">
+                  <label htmlFor="exam-title" className="text-sm font-medium text-foreground">
+                    {t("step2.addExamDialog.examTitle")} <span className="text-destructive">*</span>
+                  </label>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="h-7 text-xs text-primary"
+                    onClick={() => setIsCreatingNewExam(false)}
+                  >
+                    {locale === "ar" ? "اختيار من الموجود" : "Select existing"}
+                  </Button>
+                </div>
+                <Input
+                  id="exam-title"
+                  value={newExamTitle}
+                  onChange={(e) => setNewExamTitle(e.target.value)}
+                  placeholder={t("step2.addExamDialog.examTitlePlaceholder")}
+                />
+              </div>
+            )}
+
+            {/* 3. Publish Status */}
             <div className="flex flex-col gap-2">
-              <label htmlFor="exam-title" className="text-sm font-medium text-foreground">
-                {t("step2.addExamDialog.examTitle")}
+              <label className="text-sm font-medium text-foreground">
+                {locale === "ar" ? "حالة النشر" : "Publish Status"}
               </label>
-              <Input
-                id="exam-title"
-                value={newExamTitle}
-                onChange={(e) => setNewExamTitle(e.target.value)}
-                placeholder={t("step2.addExamDialog.examTitlePlaceholder")}
-              />
+              <Select
+                value={newExamStatus}
+                onValueChange={(val) => setNewExamStatus(val as LessonPublishStatus)}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="published">
+                    {locale === "ar" ? "منشور" : "Published"}
+                  </SelectItem>
+                  <SelectItem value="draft">{locale === "ar" ? "مسودة" : "Draft"}</SelectItem>
+                  <SelectItem value="scheduled">
+                    {locale === "ar" ? "مجدول" : "Scheduled"}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex flex-col gap-2">
-                <label htmlFor="exam-score" className="text-sm font-medium text-foreground">
-                  {t("step2.addExamDialog.passingScore")}
+
+            {/* Schedule Date (Only if status is scheduled) */}
+            {newExamStatus === "scheduled" && (
+              <div className="flex flex-col gap-2 animate-in fade-in slide-in-from-top-1">
+                <label htmlFor="exam-schedule-date" className="text-sm font-medium text-foreground">
+                  {locale === "ar" ? "تاريخ النشر المجدول" : "Scheduled Publish Date"}
                 </label>
                 <Input
-                  id="exam-score"
-                  type="number"
-                  value={newExamPassingScore}
-                  onChange={(e) =>
-                    setNewExamPassingScore(e.target.value ? Number(e.target.value) : "")
-                  }
+                  id="exam-schedule-date"
+                  type="date"
+                  value={newExamScheduledDate}
+                  onChange={(e) => setNewExamScheduledDate(e.target.value)}
                 />
               </div>
-              <div className="flex flex-col gap-2">
-                <label htmlFor="exam-grade" className="text-sm font-medium text-foreground">
-                  {t("step2.addExamDialog.totalGrade")}
-                </label>
-                <Input
-                  id="exam-grade"
-                  type="number"
-                  value={newExamTotalGrade}
-                  onChange={(e) =>
-                    setNewExamTotalGrade(e.target.value ? Number(e.target.value) : "")
-                  }
-                />
-              </div>
-            </div>
+            )}
+
+            {/* 4. Toggle: Passing Required */}
+            <FormToggleSetting
+              id="exam-req-pass-toggle"
+              title={t("step2.addSectionDialog.isRequiredPassExam")}
+              checked={newExamIsReqPass}
+              onCheckedChange={setNewExamIsReqPass}
+              className="bg-transparent border-0 p-0"
+            />
           </div>
+
           <DialogFooter className="gap-2">
-            <Button variant="outline" type="button" onClick={() => setActiveDialog(null)}>
+            <Button
+              variant="outline"
+              type="button"
+              onClick={() => {
+                setActiveDialog(null);
+                setIsCreatingNewExam(false);
+              }}
+            >
               {t("actions.cancel")}
             </Button>
             <Button
               type="button"
               onClick={handleAddExam}
-              disabled={!newExamTitle.trim() || !newExamTargetSecId}
+              disabled={
+                !newExamTargetSecId ||
+                (isCreatingNewExam ? !newExamTitle.trim() : !newExamSelectedId)
+              }
             >
               {t("actions.create")}
             </Button>

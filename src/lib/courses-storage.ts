@@ -56,3 +56,33 @@ export function resetStoredCourses(locale: string): Course[] {
     return mockCoursesData[locale as "ar" | "en"] || mockCoursesData.ar;
   }
 }
+
+const PERIODS_KEY = "rewaa_custom_periods";
+
+export function getStoredCustomPeriods(): string[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const stored = localStorage.getItem(PERIODS_KEY);
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      if (Array.isArray(parsed)) return parsed;
+    }
+  } catch (error) {
+    console.error("Failed to load custom periods from localStorage:", error);
+  }
+  return [];
+}
+
+export function saveStoredCustomPeriod(periodName: string): void {
+  if (typeof window === "undefined" || !periodName) return;
+  try {
+    const current = getStoredCustomPeriods();
+    if (!current.includes(periodName)) {
+      const updated = [...current, periodName];
+      localStorage.setItem(PERIODS_KEY, JSON.stringify(updated));
+      window.dispatchEvent(new Event("rewaa_periods_updated"));
+    }
+  } catch (error) {
+    console.error("Failed to save custom period to localStorage:", error);
+  }
+}

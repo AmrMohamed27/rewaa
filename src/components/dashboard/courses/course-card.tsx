@@ -44,6 +44,13 @@ export function CourseCard({
   const locale = useLocale();
   const isAr = locale === "ar";
   const t = useTranslations("courses");
+  const tNew = useTranslations("courses.new");
+
+  const formatGrade = (gradeKey: string) => {
+    return tNew.has(`grades.${gradeKey}` as Parameters<typeof tNew.has>[0])
+      ? tNew(`grades.${gradeKey}` as Parameters<typeof tNew>[0])
+      : gradeKey;
+  };
 
   // Format currency
   const formatPrice = (price: number, currency: string, isFree: boolean) => {
@@ -101,7 +108,9 @@ export function CourseCard({
       {/* Card Body */}
       <div className="flex flex-col flex-1 p-4">
         {/* Grade */}
-        <div className="text-xs font-semibold text-primary/80 mb-1">{course.grade}</div>
+        <div className="text-xs font-semibold text-primary/80 mb-1">
+          {formatGrade(course.grade)}
+        </div>
 
         {/* Course Title */}
         <h3 className="font-bold text-foreground line-clamp-2 text-base leading-snug mb-3 group-hover:text-primary transition-colors">

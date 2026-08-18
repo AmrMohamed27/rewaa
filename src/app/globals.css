@@ -203,3 +203,8 @@
 .mdxeditor-popup-container {
   z-index: 100 !important;
 }
+
+/* Reduce placeholder font size inside MDX Editor */
+.mdxeditor [class*="_placeholder_"] {
+  font-size: 0.875rem !important;
+}
