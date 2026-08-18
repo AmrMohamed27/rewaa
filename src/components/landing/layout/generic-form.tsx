@@ -28,7 +28,7 @@ export type FieldConfig<T> = {
   /** The display label for the field */
   label: string;
   /** The input type (default: "text") */
-  type?: "text" | "textarea" | "email" | "password";
+  type?: "text" | "textarea" | "email" | "password" | "tel";
   /** Optional placeholder text for the input */
   placeholder?: string;
   /** Optional descriptive text displayed below the field */

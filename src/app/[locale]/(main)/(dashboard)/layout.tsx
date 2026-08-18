@@ -52,6 +52,11 @@ export default async function DashboardLayout({
     redirect(`/${locale}/auth/login`);
   }
 
+  // Guard admin dashboard against student access
+  if (initialProfileData.data?.role === "student") {
+    redirect(`/${locale}/student-dashboard`);
+  }
+
   return (
     <SidebarProvider defaultOpen={defaultOpen}>
       <AppSidebar initialProfileData={initialProfileData} />

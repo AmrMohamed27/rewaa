@@ -24,6 +24,8 @@
   },
   "validation": {
     "invalidEmail": "البريد الإلكتروني غير صالح",
+    "invalidPhone": "رقم الهاتف غير صالح",
+    "phoneRequired": "رقم الهاتف مطلوب",
     "passwordRequired": "كلمة المرور مطلوبة",
     "passwordMinLength": "يجب أن تكون كلمة المرور 8 أحرف على الأقل",
     "firstNameRequired": "الاسم الأول مطلوب",
@@ -32,12 +34,18 @@
     "passwordsDoNotMatch": "كلمتا المرور غير متطابقتين"
   },
   "auth": {
+    "roles": {
+      "assistant": "مساعد",
+      "student": "طالب"
+    },
     "login": {
       "title": "تسجيل الدخول",
       "subtitle": "أدخل بيانات الاعتماد الخاصة بك للوصول إلى حسابك",
       "submitText": "تسجيل الدخول",
       "emailLabel": "البريد الإلكتروني",
       "emailPlaceholder": "john.doe@example.com",
+      "phoneLabel": "رقم الهاتف",
+      "phonePlaceholder": "01012345678",
       "passwordLabel": "كلمة المرور",
       "passwordPlaceholder": "••••••••",
       "or": "أو",

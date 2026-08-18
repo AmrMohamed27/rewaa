@@ -18,7 +18,9 @@ import { Link, useRouter } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import * as z from "zod";
 
-import { useMemo } from "react";
+import { useState, useMemo } from "react";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { UserCheck, GraduationCap } from "lucide-react";
 
 type RegisterFormValues = {
   email: string;
@@ -29,8 +31,11 @@ type RegisterFormValues = {
 
 export default function RegisterPage() {
   const t = useTranslations("auth");
+  const tRoles = useTranslations("auth.roles");
   const tVal = useTranslations("validation");
   const tCommon = useTranslations("common");
+
+  const [selectedRole, setSelectedRole] = useState<"assistant" | "student">("assistant");
 
   const registerSchema = useMemo(
     () =>
@@ -53,7 +58,12 @@ export default function RegisterPage() {
 
   const handleSubmit = async (values: RegisterFormValues) => {
     try {
-      const response = await register({ data: values });
+      const response = await register({
+        data: {
+          ...values,
+          role: selectedRole,
+        } as unknown as typeof values,
+      });
 
       if (response.statusCode === 201) {
         router.push(`/auth/verify-email?email=${encodeURIComponent(values.email)}`);
@@ -71,9 +81,33 @@ export default function RegisterPage() {
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
           </div>
         )}
-        <CardHeader className="text-center">
+        <CardHeader className="text-center pb-4">
           <CardTitle className="text-3xl font-bold tracking-tight">{t("register.title")}</CardTitle>
           <CardDescription>{t("register.subtitle")}</CardDescription>
+
+          <div className="pt-4">
+            <Tabs
+              value={selectedRole}
+              onValueChange={(val) => setSelectedRole(val as "assistant" | "student")}
+            >
+              <TabsList className="grid w-full grid-cols-2 h-11 p-1 bg-muted/70 rounded-xl">
+                <TabsTrigger
+                  value="assistant"
+                  className="h-9 gap-2 text-xs font-semibold rounded-lg aria-selected:bg-primary aria-selected:text-primary-foreground aria-selected:shadow-sm transition-colors"
+                >
+                  <UserCheck className="h-4 w-4" />
+                  {tRoles("assistant")}
+                </TabsTrigger>
+                <TabsTrigger
+                  value="student"
+                  className="h-9 gap-2 text-xs font-semibold rounded-lg aria-selected:bg-primary aria-selected:text-primary-foreground aria-selected:shadow-sm transition-colors"
+                >
+                  <GraduationCap className="h-4 w-4" />
+                  {tRoles("student")}
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
         </CardHeader>
 
         <CardContent>

@@ -21,10 +21,13 @@ export function proxy(request: NextRequest) {
   }
 
   const hasAuthCookie = request.cookies.has(process.env.COOKIE_NAME || "rewaa_auth");
+  const userRole = request.cookies.get("rewaa_role")?.value || "assistant";
 
   // Strip locale prefix for checking page type
   const pathnameWithoutLocale = pathname.replace(/^\/(ar|en)/, "") || "/";
   const isAuthPage = pathnameWithoutLocale.startsWith("/auth");
+  const isDashboardPage = pathnameWithoutLocale.startsWith("/dashboard");
+  const isStudentDashboardPage = pathnameWithoutLocale.startsWith("/student-dashboard");
 
   const publicPaths = ["/", "/about", "/contact", "/products"];
   const isPublicPage =
@@ -40,6 +43,17 @@ export function proxy(request: NextRequest) {
 
   // 2. Authenticated user trying to access login/register pages
   if (hasAuthCookie && isAuthPage) {
+    const targetDashboard = userRole === "student" ? "/student-dashboard" : "/dashboard";
+    return NextResponse.redirect(new URL(`/${currentLocale}${targetDashboard}`, request.url));
+  }
+
+  // 3. Student user attempting to access admin dashboard routes
+  if (hasAuthCookie && userRole === "student" && isDashboardPage) {
+    return NextResponse.redirect(new URL(`/${currentLocale}/student-dashboard`, request.url));
+  }
+
+  // 4. Assistant user attempting to access student dashboard routes
+  if (hasAuthCookie && userRole !== "student" && isStudentDashboardPage) {
     return NextResponse.redirect(new URL(`/${currentLocale}/dashboard`, request.url));
   }
 

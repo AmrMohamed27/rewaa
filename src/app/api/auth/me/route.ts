@@ -19,6 +19,7 @@ export async function GET() {
   const cookieStore = await cookies();
   const cookieName = process.env.COOKIE_NAME || "rewaa_auth";
   const authCookie = cookieStore.get(cookieName);
+  const roleCookie = cookieStore.get("rewaa_role");
 
   if (!authCookie || !authCookie.value) {
     return NextResponse.json(
@@ -31,11 +32,16 @@ export async function GET() {
     );
   }
 
+  const role = roleCookie?.value === "student" ? "student" : "assistant";
+
   return NextResponse.json(
     {
       statusCode: 200,
       message: "Profile retrieved successfully",
-      data: mockUser,
+      data: {
+        ...mockUser,
+        role,
+      },
     },
     { status: 200 },
   );

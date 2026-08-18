@@ -22,26 +22,38 @@ import { useTranslations } from "next-intl";
 import * as z from "zod";
 import { Checkbox } from "@/components/ui/checkbox";
 
-import { useMemo } from "react";
+import { useState, useMemo } from "react";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { UserCheck, GraduationCap } from "lucide-react";
 
 type LoginFormValues = {
-  email: string;
+  identifier: string;
   password: string;
 };
 
 export default function LoginPage() {
   const t = useTranslations("auth.login");
+  const tRoles = useTranslations("auth.roles");
   const tVal = useTranslations("validation");
   const tCommon = useTranslations("common");
 
-  const loginSchema = useMemo(
-    () =>
-      z.object({
-        email: z.string().email(tVal("invalidEmail")),
+  const [selectedRole, setSelectedRole] = useState<"assistant" | "student">("assistant");
+
+  const loginSchema = useMemo(() => {
+    if (selectedRole === "student") {
+      return z.object({
+        identifier: z
+          .string()
+          .min(1, tVal("phoneRequired"))
+          .regex(/^[0-9+\s-]{8,15}$/, tVal("invalidPhone")),
         password: z.string().min(1, tVal("passwordRequired")),
-      }),
-    [tVal],
-  );
+      });
+    }
+    return z.object({
+      identifier: z.string().email(tVal("invalidEmail")),
+      password: z.string().min(1, tVal("passwordRequired")),
+    });
+  }, [selectedRole, tVal]);
 
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -54,7 +66,17 @@ export default function LoginPage() {
 
   const handleSubmit = async (values: LoginFormValues) => {
     try {
-      const response = await login({ data: values });
+      const payload = {
+        password: values.password,
+        role: selectedRole,
+        ...(selectedRole === "student"
+          ? { phone: values.identifier }
+          : { email: values.identifier }),
+      };
+
+      const response = await login({
+        data: payload as unknown as Parameters<typeof login>[0]["data"],
+      });
 
       if (response.statusCode === 200) {
         await queryClient.invalidateQueries({
@@ -62,7 +84,11 @@ export default function LoginPage() {
         });
 
         toast.success(t("loginSuccess"));
-        router.push("/dashboard");
+        if (selectedRole === "student") {
+          router.push("/student-dashboard");
+        } else {
+          router.push("/dashboard");
+        }
         router.refresh();
       }
     } catch (err) {
@@ -78,18 +104,43 @@ export default function LoginPage() {
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
           </div>
         )}
-        <CardHeader className="text-center">
+        <CardHeader className="text-center pb-4">
           <CardTitle className="text-3xl font-bold tracking-tight">{t("title")}</CardTitle>
           <CardDescription>{t("subtitle")}</CardDescription>
+
+          <div className="pt-4">
+            <Tabs
+              value={selectedRole}
+              onValueChange={(val) => setSelectedRole(val as "assistant" | "student")}
+            >
+              <TabsList className="grid w-full grid-cols-2 h-11 p-1 bg-muted/70 rounded-xl">
+                <TabsTrigger
+                  value="assistant"
+                  className="h-9 gap-2 text-xs font-semibold rounded-lg aria-selected:bg-primary aria-selected:text-primary-foreground aria-selected:shadow-sm transition-colors"
+                >
+                  <UserCheck className="h-4 w-4" />
+                  {tRoles("assistant")}
+                </TabsTrigger>
+                <TabsTrigger
+                  value="student"
+                  className="h-9 gap-2 text-xs font-semibold rounded-lg aria-selected:bg-primary aria-selected:text-primary-foreground aria-selected:shadow-sm transition-colors"
+                >
+                  <GraduationCap className="h-4 w-4" />
+                  {tRoles("student")}
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
         </CardHeader>
 
         <CardContent>
           <GenericForm
+            key={selectedRole}
             title={t("submitText")}
             schema={loginSchema}
             error={errorMessage}
             defaultValues={{
-              email: "",
+              identifier: "",
               password: "",
             }}
             onSubmit={handleSubmit}
@@ -116,10 +167,11 @@ export default function LoginPage() {
             }
             fields={[
               {
-                name: "email",
-                label: t("emailLabel"),
-                type: "email",
-                placeholder: t("emailPlaceholder"),
+                name: "identifier",
+                label: selectedRole === "student" ? t("phoneLabel") : t("emailLabel"),
+                type: selectedRole === "student" ? "tel" : "email",
+                placeholder:
+                  selectedRole === "student" ? t("phonePlaceholder") : t("emailPlaceholder"),
               },
               {
                 name: "password",

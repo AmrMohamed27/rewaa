@@ -24,6 +24,8 @@
   },
   "validation": {
     "invalidEmail": "Invalid email address",
+    "invalidPhone": "Invalid phone number",
+    "phoneRequired": "Phone number is required",
     "passwordRequired": "Password is required",
     "passwordMinLength": "Password must be at least 8 characters",
     "firstNameRequired": "First name is required",
@@ -32,12 +34,18 @@
     "passwordsDoNotMatch": "Passwords do not match"
   },
   "auth": {
+    "roles": {
+      "assistant": "Assistant",
+      "student": "Student"
+    },
     "login": {
       "title": "Login",
       "subtitle": "Enter your credentials to access your account",
       "submitText": "Log in",
       "emailLabel": "Email Address",
       "emailPlaceholder": "john.doe@example.com",
+      "phoneLabel": "Phone Number",
+      "phonePlaceholder": "01012345678",
       "passwordLabel": "Password",
       "passwordPlaceholder": "••••••••",
       "or": "Or",

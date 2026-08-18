@@ -19,6 +19,7 @@ export async function POST(request: Request) {
   try {
     const body = await request.json().catch(() => ({}));
     const cookieName = process.env.COOKIE_NAME || "rewaa_auth";
+    const userRole = body.role === "student" ? "student" : "assistant";
 
     const response = NextResponse.json(
       {
@@ -28,6 +29,7 @@ export async function POST(request: Request) {
           user: {
             ...mockUser,
             email: body.email || mockUser.email,
+            role: userRole,
           },
           accessToken: faker.string.alphanumeric(64),
         },
@@ -42,6 +44,15 @@ export async function POST(request: Request) {
       path: "/",
       sameSite: "lax",
       maxAge: 60 * 60 * 24 * 7, // 7 days
+    });
+
+    // Set role cookie for client & middleware checking
+    response.cookies.set("rewaa_role", userRole, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      sameSite: "lax",
+      maxAge: 60 * 60 * 24 * 7,
     });
 
     return response;
