@@ -2,6 +2,12 @@
 "use client";
 
 import { FormTimelineSidebar } from "@/components/dashboard/common/form-timeline-sidebar";
+import {
+  ExamSelect,
+  GradeSelect,
+  SubjectSelect,
+  TeacherSelect,
+} from "@/components/ui/academic-selects";
 import { Button } from "@/components/ui/button";
 import { FormMarkdownEditor } from "@/components/ui/form-markdown-editor";
 import { FormRadioGroup } from "@/components/ui/form-radio-group";
@@ -22,9 +28,9 @@ import {
   saveStoredCustomPeriod,
 } from "@/lib/courses-storage";
 import { getStoredTeachers } from "@/lib/settings-storage";
-import { Teacher } from "@/types/settings";
 import { cn } from "@/lib/utils";
 import { Course } from "@/types/course";
+import { Teacher } from "@/types/settings";
 import "@mdxeditor/editor/style.css";
 import {
   ArrowLeft,
@@ -40,7 +46,6 @@ import {
   Plus,
   Tag,
   Upload,
-  User,
   Video,
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
@@ -547,66 +552,34 @@ export function NewCourseClient({ initialCourseId }: NewCourseClientProps = {}) 
                 icon={Tag}
                 contentClassName="grid grid-cols-1 sm:grid-cols-2 gap-4"
               >
-                {/* Grade - Removed `|| undefined` */}
-                <div className="flex flex-col gap-2">
-                  <label className="text-sm font-medium text-foreground">
-                    {t("fields.grade")} <span className="text-destructive">*</span>
-                  </label>
-                  <Select value={grade} onValueChange={setGrade}>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder={t("fields.selectGrade")} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="grade1">{t("grades.grade1")}</SelectItem>
-                      <SelectItem value="grade2">{t("grades.grade2")}</SelectItem>
-                      <SelectItem value="grade3">{t("grades.grade3")}</SelectItem>
-                      <SelectItem value="university">{t("grades.university")}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                {/* Grade */}
+                <GradeSelect
+                  value={grade}
+                  onValueChange={setGrade}
+                  label={t("fields.grade")}
+                  placeholder={t("fields.selectGrade")}
+                  required
+                />
 
-                {/* Subject - Removed `|| undefined` */}
-                <div className="flex flex-col gap-2">
-                  <label className="text-sm font-medium text-foreground">
-                    {t("fields.subject")} <span className="text-destructive">*</span>
-                  </label>
-                  <Select value={subject} onValueChange={setSubject}>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder={t("fields.selectSubject")} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="mathematics">{t("subjects.mathematics")}</SelectItem>
-                      <SelectItem value="physics">{t("subjects.physics")}</SelectItem>
-                      <SelectItem value="chemistry">{t("subjects.chemistry")}</SelectItem>
-                      <SelectItem value="biology">{t("subjects.biology")}</SelectItem>
-                      <SelectItem value="english">{t("subjects.english")}</SelectItem>
-                      <SelectItem value="arabic">{t("subjects.arabic")}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                {/* Subject */}
+                <SubjectSelect
+                  value={subject}
+                  onValueChange={setSubject}
+                  label={t("fields.subject")}
+                  placeholder={t("fields.selectSubject")}
+                  required
+                />
 
                 {/* Teacher Select */}
-                <div className="flex flex-col gap-2">
-                  <label
-                    htmlFor="teacher-select"
-                    className="text-sm font-medium text-foreground flex items-center gap-1.5"
-                  >
-                    <User className="size-4 text-muted-foreground" />
-                    {t("fields.teacherName")} <span className="text-destructive">*</span>
-                  </label>
-                  <Select value={teacherName} onValueChange={(val) => setTeacherName(val)}>
-                    <SelectTrigger id="teacher-select" className="w-full">
-                      <SelectValue placeholder={t("fields.selectTeacher")} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {availableTeachers.map((tch) => (
-                        <SelectItem key={tch.id} value={tch.name}>
-                          {tch.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+                <TeacherSelect
+                  value={teacherName}
+                  onValueChange={setTeacherName}
+                  label={t("fields.teacherName")}
+                  placeholder={t("fields.selectTeacher")}
+                  required
+                  showIcon
+                  teachers={availableTeachers}
+                />
 
                 {/* Period */}
                 <div className="flex flex-col gap-2">
@@ -937,6 +910,7 @@ import {
   FolderPlus,
   ListOrdered,
   Paperclip,
+  Trash2,
   Video as VideoIcon,
 } from "lucide-react";
 
@@ -966,6 +940,10 @@ function Step2CurriculumView({
   const [editingLesson, setEditingLesson] = useState<{ lesson: Lesson; sectionId: string } | null>(
     null,
   );
+  const [lessonToDelete, setLessonToDelete] = useState<{
+    lesson: Lesson;
+    sectionId: string;
+  } | null>(null);
 
   // Parent Course Context for auto-filling
   const [parentCourseContext, setParentCourseContext] = useState({
@@ -1030,6 +1008,7 @@ function Step2CurriculumView({
   const [newSecTitle, setNewSecTitle] = useState("");
   const [newSecStatus, setNewSecStatus] = useState<LessonPublishStatus>("draft");
   const [newSecScheduledDate, setNewSecScheduledDate] = useState("");
+  const [newSecScheduledEndDate, setNewSecScheduledEndDate] = useState("");
   const [newSecIsLinkedExam, setNewSecIsLinkedExam] = useState(false);
   const [newSecLinkedExamId, setNewSecLinkedExamId] = useState("");
   const [newSecIsReqPass, setNewSecIsReqPass] = useState(false);
@@ -1041,6 +1020,7 @@ function Step2CurriculumView({
   const [newExamTitle, setNewExamTitle] = useState("");
   const [newExamStatus, setNewExamStatus] = useState<LessonPublishStatus>("published");
   const [newExamScheduledDate, setNewExamScheduledDate] = useState("");
+  const [newExamScheduledEndDate, setNewExamScheduledEndDate] = useState("");
   const [newExamIsReqPass, setNewExamIsReqPass] = useState(false);
 
   // Sync sections to localStorage course object
@@ -1073,6 +1053,7 @@ function Step2CurriculumView({
       isDraft: newSecStatus === "draft",
       status: newSecStatus,
       scheduledPublishDate: newSecStatus === "scheduled" ? newSecScheduledDate : undefined,
+      scheduledEndDate: newSecStatus === "scheduled" ? newSecScheduledEndDate : undefined,
       isLinkedToExam: newSecIsLinkedExam,
       linkedExamId: newSecIsLinkedExam ? newSecLinkedExamId || undefined : undefined,
       linkedExamTitle: newSecIsLinkedExam ? selectedExam?.title : undefined,
@@ -1085,6 +1066,7 @@ function Step2CurriculumView({
     setNewSecTitle("");
     setNewSecStatus("draft");
     setNewSecScheduledDate("");
+    setNewSecScheduledEndDate("");
     setNewSecIsLinkedExam(false);
     setNewSecLinkedExamId("");
     setNewSecIsReqPass(false);
@@ -1119,6 +1101,36 @@ function Step2CurriculumView({
     syncSectionsToStorage(updated);
     setEditingLesson(null);
     setActiveDialog(null);
+  };
+
+  const handleSaveManyLessons = (targetSecId: string, savedLessons: Lesson[]) => {
+    const updated = sections.map((sec) => {
+      if (sec.id === targetSecId) {
+        return { ...sec, lessons: [...sec.lessons, ...savedLessons] };
+      }
+      return sec;
+    });
+    setSections(updated);
+    syncSectionsToStorage(updated);
+    setEditingLesson(null);
+    setActiveDialog(null);
+  };
+
+  const handleDeleteLesson = () => {
+    if (!lessonToDelete) return;
+    const { lesson, sectionId } = lessonToDelete;
+    const updated = sections.map((sec) => {
+      if (sec.id === sectionId) {
+        return {
+          ...sec,
+          lessons: sec.lessons.filter((l) => l.id !== lesson.id),
+        };
+      }
+      return sec;
+    });
+    setSections(updated);
+    syncSectionsToStorage(updated);
+    setLessonToDelete(null);
   };
 
   const handleAddExam = () => {
@@ -1156,6 +1168,7 @@ function Step2CurriculumView({
         publishStatus: newExamStatus || "published",
         createdAt: new Date().toISOString(),
         scheduledAt: newExamStatus === "scheduled" ? newExamScheduledDate : undefined,
+        scheduledEndDate: newExamStatus === "scheduled" ? newExamScheduledEndDate : undefined,
       };
 
       const updatedExams = [createdExam, ...availableExams];
@@ -1339,6 +1352,17 @@ function Step2CurriculumView({
                           >
                             <Edit2 className="size-3.5" />
                           </Button>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon-xs"
+                            onClick={() => {
+                              setLessonToDelete({ lesson: les, sectionId: sec.id });
+                            }}
+                            className="text-muted-foreground hover:text-destructive"
+                          >
+                            <Trash2 className="size-3.5" />
+                          </Button>
                         </div>
                       </div>
                     ))}
@@ -1388,9 +1412,9 @@ function Step2CurriculumView({
             <DialogTitle>{t("step2.addSectionDialog.title")}</DialogTitle>
             <DialogDescription>{t("step2.addSectionDialog.subtitle")}</DialogDescription>
           </DialogHeader>
-          <div className="space-y-4 py-2">
+          <div className="space-y-4 py-1">
             {/* Title */}
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-1.5">
               <label htmlFor="sec-title" className="text-sm font-medium text-foreground">
                 {t("step2.addSectionDialog.sectionTitle")}
               </label>
@@ -1403,7 +1427,7 @@ function Step2CurriculumView({
             </div>
 
             {/* Status */}
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-1.5">
               <label className="text-sm font-medium text-foreground">
                 {locale === "ar" ? "حالة النشر" : "Publish Status"}
               </label>
@@ -1426,18 +1450,39 @@ function Step2CurriculumView({
               </Select>
             </div>
 
-            {/* Schedule Date (Only if status is scheduled) */}
+            {/* Schedule Dates (Only if status is scheduled) */}
             {newSecStatus === "scheduled" && (
-              <div className="flex flex-col gap-2 animate-in fade-in slide-in-from-top-1">
-                <label htmlFor="sec-schedule-date" className="text-sm font-medium text-foreground">
-                  {locale === "ar" ? "تاريخ النشر المجدول" : "Scheduled Publish Date"}
-                </label>
-                <Input
-                  id="sec-schedule-date"
-                  type="date"
-                  value={newSecScheduledDate}
-                  onChange={(e) => setNewSecScheduledDate(e.target.value)}
-                />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 animate-in fade-in slide-in-from-top-1">
+                <div className="flex flex-col gap-1.5">
+                  <label
+                    htmlFor="sec-schedule-date"
+                    className="text-sm font-medium text-foreground flex items-center gap-1"
+                  >
+                    {locale === "ar" ? "تاريخ النشر المجدول" : "Scheduled Publish Date"}{" "}
+                    <span className="text-destructive">*</span>
+                  </label>
+                  <Input
+                    id="sec-schedule-date"
+                    type="date"
+                    value={newSecScheduledDate}
+                    onChange={(e) => setNewSecScheduledDate(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="flex flex-col gap-1.5">
+                  <label
+                    htmlFor="sec-schedule-end-date"
+                    className="text-sm font-medium text-foreground"
+                  >
+                    {locale === "ar" ? "تاريخ الانتهاء المجدول" : "Scheduled End Date"}
+                  </label>
+                  <Input
+                    id="sec-schedule-end-date"
+                    type="date"
+                    value={newSecScheduledEndDate}
+                    onChange={(e) => setNewSecScheduledEndDate(e.target.value)}
+                  />
+                </div>
               </div>
             )}
 
@@ -1447,49 +1492,36 @@ function Step2CurriculumView({
               title={t("step2.addSectionDialog.isLinkedToExam")}
               checked={newSecIsLinkedExam}
               onCheckedChange={setNewSecIsLinkedExam}
-              className="bg-transparent border-0 p-0"
+              className="bg-transparent border-0 p-0!"
             />
 
             {/* Select Exam (shown when link to exam is on) */}
             {newSecIsLinkedExam && (
-              <div className="flex flex-col gap-2 animate-in fade-in slide-in-from-top-1">
-                <label className="text-sm font-medium text-foreground">
-                  {locale === "ar" ? "اختر الامتحان" : "Select Exam"}
-                </label>
-                <Select value={newSecLinkedExamId} onValueChange={setNewSecLinkedExamId}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue
-                      placeholder={
-                        t("step2.addLessonDialog.selectExam") ||
-                        (locale === "ar" ? "اختر الامتحان..." : "Select exam...")
-                      }
-                    />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {availableExams.length === 0 ? (
-                      <div className="p-2 text-xs text-muted-foreground text-center">
-                        {locale === "ar" ? "لا توجد امتحانات متاحة" : "No exams available"}
-                      </div>
-                    ) : (
-                      availableExams.map((ex) => (
-                        <SelectItem key={ex.id} value={ex.id}>
-                          {ex.title}
-                        </SelectItem>
-                      ))
-                    )}
-                  </SelectContent>
-                </Select>
+              <div className="animate-in fade-in slide-in-from-top-1">
+                <ExamSelect
+                  value={newSecLinkedExamId}
+                  onValueChange={setNewSecLinkedExamId}
+                  label={locale === "ar" ? "اختر الامتحان" : "Select Exam"}
+                  placeholder={
+                    t("step2.addLessonDialog.selectExam") ||
+                    (locale === "ar" ? "اختر الامتحان..." : "Select exam...")
+                  }
+                  exams={availableExams}
+                  emptyLabel={locale === "ar" ? "لا توجد امتحانات متاحة" : "No exams available"}
+                />
               </div>
             )}
 
-            {/* Toggle: Exam pass required */}
-            <FormToggleSetting
-              id="req-pass-toggle"
-              title={t("step2.addSectionDialog.isRequiredPassExam")}
-              checked={newSecIsReqPass}
-              onCheckedChange={setNewSecIsReqPass}
-              className="bg-transparent border-0 p-0"
-            />
+            {/* Toggle: Exam pass required (only shown if link to exam is enabled) */}
+            {newSecIsLinkedExam && (
+              <FormToggleSetting
+                id="req-pass-toggle"
+                title={t("step2.addSectionDialog.isRequiredPassExam")}
+                checked={newSecIsReqPass}
+                onCheckedChange={setNewSecIsReqPass}
+                className="bg-transparent border-0 p-0 animate-in fade-in slide-in-from-top-1"
+              />
+            )}
           </div>
           <DialogFooter className="gap-2">
             <Button variant="outline" type="button" onClick={() => setActiveDialog(null)}>
@@ -1514,6 +1546,7 @@ function Step2CurriculumView({
         initialSectionId={editingLesson?.sectionId}
         parentCourseContext={parentCourseContext}
         onSave={handleSaveLesson}
+        onSaveMany={handleSaveManyLessons}
       />
 
       {/* DIALOG 3: ADD / LINK EXAM */}
@@ -1573,39 +1606,26 @@ function Step2CurriculumView({
             {/* 2. Exam Select + Plus Button (or New Exam Title Input if creating new) */}
             {!isCreatingNewExam ? (
               <div className="flex flex-col gap-2">
-                <label className="text-sm font-medium text-foreground">
-                  {locale === "ar" ? "اختر الامتحان" : "Select Exam"}{" "}
-                  <span className="text-destructive">*</span>
-                </label>
                 <div className="flex items-center gap-2">
-                  <Select value={newExamSelectedId} onValueChange={setNewExamSelectedId}>
-                    <SelectTrigger className="w-full">
-                      <SelectValue
-                        placeholder={
-                          t("step2.addLessonDialog.selectExam") ||
-                          (locale === "ar" ? "اختر الامتحان..." : "Select exam...")
-                        }
-                      />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {availableExams.length === 0 ? (
-                        <div className="p-2 text-xs text-muted-foreground text-center">
-                          {locale === "ar" ? "لا توجد امتحانات متاحة" : "No exams available"}
-                        </div>
-                      ) : (
-                        availableExams.map((ex) => (
-                          <SelectItem key={ex.id} value={ex.id}>
-                            {ex.title}
-                          </SelectItem>
-                        ))
-                      )}
-                    </SelectContent>
-                  </Select>
+                  <div className="flex-1">
+                    <ExamSelect
+                      value={newExamSelectedId}
+                      onValueChange={setNewExamSelectedId}
+                      label={locale === "ar" ? "اختر الامتحان" : "Select Exam"}
+                      placeholder={
+                        t("step2.addLessonDialog.selectExam") ||
+                        (locale === "ar" ? "اختر الامتحان..." : "Select exam...")
+                      }
+                      required
+                      exams={availableExams}
+                      emptyLabel={locale === "ar" ? "لا توجد امتحانات متاحة" : "No exams available"}
+                    />
+                  </div>
                   <Button
                     type="button"
                     variant="default"
                     size="icon"
-                    className="shrink-0 h-9 w-9"
+                    className="shrink-0 h-9 w-9 mt-6"
                     onClick={() => setIsCreatingNewExam(true)}
                     title={locale === "ar" ? "إنشاء امتحان جديد" : "Create new exam"}
                   >
@@ -1662,18 +1682,39 @@ function Step2CurriculumView({
               </Select>
             </div>
 
-            {/* Schedule Date (Only if status is scheduled) */}
+            {/* Schedule Dates (Only if status is scheduled) */}
             {newExamStatus === "scheduled" && (
-              <div className="flex flex-col gap-2 animate-in fade-in slide-in-from-top-1">
-                <label htmlFor="exam-schedule-date" className="text-sm font-medium text-foreground">
-                  {locale === "ar" ? "تاريخ النشر المجدول" : "Scheduled Publish Date"}
-                </label>
-                <Input
-                  id="exam-schedule-date"
-                  type="date"
-                  value={newExamScheduledDate}
-                  onChange={(e) => setNewExamScheduledDate(e.target.value)}
-                />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-in fade-in slide-in-from-top-1">
+                <div className="flex flex-col gap-2">
+                  <label
+                    htmlFor="exam-schedule-date"
+                    className="text-sm font-medium text-foreground flex items-center gap-1"
+                  >
+                    {locale === "ar" ? "تاريخ النشر المجدول" : "Scheduled Publish Date"}{" "}
+                    <span className="text-destructive">*</span>
+                  </label>
+                  <Input
+                    id="exam-schedule-date"
+                    type="date"
+                    value={newExamScheduledDate}
+                    onChange={(e) => setNewExamScheduledDate(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <label
+                    htmlFor="exam-schedule-end-date"
+                    className="text-sm font-medium text-foreground"
+                  >
+                    {locale === "ar" ? "تاريخ الانتهاء المجدول" : "Scheduled End Date"}
+                  </label>
+                  <Input
+                    id="exam-schedule-end-date"
+                    type="date"
+                    value={newExamScheduledEndDate}
+                    onChange={(e) => setNewExamScheduledEndDate(e.target.value)}
+                  />
+                </div>
               </div>
             )}
 
@@ -1761,6 +1802,28 @@ function Step2CurriculumView({
           <DialogFooter>
             <Button type="button" onClick={() => setActiveDialog(null)}>
               {t("step2.arrangeDialog.done")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* DIALOG 5: DELETE LESSON CONFIRMATION */}
+      <Dialog open={!!lessonToDelete} onOpenChange={(open) => !open && setLessonToDelete(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{t("step2.deleteLessonDialog.title")}</DialogTitle>
+            <DialogDescription>
+              {t("step2.deleteLessonDialog.description", {
+                title: lessonToDelete?.lesson.title || "",
+              })}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button type="button" variant="outline" onClick={() => setLessonToDelete(null)}>
+              {t("step2.deleteLessonDialog.cancel")}
+            </Button>
+            <Button type="button" variant="destructive" onClick={handleDeleteLesson}>
+              {t("step2.deleteLessonDialog.confirm")}
             </Button>
           </DialogFooter>
         </DialogContent>

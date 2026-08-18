@@ -27,6 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { CourseSelect } from "@/components/ui/academic-selects";
 import {
   Table,
   TableBody,
@@ -313,22 +314,16 @@ export function CodeGroupsClient() {
           </div>
 
           {/* Course Filter Select */}
-          <Select
+          <CourseSelect
+            className="w-full sm:w-60"
+            triggerClassName="h-10 w-full"
             value={selectedCourseFilter}
             onValueChange={(val) => updateUrlParams({ courseId: val, page: 1 })}
-          >
-            <SelectTrigger className="h-10 w-full sm:w-60">
-              <SelectValue placeholder={t("filters.allCourses")} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{t("filters.allCourses")}</SelectItem>
-              {courses.map((course) => (
-                <SelectItem key={course.id} value={course.id}>
-                  {course.title}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            placeholder={t("filters.allCourses")}
+            showAllOption
+            allOptionLabel={t("filters.allCourses")}
+            courses={courses}
+          />
 
           {/* Sort Select */}
           <Select value={sortBy} onValueChange={(val) => updateUrlParams({ sort: val, page: 1 })}>

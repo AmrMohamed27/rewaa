@@ -51,6 +51,13 @@ import {
 } from "@/components/ui/select";
 import { getStoredCourses } from "@/lib/courses-storage";
 import { getStoredExams, saveStoredExams } from "@/lib/exams-storage";
+import {
+  GradeSelect,
+  SubjectSelect,
+  TeacherSelect,
+  CourseSelect,
+  LessonSelect,
+} from "@/components/ui/academic-selects";
 import { getStoredTeachers } from "@/lib/settings-storage";
 import { Teacher } from "@/types/settings";
 import { cn } from "@/lib/utils";
@@ -78,8 +85,6 @@ export function ExamFormClient({ mode, initialData }: ExamFormClientProps) {
   const tForm = useTranslations("exams.form");
   const tStep2 = useTranslations("exams.step2");
   const tCourses = useTranslations("courses");
-  const tGrades = useTranslations("courses.new.grades");
-  const tSubjects = useTranslations("courses.new.subjects");
 
   // Step state (1: Settings, 2: Sections & Questions)
   const [currentStep, setCurrentStep] = React.useState<1 | 2>(1);
@@ -514,69 +519,32 @@ export function ExamFormClient({ mode, initialData }: ExamFormClientProps) {
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Grade Level */}
-                  <div className="space-y-2">
-                    <Label className="font-semibold">{tForm("fields.grade")}</Label>
-                    <Select
-                      value={grade}
-                      onValueChange={setGrade}
-                      disabled={!isIndependent && isContextLocked}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder={tForm("fields.selectGrade")} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="grade1">{tGrades("grade1")}</SelectItem>
-                        <SelectItem value="grade2">{tGrades("grade2")}</SelectItem>
-                        <SelectItem value="grade3">{tGrades("grade3")}</SelectItem>
-                        <SelectItem value="university">{tGrades("university")}</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  <GradeSelect
+                    value={grade}
+                    onValueChange={setGrade}
+                    label={tForm("fields.grade")}
+                    placeholder={tForm("fields.selectGrade")}
+                    disabled={!isIndependent && isContextLocked}
+                  />
 
                   {/* Subject */}
-                  <div className="space-y-2">
-                    <Label className="font-semibold">{tForm("fields.subject")}</Label>
-                    <Select
-                      value={subject}
-                      onValueChange={setSubject}
-                      disabled={!isIndependent && isContextLocked}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder={tForm("fields.selectSubject")} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="physics">{tSubjects("physics")}</SelectItem>
-                        <SelectItem value="chemistry">{tSubjects("chemistry")}</SelectItem>
-                        <SelectItem value="mathematics">{tSubjects("mathematics")}</SelectItem>
-                        <SelectItem value="biology">{tSubjects("biology")}</SelectItem>
-                        <SelectItem value="arabic">{tSubjects("arabic")}</SelectItem>
-                        <SelectItem value="english">{tSubjects("english")}</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  <SubjectSelect
+                    value={subject}
+                    onValueChange={setSubject}
+                    label={tForm("fields.subject")}
+                    placeholder={tForm("fields.selectSubject")}
+                    disabled={!isIndependent && isContextLocked}
+                  />
 
                   {/* Teacher Select */}
-                  <div className="space-y-2">
-                    <Label htmlFor="teacher-select" className="font-semibold">
-                      {tForm("fields.teacherName")}
-                    </Label>
-                    <Select
-                      value={teacherName}
-                      onValueChange={(val) => setTeacherName(val)}
-                      disabled={!isIndependent && isContextLocked}
-                    >
-                      <SelectTrigger id="teacher-select">
-                        <SelectValue placeholder={tForm("fields.selectTeacher")} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {availableTeachers.map((tch) => (
-                          <SelectItem key={tch.id} value={tch.name}>
-                            {tch.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  <TeacherSelect
+                    value={teacherName}
+                    onValueChange={(val) => setTeacherName(val)}
+                    label={tForm("fields.teacherName")}
+                    placeholder={tForm("fields.selectTeacher")}
+                    disabled={!isIndependent && isContextLocked}
+                    teachers={availableTeachers}
+                  />
 
                   {/* Exam Category */}
                   <div className="space-y-2">
@@ -676,25 +644,15 @@ export function ExamFormClient({ mode, initialData }: ExamFormClientProps) {
                     /* Linked Course, Section, and Lesson dropdowns */
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2 border-t border-border/40">
                       {/* Linked Course */}
-                      <div className="space-y-2">
-                        <Label className="font-semibold">{tForm("fields.linkedCourse")}</Label>
-                        <Select
-                          value={selectedCourseId}
-                          onValueChange={handleCourseChange}
-                          disabled={isContextLocked}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder={tForm("fields.selectCourse")} />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {availableCourses.map((course) => (
-                              <SelectItem key={course.id} value={course.id}>
-                                {course.title}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
+                      <CourseSelect
+                        value={selectedCourseId}
+                        onValueChange={handleCourseChange}
+                        label={tForm("fields.linkedCourse")}
+                        placeholder={tForm("fields.selectCourse")}
+                        disabled={isContextLocked}
+                        courses={availableCourses}
+                        className="space-y-2"
+                      />
 
                       {/* Linked Section */}
                       <div className="space-y-2">
@@ -720,27 +678,15 @@ export function ExamFormClient({ mode, initialData }: ExamFormClientProps) {
                       </div>
 
                       {/* Linked Lesson */}
-                      <div className="space-y-2">
-                        <Label className="font-semibold">{tForm("fields.linkedLesson")}</Label>
-                        <Select
-                          value={selectedLessonId}
-                          onValueChange={setSelectedLessonId}
-                          disabled={
-                            !selectedSectionId || (isContextLocked && Boolean(paramLessonId))
-                          }
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder={tForm("fields.selectLesson")} />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {availableLessons.map((les) => (
-                              <SelectItem key={les.id} value={les.id}>
-                                {les.title}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
+                      <LessonSelect
+                        value={selectedLessonId}
+                        onValueChange={setSelectedLessonId}
+                        label={tForm("fields.linkedLesson")}
+                        placeholder={tForm("fields.selectLesson")}
+                        disabled={!selectedSectionId || (isContextLocked && Boolean(paramLessonId))}
+                        lessons={availableLessons}
+                        className="space-y-2"
+                      />
                     </div>
                   )}
                 </div>

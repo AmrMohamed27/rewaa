@@ -7,16 +7,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import * as React from "react";
 
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { QuestionFormContent } from "@/components/dashboard/questions/question-form-content";
+import { Button } from "@/components/ui/button";
 import { getStoredExams } from "@/lib/exams-storage";
 import { addStoredQuestion } from "@/lib/questions-storage";
 import { Exam, Question } from "@/types/exam";
@@ -73,37 +65,20 @@ export function NewQuestionClient() {
         </div>
       </div>
 
-      {/* Exam Selector Box */}
-      <div className="bg-card border border-border/60 rounded-2xl p-6 shadow-xs space-y-6">
-        <div className="space-y-2">
-          <Label className="font-bold text-sm">{t("selectExam")}</Label>
-          <Select value={selectedExamId} onValueChange={setSelectedExamId}>
-            <SelectTrigger className="bg-background">
-              <SelectValue placeholder={t("selectExamPlaceholder")} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="none">{t("noExam")}</SelectItem>
-              {exams.map((e) => (
-                <SelectItem key={e.id} value={e.id}>
-                  {e.title} ({e.teacherName})
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Question Form Content with editable grade, subject, and teacherName */}
-        <QuestionFormContent
-          examGrade={currentSelectedExam?.grade || "grade1"}
-          examSubject={currentSelectedExam?.subject || "physics"}
-          examTeacherName={currentSelectedExam?.teacherName || ""}
-          allowEditableAcademicProps={selectedExamId === "none"}
-          onSave={handleSave}
-          onCancel={handleCancel}
-          submitLabel={t("saveQuestion")}
-          cancelLabel={t("cancel")}
-        />
-      </div>
+      {/* Question Form Content with editable grade, subject, and teacherName */}
+      <QuestionFormContent
+        exams={exams}
+        selectedExamId={selectedExamId}
+        onSelectedExamIdChange={setSelectedExamId}
+        examGrade={currentSelectedExam?.grade || "grade1"}
+        examSubject={currentSelectedExam?.subject || "physics"}
+        examTeacherName={currentSelectedExam?.teacherName || ""}
+        allowEditableAcademicProps={selectedExamId === "none"}
+        onSave={handleSave}
+        onCancel={handleCancel}
+        submitLabel={t("saveQuestion")}
+        cancelLabel={t("cancel")}
+      />
     </div>
   );
 }

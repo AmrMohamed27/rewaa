@@ -33,7 +33,7 @@ export function FormSectionCard({
 
   return (
     <Card className={cn("bg-card border shadow-xs overflow-hidden", className)}>
-      <CardHeader className={cn("pb-4", headerClassName)}>
+      <CardHeader className={cn("", headerClassName)}>
         <div className="flex items-center gap-2.5">
           {Icon && (
             <div className="p-2 rounded-lg bg-primary/10 text-primary shrink-0">{renderIcon()}</div>
@@ -45,7 +45,7 @@ export function FormSectionCard({
         </div>
       </CardHeader>
       <Separator />
-      <CardContent className={cn("pt-5", contentClassName)}>{children}</CardContent>
+      <CardContent className={cn("", contentClassName)}>{children}</CardContent>
     </Card>
   );
 }

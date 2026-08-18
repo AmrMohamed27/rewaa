@@ -10,6 +10,7 @@ export interface FormToggleSettingProps {
   onCheckedChange: (checked: boolean) => void;
   disabled?: boolean;
   className?: string;
+  children?: React.ReactNode;
 }
 
 export function FormToggleSetting({
@@ -21,6 +22,7 @@ export function FormToggleSetting({
   onCheckedChange,
   disabled = false,
   className,
+  children,
 }: FormToggleSettingProps) {
   const renderIcon = () => {
     if (!Icon) return null;
@@ -34,33 +36,40 @@ export function FormToggleSetting({
   return (
     <div
       className={cn(
-        "flex items-center justify-between p-3.5 rounded-lg border bg-muted/30 transition-colors",
+        "rounded-lg border bg-muted/30 transition-colors overflow-hidden p-3.5",
         disabled && "opacity-60 cursor-not-allowed",
         className,
       )}
     >
-      <div className="flex items-center gap-3">
-        {Icon && (
-          <div className="p-2 rounded-md bg-background border shadow-2xs text-muted-foreground">
-            {renderIcon()}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          {Icon && (
+            <div className="p-2 rounded-md bg-background border shadow-2xs text-muted-foreground">
+              {renderIcon()}
+            </div>
+          )}
+          <div className="space-y-0.5">
+            <span className="text-sm font-medium text-foreground block">{title}</span>
+            {subtitle && <span className="text-xs text-muted-foreground block">{subtitle}</span>}
           </div>
-        )}
-        <div className="space-y-0.5">
-          <span className="text-sm font-medium text-foreground block">{title}</span>
-          {subtitle && <span className="text-xs text-muted-foreground block">{subtitle}</span>}
         </div>
+        <label className="relative inline-flex items-center cursor-pointer" htmlFor={id}>
+          <input
+            id={id}
+            type="checkbox"
+            checked={checked}
+            disabled={disabled}
+            onChange={(e) => onCheckedChange(e.target.checked)}
+            className="sr-only peer"
+          />
+          <div className="w-11 h-6 bg-input peer-focus:outline-hidden rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:inset-s-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+        </label>
       </div>
-      <label className="relative inline-flex items-center cursor-pointer" htmlFor={id}>
-        <input
-          id={id}
-          type="checkbox"
-          checked={checked}
-          disabled={disabled}
-          onChange={(e) => onCheckedChange(e.target.checked)}
-          className="sr-only peer"
-        />
-        <div className="w-11 h-6 bg-input peer-focus:outline-hidden rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:inset-s-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
-      </label>
+      {children && (
+        <div className="px-3.5 pb-3.5 pt-1 border-t border-border/50 bg-background/50 animate-in fade-in slide-in-from-top-1">
+          {children}
+        </div>
+      )}
     </div>
   );
 }

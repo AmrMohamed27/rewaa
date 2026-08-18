@@ -94,5 +94,6 @@ export interface Exam {
   // ── Status & dates ────────────────────────────────────────────────────────
   publishStatus: ExamPublishStatus;
   createdAt: string; // ISO date string
-  scheduledAt?: string; // ISO date string — only when status === "scheduled"
+  scheduledAt?: string; // ISO date string — only when status === "scheduled" (scheduled publish date)
+  scheduledEndDate?: string; // ISO date string — optional when status === "scheduled"
 }

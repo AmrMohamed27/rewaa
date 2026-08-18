@@ -1,9 +1,11 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
-import * as React from "react";
 import { useTranslations } from "next-intl";
+import * as React from "react";
 
+import { CourseSelect } from "@/components/ui/academic-selects";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -12,16 +14,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Course } from "@/types/course";
 
 interface AddCodeGroupDialogProps {
@@ -112,32 +106,19 @@ export function AddCodeGroupDialog({
 
           <div className="grid gap-4 py-4">
             {/* Select Course */}
-            <div className="grid gap-2">
-              <Label htmlFor="courseSelect" className="font-semibold">
-                {t("selectCourse")} <span className="text-destructive">*</span>
-              </Label>
-              <Select
-                value={selectedCourseId}
-                onValueChange={(val) => {
-                  setSelectedCourseId(val);
-                  setErrors((prev) => ({ ...prev, courseId: false }));
-                }}
-              >
-                <SelectTrigger
-                  id="courseSelect"
-                  className={errors.courseId ? "border-destructive focus:ring-destructive" : ""}
-                >
-                  <SelectValue placeholder={t("selectCoursePlaceholder")} />
-                </SelectTrigger>
-                <SelectContent>
-                  {courses.map((course) => (
-                    <SelectItem key={course.id} value={course.id}>
-                      {course.title}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            <CourseSelect
+              id="courseSelect"
+              value={selectedCourseId}
+              onValueChange={(val) => {
+                setSelectedCourseId(val);
+                setErrors((prev) => ({ ...prev, courseId: false }));
+              }}
+              label={t("selectCourse")}
+              placeholder={t("selectCoursePlaceholder")}
+              required
+              courses={courses}
+              triggerClassName={errors.courseId ? "border-destructive focus:ring-destructive" : ""}
+            />
 
             {/* Unit Price */}
             <div className="grid gap-2">

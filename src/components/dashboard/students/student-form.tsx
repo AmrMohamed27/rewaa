@@ -15,7 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
+import { GradeSelect } from "@/components/ui/academic-selects";
 import { Gender, RegistrationType, Student } from "@/types/student";
 
 export interface StudentFormData {
@@ -56,7 +56,6 @@ export function StudentForm({
   const locale = useLocale();
 
   const tForm = useTranslations("studentsPage.form");
-  const tGrades = useTranslations("courses.new.grades");
 
   const [formData, setFormData] = React.useState<StudentFormData>({
     firstName: initialData?.firstName || "",
@@ -118,17 +117,6 @@ export function StudentForm({
       onSaveDraft(formData);
     }
   };
-
-  // Grade choices matching courses.new.grades
-  const gradeOptions = [
-    { value: "grade1", label: tGrades.has("grade1") ? tGrades("grade1") : "الصف الأول الثانوي" },
-    { value: "grade2", label: tGrades.has("grade2") ? tGrades("grade2") : "الصف الثاني الثانوي" },
-    { value: "grade3", label: tGrades.has("grade3") ? tGrades("grade3") : "الصف الثالث الثانوي" },
-    {
-      value: "university",
-      label: tGrades.has("university") ? tGrades("university") : "المرحلة الجامعية",
-    },
-  ];
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -317,21 +305,13 @@ export function StudentForm({
           </div>
 
           {/* Grade Level */}
-          <div className="space-y-2">
-            <Label htmlFor="grade">{tForm("gradeLabel")}</Label>
-            <Select value={formData.grade} onValueChange={(val) => handleChange("grade", val)}>
-              <SelectTrigger id="grade" className="bg-background">
-                <SelectValue placeholder={tForm("selectGrade")} />
-              </SelectTrigger>
-              <SelectContent>
-                {gradeOptions.map((g) => (
-                  <SelectItem key={g.value} value={g.value}>
-                    {g.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <GradeSelect
+            id="grade"
+            value={formData.grade}
+            onValueChange={(val) => handleChange("grade", val)}
+            label={tForm("gradeLabel")}
+            placeholder={tForm("selectGrade")}
+          />
 
           {/* Registration Type */}
           <div className="space-y-2">

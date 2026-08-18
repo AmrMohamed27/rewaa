@@ -2,9 +2,11 @@
 "use client";
 
 import {
+  BookOpen,
   Check,
   CheckCircle2,
   FileText,
+  GraduationCap,
   HelpCircle,
   ListOrdered,
   Plus,
@@ -17,6 +19,7 @@ import * as React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { FormMarkdownEditor } from "@/components/ui/form-markdown-editor";
+import { FormSectionCard } from "@/components/ui/form-section-card";
 import { FormToggleSetting } from "@/components/ui/form-toggle-setting";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,6 +31,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
+  GradeSelect,
+  SubjectSelect,
+  TeacherSelect,
+  ExamSelect,
+} from "@/components/ui/academic-selects";
+import { cn } from "@/lib/utils";
+import { getStoredTeachers } from "@/lib/settings-storage";
+import { Teacher } from "@/types/settings";
+import {
+  Exam,
   ExamSection,
   MCQOption,
   Question,
@@ -40,6 +53,9 @@ export interface QuestionFormContentProps {
   initialQuestion?: Question | null;
   sections?: ExamSection[];
   initialSectionId?: string;
+  exams?: Exam[];
+  selectedExamId?: string;
+  onSelectedExamIdChange?: (examId: string) => void;
   examGrade?: string;
   examSubject?: string;
   examTeacherName?: string;
@@ -60,6 +76,9 @@ export function QuestionFormContent({
   initialQuestion,
   sections,
   initialSectionId,
+  exams,
+  selectedExamId,
+  onSelectedExamIdChange,
   examGrade,
   examSubject,
   examTeacherName,
@@ -74,6 +93,17 @@ export function QuestionFormContent({
   const tNew = useTranslations("questionsPage.newPage");
   const tGrades = useTranslations("courses.new.grades");
   const tSubjects = useTranslations("courses.new.subjects");
+
+  const [availableTeachers, setAvailableTeachers] = React.useState<Teacher[]>([]);
+
+  React.useEffect(() => {
+    const loadTeachers = () => {
+      setAvailableTeachers(getStoredTeachers());
+    };
+    loadTeachers();
+    window.addEventListener("rewaa_teachers_updated", loadTeachers);
+    return () => window.removeEventListener("rewaa_teachers_updated", loadTeachers);
+  }, []);
 
   const [sectionId, setSectionId] = React.useState<string>(
     initialSectionId || (sections && sections[0]?.id ? sections[0].id : ""),
@@ -190,43 +220,26 @@ export function QuestionFormContent({
 
   return (
     <div className="space-y-6">
-      {/* Target Section Selection if sections provided */}
-      {sections && sections.length > 0 && (
-        <div className="space-y-2">
-          <Label className="font-semibold">{t("targetSection")}</Label>
-          <Select value={sectionId} onValueChange={setSectionId}>
-            <SelectTrigger>
-              <SelectValue placeholder={t("selectSectionPlaceholder")} />
-            </SelectTrigger>
-            <SelectContent>
-              {sections.map((s) => (
-                <SelectItem key={s.id} value={s.id}>
-                  {s.title}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-      )}
-
-      {/* 1. Question Type Selection (Big Buttons with Icons & Titles) */}
-      <div className="space-y-2">
-        <Label className="font-semibold">{t("questionTypeSelector")}</Label>
-        <div className="grid grid-cols-3 gap-3">
+      {/* 1. Question Type Selection */}
+      <FormSectionCard title={t("questionTypeSelector")} icon={ListOrdered}>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <button
             type="button"
             onClick={() => {
               setType("mcq");
               setModelAnswer("");
             }}
-            className={`p-3.5 rounded-xl border flex flex-col items-center justify-center gap-2 text-center transition-all cursor-pointer ${
+            className={cn(
+              "p-4 rounded-xl border text-start transition-all cursor-pointer flex flex-col gap-1.5",
               type === "mcq"
-                ? "bg-primary/10 border-primary text-primary font-bold shadow-2xs"
-                : "bg-card border-input hover:border-primary/50 text-muted-foreground"
-            }`}
+                ? "border-primary bg-primary/10 ring-2 ring-primary/20 font-bold"
+                : "border-border bg-card hover:bg-muted/40",
+            )}
           >
-            <ListOrdered className="size-6 shrink-0" />
-            <span className="text-xs">{t("types.mcq")}</span>
+            <div className="flex items-center gap-2 font-bold text-sm text-foreground">
+              <ListOrdered className="size-4 text-primary" />
+              <span>{t("types.mcq")}</span>
+            </div>
           </button>
 
           <button
@@ -235,14 +248,17 @@ export function QuestionFormContent({
               setType("true/false");
               setModelAnswer("true");
             }}
-            className={`p-3.5 rounded-xl border flex flex-col items-center justify-center gap-2 text-center transition-all cursor-pointer ${
+            className={cn(
+              "p-4 rounded-xl border text-start transition-all cursor-pointer flex flex-col gap-1.5",
               type === "true/false"
-                ? "bg-primary/10 border-primary text-primary font-bold shadow-2xs"
-                : "bg-card border-input hover:border-primary/50 text-muted-foreground"
-            }`}
+                ? "border-primary bg-primary/10 ring-2 ring-primary/20 font-bold"
+                : "border-border bg-card hover:bg-muted/40",
+            )}
           >
-            <HelpCircle className="size-6 shrink-0" />
-            <span className="text-xs">{t("types.trueFalse")}</span>
+            <div className="flex items-center gap-2 font-bold text-sm text-foreground">
+              <HelpCircle className="size-4 text-primary" />
+              <span>{t("types.trueFalse")}</span>
+            </div>
           </button>
 
           <button
@@ -251,25 +267,26 @@ export function QuestionFormContent({
               setType("text");
               setModelAnswer("");
             }}
-            className={`p-3.5 rounded-xl border flex flex-col items-center justify-center gap-2 text-center transition-all cursor-pointer ${
+            className={cn(
+              "p-4 rounded-xl border text-start transition-all cursor-pointer flex flex-col gap-1.5",
               type === "text"
-                ? "bg-primary/10 border-primary text-primary font-bold shadow-2xs"
-                : "bg-card border-input hover:border-primary/50 text-muted-foreground"
-            }`}
+                ? "border-primary bg-primary/10 ring-2 ring-primary/20 font-bold"
+                : "border-border bg-card hover:bg-muted/40",
+            )}
           >
-            <FileText className="size-6 shrink-0" />
-            <span className="text-xs">{t("types.text")}</span>
+            <div className="flex items-center gap-2 font-bold text-sm text-foreground">
+              <FileText className="size-4 text-primary" />
+              <span>{t("types.text")}</span>
+            </div>
           </button>
         </div>
-      </div>
+      </FormSectionCard>
 
       {/* 2. Basic Information Group */}
-      <div className="space-y-4 border-t border-border/60 pt-4">
-        <h3 className="text-sm font-bold text-foreground">{t("basicInfoGroup")}</h3>
-
+      <FormSectionCard title={t("basicInfoGroup")} icon={BookOpen} contentClassName="space-y-4">
         {/* Question Name / Title */}
-        <div className="space-y-2">
-          <Label htmlFor="q-name" className="font-semibold">
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="q-name" className="text-sm font-medium text-foreground">
             {t("questionName")} <span className="text-destructive">*</span>
           </Label>
           <Input
@@ -281,8 +298,8 @@ export function QuestionFormContent({
         </div>
 
         {/* Question Content Body */}
-        <div className="space-y-2">
-          <Label htmlFor="q-content" className="font-semibold">
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="q-content" className="text-sm font-medium text-foreground">
             {t("questionContent")}
           </Label>
           <FormMarkdownEditor
@@ -292,10 +309,45 @@ export function QuestionFormContent({
           />
         </div>
 
+        {/* Target Section Selection if sections provided */}
+        {sections && sections.length > 0 && (
+          <div className="flex flex-col gap-2 pt-2 border-t border-border/40">
+            <Label className="text-sm font-semibold text-foreground">{t("targetSection")}</Label>
+            <Select value={sectionId} onValueChange={setSectionId}>
+              <SelectTrigger>
+                <SelectValue placeholder={t("selectSectionPlaceholder")} />
+              </SelectTrigger>
+              <SelectContent>
+                {sections.map((s) => (
+                  <SelectItem key={s.id} value={s.id}>
+                    {s.title}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
+
+        {/* Optional Exam Selector if exams provided */}
+        {exams && onSelectedExamIdChange && (
+          <div className="pt-2 border-t border-border/40">
+            <ExamSelect
+              value={selectedExamId || "none"}
+              onValueChange={onSelectedExamIdChange}
+              label={tNew("selectExam")}
+              placeholder={tNew("selectExamPlaceholder")}
+              exams={exams}
+              showNoneOption
+              noneOptionLabel={tNew("noExam")}
+              showTeacherNameInOption
+            />
+          </div>
+        )}
+
         {/* Question Kind Classification & Difficulty Dropdowns */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label className="font-semibold">{t("questionKind")}</Label>
+          <div className="flex flex-col gap-2">
+            <Label className="text-sm font-medium text-foreground">{t("questionKind")}</Label>
             <Select value={questionType} onValueChange={(v) => setQuestionType(v as QuestionKind)}>
               <SelectTrigger>
                 <SelectValue />
@@ -311,8 +363,8 @@ export function QuestionFormContent({
             </Select>
           </div>
 
-          <div className="space-y-2">
-            <Label className="font-semibold">{t("difficulty")}</Label>
+          <div className="flex flex-col gap-2">
+            <Label className="text-sm font-medium text-foreground">{t("difficulty")}</Label>
             <Select
               value={difficulty}
               onValueChange={(v) => setDifficulty(v as QuestionDifficulty)}
@@ -339,8 +391,8 @@ export function QuestionFormContent({
         />
 
         {hasAnswerExplanation && (
-          <div className="space-y-2 pt-1">
-            <Label className="font-semibold">{t("explanationContent")}</Label>
+          <div className="flex flex-col gap-2 pt-1 animate-in fade-in slide-in-from-top-1">
+            <Label className="text-sm font-medium text-foreground">{t("explanationContent")}</Label>
             <FormMarkdownEditor
               value={answerExplanation}
               onChange={setAnswerExplanation}
@@ -348,132 +400,112 @@ export function QuestionFormContent({
             />
           </div>
         )}
-      </div>
+      </FormSectionCard>
 
       {/* 3. Academic Context Info Group */}
-      <div className="space-y-4 border-t border-border/60 pt-4 bg-muted/20 p-4 rounded-xl">
-        <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
-          {allowEditableAcademicProps ? tNew("academicGroupTitle") : t("autoFilledHeader")}
-        </h3>
-
-        {allowEditableAcademicProps ? (
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {/* Grade Select */}
-            <div className="space-y-1.5">
-              <Label className="text-xs font-semibold">{tNew("selectGrade")}</Label>
-              <Select value={selectedGrade} onValueChange={setSelectedGrade}>
-                <SelectTrigger className="bg-background text-xs">
-                  <SelectValue placeholder={tNew("selectGradePlaceholder")} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="grade1">{tGrades("grade1")}</SelectItem>
-                  <SelectItem value="grade2">{tGrades("grade2")}</SelectItem>
-                  <SelectItem value="grade3">{tGrades("grade3")}</SelectItem>
-                  <SelectItem value="university">{tGrades("university")}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Subject Select */}
-            <div className="space-y-1.5">
-              <Label className="text-xs font-semibold">{tNew("selectSubject")}</Label>
-              <Select value={selectedSubject} onValueChange={setSelectedSubject}>
-                <SelectTrigger className="bg-background text-xs">
-                  <SelectValue placeholder={tNew("selectSubjectPlaceholder")} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="physics">{tSubjects("physics")}</SelectItem>
-                  <SelectItem value="chemistry">{tSubjects("chemistry")}</SelectItem>
-                  <SelectItem value="mathematics">{tSubjects("mathematics")}</SelectItem>
-                  <SelectItem value="biology">{tSubjects("biology")}</SelectItem>
-                  <SelectItem value="arabic">{tSubjects("arabic")}</SelectItem>
-                  <SelectItem value="english">{tSubjects("english")}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Teacher Name Input */}
-            <div className="space-y-1.5">
-              <Label className="text-xs font-semibold">{tNew("teacherName")}</Label>
-              <Input
+      {allowEditableAcademicProps && (
+        <FormSectionCard
+          title={allowEditableAcademicProps ? tNew("academicGroupTitle") : t("autoFilledHeader")}
+          icon={GraduationCap}
+        >
+          {allowEditableAcademicProps ? (
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <GradeSelect
+                value={selectedGrade}
+                onValueChange={setSelectedGrade}
+                label={tNew("selectGrade")}
+                placeholder={tNew("selectGradePlaceholder")}
+              />
+              <SubjectSelect
+                value={selectedSubject}
+                onValueChange={setSelectedSubject}
+                label={tNew("selectSubject")}
+                placeholder={tNew("selectSubjectPlaceholder")}
+              />
+              <TeacherSelect
                 value={teacherNameInput}
-                onChange={(e) => setTeacherNameInput(e.target.value)}
+                onValueChange={setTeacherNameInput}
+                label={tNew("teacherName")}
                 placeholder={tNew("teacherNamePlaceholder")}
-                className="bg-background text-xs"
+                teachers={availableTeachers}
               />
             </div>
-          </div>
-        ) : (
-          <div className="flex items-center gap-3 flex-wrap">
-            <div className="space-y-1">
-              <span className="text-[11px] text-muted-foreground block">{t("grade")}</span>
-              <Badge variant="secondary" className="font-semibold">
-                {(() => {
-                  if (!examGrade) return t("notSet");
-                  try {
-                    return tGrades(examGrade);
-                  } catch {
-                    return examGrade;
-                  }
-                })()}
-              </Badge>
+          ) : (
+            <div className="flex items-center gap-3 flex-wrap">
+              <div className="space-y-1">
+                <span className="text-[11px] text-muted-foreground block">{t("grade")}</span>
+                <Badge variant="secondary" className="font-semibold">
+                  {(() => {
+                    if (!examGrade) return t("notSet");
+                    try {
+                      return tGrades(examGrade);
+                    } catch {
+                      return examGrade;
+                    }
+                  })()}
+                </Badge>
+              </div>
+              <div className="space-y-1">
+                <span className="text-[11px] text-muted-foreground block">{t("subject")}</span>
+                <Badge variant="secondary" className="font-semibold">
+                  {(() => {
+                    if (!examSubject) return t("notSet");
+                    try {
+                      return tSubjects(examSubject);
+                    } catch {
+                      return examSubject;
+                    }
+                  })()}
+                </Badge>
+              </div>
+              <div className="space-y-1">
+                <span className="text-[11px] text-muted-foreground block">{t("teacher")}</span>
+                <Badge variant="secondary" className="font-semibold">
+                  {examTeacherName || t("notSet")}
+                </Badge>
+              </div>
             </div>
-            <div className="space-y-1">
-              <span className="text-[11px] text-muted-foreground block">{t("subject")}</span>
-              <Badge variant="secondary" className="font-semibold">
-                {(() => {
-                  if (!examSubject) return t("notSet");
-                  try {
-                    return tSubjects(examSubject);
-                  } catch {
-                    return examSubject;
-                  }
-                })()}
-              </Badge>
-            </div>
-            <div className="space-y-1">
-              <span className="text-[11px] text-muted-foreground block">{t("teacher")}</span>
-              <Badge variant="secondary" className="font-semibold">
-                {examTeacherName || t("notSet")}
-              </Badge>
-            </div>
-          </div>
-        )}
-      </div>
+          )}
+        </FormSectionCard>
+      )}
 
       {/* 4. Question Requirements (Grade & Answer specifics) */}
-      <div className="space-y-4 border-t border-border/60 pt-4">
+      <FormSectionCard
+        title={t("requirementsGroup")}
+        icon={CheckCircle2}
+        contentClassName="space-y-4"
+      >
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-bold text-foreground">{t("requirementsGroup")}</h3>
-          <div className="flex items-center gap-2">
-            <Label htmlFor="q-grade" className="text-xs font-semibold">
-              {t("gradePoints")}
-            </Label>
-            <Input
-              id="q-grade"
-              type="number"
-              min={1}
-              max={100}
-              className="w-20 h-8 text-center text-xs"
-              value={grade}
-              onChange={(e) => setGrade(parseInt(e.target.value, 10) || 1)}
-            />
-          </div>
+          <Label htmlFor="q-grade" className="text-sm font-medium text-foreground">
+            {t("gradePoints")}
+          </Label>
+          <Input
+            id="q-grade"
+            type="number"
+            min={1}
+            max={100}
+            className="w-24 h-9 text-center text-xs font-semibold"
+            value={grade}
+            onChange={(e) => setGrade(parseInt(e.target.value, 10) || 1)}
+          />
         </div>
 
         {/* True / False Selection */}
         {type === "true/false" && (
           <div className="space-y-2 pt-2">
-            <Label className="font-semibold text-xs">{t("selectCorrectTrueFalse")}</Label>
+            <Label className="font-semibold text-xs text-foreground">
+              {t("selectCorrectTrueFalse")}
+            </Label>
             <div className="grid grid-cols-2 gap-4">
               <button
                 type="button"
                 onClick={() => setModelAnswer("true")}
-                className={`py-3 px-4 rounded-xl border flex items-center justify-center gap-2 font-bold text-sm transition-all cursor-pointer ${
+                className={cn(
+                  "py-3 px-4 rounded-xl border flex items-center justify-center gap-2 font-bold text-sm transition-all cursor-pointer",
                   modelAnswer === "true"
                     ? "bg-emerald-500/10 border-emerald-500 text-emerald-600 shadow-2xs"
-                    : "bg-card border-input hover:border-emerald-500/40 text-muted-foreground"
-                }`}
+                    : "bg-card border-input hover:border-emerald-500/40 text-muted-foreground",
+                )}
               >
                 <CheckCircle2 className="size-4 text-emerald-600" />
                 <span>{t("trueOption")}</span>
@@ -482,11 +514,12 @@ export function QuestionFormContent({
               <button
                 type="button"
                 onClick={() => setModelAnswer("false")}
-                className={`py-3 px-4 rounded-xl border flex items-center justify-center gap-2 font-bold text-sm transition-all cursor-pointer ${
+                className={cn(
+                  "py-3 px-4 rounded-xl border flex items-center justify-center gap-2 font-bold text-sm transition-all cursor-pointer",
                   modelAnswer === "false"
                     ? "bg-destructive/10 border-destructive text-destructive shadow-2xs"
-                    : "bg-card border-input hover:border-destructive/40 text-muted-foreground"
-                }`}
+                    : "bg-card border-input hover:border-destructive/40 text-muted-foreground",
+                )}
               >
                 <XCircle className="size-4 text-destructive" />
                 <span>{t("falseOption")}</span>
@@ -499,13 +532,15 @@ export function QuestionFormContent({
         {type === "mcq" && (
           <div className="space-y-3 pt-2">
             <div className="flex items-center justify-between">
-              <Label className="font-semibold text-xs">{t("mcqChoicesLabel")}</Label>
+              <Label className="font-semibold text-xs text-foreground">
+                {t("mcqChoicesLabel")}
+              </Label>
               <Button
                 type="button"
                 variant="outline"
                 size="sm"
                 onClick={handleAddOption}
-                className="h-7 text-xs gap-1"
+                className="h-8 text-xs gap-1.5"
               >
                 <Plus className="size-3.5" />
                 <span>{t("addChoice")}</span>
@@ -518,11 +553,12 @@ export function QuestionFormContent({
                   <button
                     type="button"
                     onClick={() => setModelAnswer(opt.id)}
-                    className={`size-8 rounded-lg border flex items-center justify-center shrink-0 transition-colors cursor-pointer ${
+                    className={cn(
+                      "size-9 rounded-lg border flex items-center justify-center shrink-0 transition-colors cursor-pointer",
                       modelAnswer === opt.id
                         ? "bg-emerald-500 text-white border-emerald-500"
-                        : "bg-card border-input hover:border-emerald-500/50 text-muted-foreground"
-                    }`}
+                        : "bg-card border-input hover:border-emerald-500/50 text-muted-foreground",
+                    )}
                     title={t("markAsCorrect")}
                   >
                     {modelAnswer === opt.id ? (
@@ -558,7 +594,7 @@ export function QuestionFormContent({
         {/* Text Question Model Answer */}
         {type === "text" && (
           <div className="space-y-2 pt-2">
-            <Label className="font-semibold text-xs">{t("modelAnswerLabel")}</Label>
+            <Label className="font-semibold text-xs text-foreground">{t("modelAnswerLabel")}</Label>
             <FormMarkdownEditor
               value={modelAnswer}
               onChange={setModelAnswer}
@@ -566,7 +602,7 @@ export function QuestionFormContent({
             />
           </div>
         )}
-      </div>
+      </FormSectionCard>
 
       {/* Action Buttons Bar */}
       <div className="flex items-center justify-end gap-3 pt-4 border-t border-border/60">

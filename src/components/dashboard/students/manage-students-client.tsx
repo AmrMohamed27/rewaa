@@ -41,6 +41,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
+import { GradeSelect } from "@/components/ui/academic-selects";
 
 import {
   deleteStoredStudent,
@@ -144,13 +145,6 @@ export function ManageStudentsClient() {
       window.removeEventListener("storage", handleUpdate);
     };
   }, [locale]);
-
-  // Extract unique options for filter dropdowns
-  const availableGrades = React.useMemo(() => {
-    const set = new Set<string>();
-    students.forEach((s) => s.grade && set.add(s.grade));
-    return Array.from(set);
-  }, [students]);
 
   const availableCountries = React.useMemo(() => {
     const set = new Set<string>();
@@ -405,24 +399,17 @@ export function ManageStudentsClient() {
         </div>
 
         {/* Filter Dropdowns Grid */}
-        <div className="flex flex-row flex-wrap gap-3 pt-2 border-t border-border/40">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 pt-2 border-t border-border/40">
           {/* Grade Filter */}
-          <Select
+          <GradeSelect
             value={selectedGrade}
             onValueChange={(val) => updateUrlParams({ grade: val, page: 1 })}
-          >
-            <SelectTrigger className="bg-background h-9 text-xs">
-              <SelectValue placeholder={t("allGrades")} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{t("allGrades")}</SelectItem>
-              {availableGrades.map((g) => (
-                <SelectItem key={g} value={g}>
-                  {formatGrade(g)}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            placeholder={t("allGrades")}
+            showAllOption
+            allOptionLabel={t("allGrades")}
+            triggerClassName="bg-background h-9 text-xs w-full"
+            className="w-full"
+          />
 
           {/* Registration Type Filter */}
           <Select

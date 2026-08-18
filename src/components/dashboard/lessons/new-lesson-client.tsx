@@ -1,14 +1,17 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useLocale, useTranslations } from "next-intl";
+import {
+  GradeSelect,
+  SubjectSelect,
+  TeacherSelect,
+  ExamSelect,
+} from "@/components/ui/academic-selects";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { FormMarkdownEditor } from "@/components/ui/form-markdown-editor";
 import { FormSectionCard } from "@/components/ui/form-section-card";
 import { FormToggleSetting } from "@/components/ui/form-toggle-setting";
-import { FormMarkdownEditor } from "@/components/ui/form-markdown-editor";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -19,37 +22,39 @@ import {
 import { getStoredCourses } from "@/lib/courses-storage";
 import { getStoredLessons, saveStoredLessons } from "@/lib/lessons-storage";
 import { getStoredTeachers } from "@/lib/settings-storage";
-import { Teacher } from "@/types/settings";
+import { cn } from "@/lib/utils";
 import {
   Course,
+  CourseVenue,
   Lesson,
   LessonAttachment,
-  CourseVenue,
-  LessonType,
   LessonCategory,
   LessonPublishStatus,
+  LessonType,
 } from "@/types/course";
+import { Teacher } from "@/types/settings";
 import {
-  Video,
-  FileText,
-  Upload,
-  FileCheck,
-  ImageIcon,
-  GraduationCap,
-  BookOpen,
-  User,
-  MapPin,
-  Calendar,
-  Trash2,
   AlertCircle,
   ArrowLeft,
+  BookOpen,
+  Calendar,
   CheckCircle2,
+  FileCheck,
+  FileText,
+  GraduationCap,
+  ImageIcon,
   Layers,
   Link2,
+  MapPin,
+  Trash2,
+  Upload,
+  Video,
 } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 interface NewLessonClientProps {
   initialLessonId?: string;
@@ -66,8 +71,6 @@ export function NewLessonClient({ initialLessonId }: NewLessonClientProps = {}) 
   const t = useTranslations("lessons.new");
   const tDialog = useTranslations("courses.new.step2.addLessonDialog");
   const tCourses = useTranslations("courses");
-  const tGrades = useTranslations("courses.new.grades");
-  const tSubjects = useTranslations("courses.new.subjects");
   const locale = useLocale();
   const router = useRouter();
 
@@ -117,6 +120,7 @@ export function NewLessonClient({ initialLessonId }: NewLessonClientProps = {}) 
   // Publish status
   const [publishStatus, setPublishStatus] = useState<LessonPublishStatus>("published");
   const [scheduledPublishDate, setScheduledPublishDate] = useState("");
+  const [scheduledEndDate, setScheduledEndDate] = useState("");
 
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -164,6 +168,7 @@ export function NewLessonClient({ initialLessonId }: NewLessonClientProps = {}) 
 
         setPublishStatus(existing.publishStatus || "published");
         setScheduledPublishDate(existing.scheduledPublishDate || "");
+        setScheduledEndDate(existing.scheduledEndDate || "");
       }
     }
     setIsLoaded(true);
@@ -268,10 +273,22 @@ export function NewLessonClient({ initialLessonId }: NewLessonClientProps = {}) 
           : undefined,
       sectionId: lessonCategory === "course-dependent" ? selectedSectionId : undefined,
 
-      grade,
-      subject,
-      teacherName: teacherName.trim(),
-      venue,
+      grade:
+        lessonCategory === "course-dependent" && selectedCourseObj
+          ? selectedCourseObj.grade || grade
+          : grade,
+      subject:
+        lessonCategory === "course-dependent" && selectedCourseObj
+          ? selectedCourseObj.subject || subject
+          : subject,
+      teacherName:
+        lessonCategory === "course-dependent" && selectedCourseObj
+          ? selectedCourseObj.teacherName || teacherName.trim()
+          : teacherName.trim(),
+      venue:
+        lessonCategory === "course-dependent" && selectedCourseObj
+          ? selectedCourseObj.venue || venue
+          : venue,
 
       hasPdfAttachments,
       pdfFiles: hasPdfAttachments ? pdfFiles : [],
@@ -284,6 +301,7 @@ export function NewLessonClient({ initialLessonId }: NewLessonClientProps = {}) 
 
       publishStatus,
       scheduledPublishDate: publishStatus === "scheduled" ? scheduledPublishDate : undefined,
+      scheduledEndDate: publishStatus === "scheduled" ? scheduledEndDate : undefined,
     };
 
     let updatedLessons: Lesson[];
@@ -581,95 +599,63 @@ export function NewLessonClient({ initialLessonId }: NewLessonClientProps = {}) 
           )}
         </FormSectionCard>
 
-        {/* 5. ACADEMIC INFORMATION */}
-        <FormSectionCard
-          title={tDialog("groups.academic")}
-          description={tDialog("groupDescriptions.academic")}
-          icon={GraduationCap}
-          contentClassName="grid grid-cols-1 sm:grid-cols-2 gap-4"
-        >
-          {/* Grade */}
-          <div className="flex flex-col gap-2">
-            <label htmlFor="academic-grade" className="text-sm font-medium text-foreground">
-              {tDialog("gradeLevel")}
-            </label>
-            <Select value={grade} onValueChange={setGrade}>
-              <SelectTrigger id="academic-grade">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="grade1">{tGrades("grade1")}</SelectItem>
-                <SelectItem value="grade2">{tGrades("grade2")}</SelectItem>
-                <SelectItem value="grade3">{tGrades("grade3")}</SelectItem>
-                <SelectItem value="university">{tGrades("university")}</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+        {/* 5. ACADEMIC INFORMATION (Only shown for independent lessons, inherited automatically when linked to a course) */}
+        {lessonCategory !== "course-dependent" && (
+          <FormSectionCard
+            title={tDialog("groups.academic")}
+            description={tDialog("groupDescriptions.academic")}
+            icon={GraduationCap}
+            contentClassName="grid grid-cols-1 sm:grid-cols-2 gap-4"
+          >
+            {/* Grade */}
+            <GradeSelect
+              id="academic-grade"
+              value={grade}
+              onValueChange={setGrade}
+              label={tDialog("gradeLevel")}
+            />
 
-          {/* Subject */}
-          <div className="flex flex-col gap-2">
-            <label htmlFor="academic-subject" className="text-sm font-medium text-foreground">
-              {tDialog("subject")}
-            </label>
-            <Select value={subject} onValueChange={setSubject}>
-              <SelectTrigger id="academic-subject">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="physics">{tSubjects("physics")}</SelectItem>
-                <SelectItem value="chemistry">{tSubjects("chemistry")}</SelectItem>
-                <SelectItem value="biology">{tSubjects("biology")}</SelectItem>
-                <SelectItem value="mathematics">{tSubjects("mathematics")}</SelectItem>
-                <SelectItem value="english">{tSubjects("english")}</SelectItem>
-                <SelectItem value="arabic">{tSubjects("arabic")}</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+            {/* Subject */}
+            <SubjectSelect
+              id="academic-subject"
+              value={subject}
+              onValueChange={setSubject}
+              label={tDialog("subject")}
+            />
 
-          {/* Teacher Select */}
-          <div className="flex flex-col gap-2">
-            <label
-              htmlFor="academic-teacher-select"
-              className="text-sm font-medium text-foreground flex items-center gap-1.5"
-            >
-              <User className="size-4 text-muted-foreground" />
-              {tDialog("teacherName")}
-            </label>
-            <Select value={teacherName} onValueChange={(val) => setTeacherName(val)}>
-              <SelectTrigger id="academic-teacher-select">
-                <SelectValue placeholder={tDialog("selectTeacher")} />
-              </SelectTrigger>
-              <SelectContent>
-                {availableTeachers.map((tch) => (
-                  <SelectItem key={tch.id} value={tch.name}>
-                    {tch.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+            {/* Teacher Select */}
+            <TeacherSelect
+              id="academic-teacher-select"
+              value={teacherName}
+              onValueChange={(val) => setTeacherName(val)}
+              label={tDialog("teacherName")}
+              placeholder={tDialog("selectTeacher")}
+              showIcon
+              teachers={availableTeachers}
+            />
 
-          {/* Venue */}
-          <div className="flex flex-col gap-2">
-            <label
-              htmlFor="academic-venue"
-              className="text-sm font-medium text-foreground flex items-center gap-1.5"
-            >
-              <MapPin className="size-4 text-muted-foreground" />
-              {tDialog("venue")}
-            </label>
-            <Select value={venue} onValueChange={(v) => setVenue(v as CourseVenue)}>
-              <SelectTrigger id="academic-venue">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="online">{tCourses("venue.online")}</SelectItem>
-                <SelectItem value="center">{tCourses("venue.center")}</SelectItem>
-                <SelectItem value="all">{tCourses("venue.all")}</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </FormSectionCard>
+            {/* Venue */}
+            <div className="flex flex-col gap-2">
+              <label
+                htmlFor="academic-venue"
+                className="text-sm font-medium text-foreground flex items-center gap-1.5"
+              >
+                <MapPin className="size-4 text-muted-foreground" />
+                {tDialog("venue")}
+              </label>
+              <Select value={venue} onValueChange={(v) => setVenue(v as CourseVenue)}>
+                <SelectTrigger id="academic-venue">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="online">{tCourses("venue.online")}</SelectItem>
+                  <SelectItem value="center">{tCourses("venue.center")}</SelectItem>
+                  <SelectItem value="all">{tCourses("venue.all")}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </FormSectionCard>
+        )}
 
         {/* 6. ATTACHMENTS & EXAMS */}
         <FormSectionCard
@@ -688,58 +674,63 @@ export function NewLessonClient({ initialLessonId }: NewLessonClientProps = {}) 
               setHasPdfAttachments(val);
               if (!val) setPdfError(null);
             }}
-          />
+          >
+            {hasPdfAttachments && (
+              <div className="space-y-3 pt-1">
+                {pdfError && (
+                  <div className="flex items-center gap-2 text-xs font-semibold text-destructive bg-destructive/10 p-2.5 rounded-md border border-destructive/20">
+                    <AlertCircle className="size-4 shrink-0" />
+                    <span>{pdfError}</span>
+                  </div>
+                )}
 
-          {hasPdfAttachments && (
-            <div className="space-y-3 p-3 rounded-lg bg-background border animate-in fade-in slide-in-from-top-1">
-              {pdfError && (
-                <div className="flex items-center gap-2 text-xs font-semibold text-destructive bg-destructive/10 p-2.5 rounded-md border border-destructive/20">
-                  <AlertCircle className="size-4 shrink-0" />
-                  <span>{pdfError}</span>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold text-foreground">
+                    {tDialog("pdfFilesCount", { count: pdfFiles.length })}
+                  </span>
+                  <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-primary/10 hover:bg-primary/20 text-primary text-xs font-semibold transition-colors">
+                    <Upload className="size-3.5" />
+                    <span>{tDialog("uploadPdf")}</span>
+                    <input
+                      type="file"
+                      accept=".pdf"
+                      className="hidden"
+                      onChange={handleAddPdfFile}
+                    />
+                  </label>
                 </div>
-              )}
 
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-foreground">
-                  {tDialog("pdfFilesCount", { count: pdfFiles.length })}
-                </span>
-                <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-primary/10 hover:bg-primary/20 text-primary text-xs font-semibold transition-colors">
-                  <Upload className="size-3.5" />
-                  <span>{tDialog("uploadPdf")}</span>
-                  <input type="file" accept=".pdf" className="hidden" onChange={handleAddPdfFile} />
-                </label>
-              </div>
-
-              {pdfFiles.length > 0 ? (
-                <div className="space-y-2">
-                  {pdfFiles.map((pdf) => (
-                    <div
-                      key={pdf.id}
-                      className="flex items-center justify-between p-2 rounded-md bg-muted/40 border text-xs"
-                    >
-                      <span className="font-medium truncate max-w-xs flex items-center gap-1.5">
-                        <FileText className="size-3.5 text-primary shrink-0" />
-                        {pdf.title}
-                      </span>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon-xs"
-                        onClick={() => handleRemovePdfFile(pdf.id)}
-                        className="text-destructive hover:bg-destructive/10"
+                {pdfFiles.length > 0 ? (
+                  <div className="space-y-2">
+                    {pdfFiles.map((pdf) => (
+                      <div
+                        key={pdf.id}
+                        className="flex items-center justify-between p-2 rounded-md bg-muted/40 border text-xs"
                       >
-                        <Trash2 className="size-3.5" />
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-xs text-muted-foreground italic text-center py-2 border border-dashed rounded-md">
-                  {tDialog("noPdfFiles")}
-                </p>
-              )}
-            </div>
-          )}
+                        <span className="font-medium truncate max-w-xs flex items-center gap-1.5">
+                          <FileText className="size-3.5 text-primary shrink-0" />
+                          {pdf.title}
+                        </span>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon-xs"
+                          onClick={() => handleRemovePdfFile(pdf.id)}
+                          className="text-destructive hover:bg-destructive/10"
+                        >
+                          <Trash2 className="size-3.5" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-xs text-muted-foreground italic text-center py-2 border border-dashed rounded-md">
+                    {tDialog("noPdfFiles")}
+                  </p>
+                )}
+              </div>
+            )}
+          </FormToggleSetting>
 
           {/* Toggle Images */}
           <FormToggleSetting
@@ -748,57 +739,57 @@ export function NewLessonClient({ initialLessonId }: NewLessonClientProps = {}) 
             subtitle={tDialog("hasImageAttachmentsSubtitle")}
             checked={hasImageAttachments}
             onCheckedChange={setHasImageAttachments}
-          />
-
-          {hasImageAttachments && (
-            <div className="space-y-3 p-3 rounded-lg bg-background border animate-in fade-in slide-in-from-top-1">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-foreground">
-                  {tDialog("explanatoryImagesCount", { count: imageFiles.length })}
-                </span>
-                <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-primary/10 hover:bg-primary/20 text-primary text-xs font-semibold transition-colors">
-                  <Upload className="size-3.5" />
-                  <span>{tDialog("uploadImage")}</span>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={handleAddImageFile}
-                  />
-                </label>
-              </div>
-
-              {imageFiles.length > 0 ? (
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                  {imageFiles.map((img) => (
-                    <div
-                      key={img.id}
-                      className="relative group rounded-lg overflow-hidden border bg-muted/40 h-20 flex items-center justify-center"
-                    >
-                      <Image
-                        src={img.fileUrl}
-                        alt={img.title}
-                        fill
-                        className="object-cover"
-                        unoptimized
-                      />
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveImageFile(img.id)}
-                        className="absolute top-1 right-1 bg-destructive text-white p-1 rounded-full opacity-90 hover:opacity-100 transition-opacity"
-                      >
-                        <Trash2 className="size-3" />
-                      </button>
-                    </div>
-                  ))}
+          >
+            {hasImageAttachments && (
+              <div className="space-y-3 pt-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold text-foreground">
+                    {tDialog("explanatoryImagesCount", { count: imageFiles.length })}
+                  </span>
+                  <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-primary/10 hover:bg-primary/20 text-primary text-xs font-semibold transition-colors">
+                    <Upload className="size-3.5" />
+                    <span>{tDialog("uploadImage")}</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleAddImageFile}
+                    />
+                  </label>
                 </div>
-              ) : (
-                <p className="text-xs text-muted-foreground italic text-center py-2 border border-dashed rounded-md">
-                  {tDialog("noExplanatoryImages")}
-                </p>
-              )}
-            </div>
-          )}
+
+                {imageFiles.length > 0 ? (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    {imageFiles.map((img) => (
+                      <div
+                        key={img.id}
+                        className="relative group rounded-lg overflow-hidden border bg-muted/40 h-20 flex items-center justify-center"
+                      >
+                        <Image
+                          src={img.fileUrl}
+                          alt={img.title}
+                          fill
+                          className="object-cover"
+                          unoptimized
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveImageFile(img.id)}
+                          className="absolute top-1 right-1 bg-destructive text-white p-1 rounded-full opacity-90 hover:opacity-100 transition-opacity"
+                        >
+                          <Trash2 className="size-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-xs text-muted-foreground italic text-center py-2 border border-dashed rounded-md">
+                    {tDialog("noExplanatoryImages")}
+                  </p>
+                )}
+              </div>
+            )}
+          </FormToggleSetting>
 
           {/* Toggle Link to Exam */}
           <FormToggleSetting
@@ -807,43 +798,30 @@ export function NewLessonClient({ initialLessonId }: NewLessonClientProps = {}) 
             subtitle={tDialog("isLinkedToExamSubtitle")}
             checked={isLinkedToExam}
             onCheckedChange={setIsLinkedToExam}
-          />
+          >
+            {isLinkedToExam && (
+              <div className="space-y-3 pt-1">
+                <ExamSelect
+                  id="standalone-exam-select"
+                  value={linkedExamId}
+                  onValueChange={setLinkedExamId}
+                  label={tDialog("selectExam")}
+                  placeholder={tDialog("selectExam")}
+                  required={isLinkedToExam}
+                  exams={MOCK_BACKEND_EXAMS}
+                />
 
-          {isLinkedToExam && (
-            <div className="space-y-3 p-3 rounded-lg bg-background border animate-in fade-in slide-in-from-top-1">
-              <label
-                htmlFor="standalone-exam-select"
-                className="text-xs font-semibold text-foreground"
-              >
-                {tDialog("selectExam")} <span className="text-destructive">*</span>
-              </label>
-              <Select
-                value={linkedExamId}
-                onValueChange={setLinkedExamId}
-                required={isLinkedToExam}
-              >
-                <SelectTrigger id="standalone-exam-select">
-                  <SelectValue placeholder={tDialog("selectExam")} />
-                </SelectTrigger>
-                <SelectContent>
-                  {MOCK_BACKEND_EXAMS.map((exam) => (
-                    <SelectItem key={exam.id} value={exam.id}>
-                      {exam.title}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              <FormToggleSetting
-                id="standalone-pass-exam-toggle"
-                title={tDialog("isRequiredPassExam")}
-                subtitle={tDialog("isRequiredPassExamSubtitle")}
-                checked={isRequiredPassExam}
-                onCheckedChange={setIsRequiredPassExam}
-                className="mt-2"
-              />
-            </div>
-          )}
+                <FormToggleSetting
+                  id="standalone-pass-exam-toggle"
+                  title={tDialog("isRequiredPassExam")}
+                  subtitle={tDialog("isRequiredPassExamSubtitle")}
+                  checked={isRequiredPassExam}
+                  onCheckedChange={setIsRequiredPassExam}
+                  className="mt-2"
+                />
+              </div>
+            )}
+          </FormToggleSetting>
         </FormSectionCard>
 
         {/* 7. PUBLISH STATUS */}
@@ -876,21 +854,38 @@ export function NewLessonClient({ initialLessonId }: NewLessonClientProps = {}) 
           </div>
 
           {publishStatus === "scheduled" && (
-            <div className="flex flex-col gap-2 animate-in fade-in slide-in-from-top-1">
-              <label
-                htmlFor="standalone-scheduled-date"
-                className="text-sm font-medium text-foreground flex items-center gap-1.5"
-              >
-                <Calendar className="size-4 text-primary" />
-                {tDialog("scheduledPublishDate")} <span className="text-destructive">*</span>
-              </label>
-              <Input
-                id="standalone-scheduled-date"
-                type="datetime-local"
-                value={scheduledPublishDate}
-                onChange={(e) => setScheduledPublishDate(e.target.value)}
-                required={publishStatus === "scheduled"}
-              />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-in fade-in slide-in-from-top-1 pt-2">
+              <div className="flex flex-col gap-2">
+                <label
+                  htmlFor="standalone-scheduled-date"
+                  className="text-sm font-medium text-foreground flex items-center gap-1.5"
+                >
+                  <Calendar className="size-4 text-primary" />
+                  {tDialog("scheduledPublishDate")} <span className="text-destructive">*</span>
+                </label>
+                <Input
+                  id="standalone-scheduled-date"
+                  type="datetime-local"
+                  value={scheduledPublishDate}
+                  onChange={(e) => setScheduledPublishDate(e.target.value)}
+                  required={publishStatus === "scheduled"}
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label
+                  htmlFor="standalone-scheduled-end-date"
+                  className="text-sm font-medium text-foreground flex items-center gap-1.5"
+                >
+                  <Calendar className="size-4 text-primary" />
+                  {tDialog("scheduledEndDate")}
+                </label>
+                <Input
+                  id="standalone-scheduled-end-date"
+                  type="datetime-local"
+                  value={scheduledEndDate}
+                  onChange={(e) => setScheduledEndDate(e.target.value)}
+                />
+              </div>
             </div>
           )}
         </FormSectionCard>

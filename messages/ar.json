@@ -620,6 +620,8 @@
           },
           "scheduledPublishDate": "تاريخ ووقت النشر",
           "scheduledPublishDatePlaceholder": "اختر تاريخ ووقت النشر",
+          "scheduledEndDate": "تاريخ ووقت الانتهاء",
+          "scheduledEndDatePlaceholder": "اختر تاريخ ووقت الانتهاء (اختياري)",
           "cancel": "إلغاء",
           "createLesson": "إنشاء درس",
           "saveChanges": "حفظ التغييرات"
@@ -641,6 +643,12 @@
           "moveUp": "تحريك للأعلى",
           "moveDown": "تحريك للاسفل",
           "done": "تم"
+        },
+        "deleteLessonDialog": {
+          "title": "حذف الدرس",
+          "description": "هل أنت تأكد من رغبتك في حذف \"{title}\"؟ لا يمكن التراجع عن هذا الإجراء.",
+          "confirm": "حذف الدرس",
+          "cancel": "إلغاء"
         }
       }
     }
@@ -827,7 +835,7 @@
         "trueFalse": "صح أم خطأ",
         "text": "سؤال مقالي"
       },
-      "basicInfoGroup": "البيانات الأساسية للسؤال",
+      "basicInfoGroup": "المعلومات الأساسية",
       "questionName": "عنوان / اسم السؤال",
       "questionNamePlaceholder": "مثال: السؤال الأول - قوانين نيوتن",
       "questionContent": "نص السؤال التفصيلي",

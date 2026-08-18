@@ -620,6 +620,8 @@
           },
           "scheduledPublishDate": "Publish Date & Time",
           "scheduledPublishDatePlaceholder": "Select publish date and time",
+          "scheduledEndDate": "End Date & Time",
+          "scheduledEndDatePlaceholder": "Select end date and time (optional)",
           "cancel": "Cancel",
           "createLesson": "Create Lesson",
           "saveChanges": "Save Changes"
@@ -641,6 +643,12 @@
           "moveUp": "Move Up",
           "moveDown": "Move Down",
           "done": "Done"
+        },
+        "deleteLessonDialog": {
+          "title": "Delete Lesson",
+          "description": "Are you sure you want to delete \"{title}\"? This action cannot be undone.",
+          "confirm": "Delete Lesson",
+          "cancel": "Cancel"
         }
       }
     }

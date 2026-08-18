@@ -17,6 +17,7 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import * as React from "react";
 
+import { GradeSelect, SubjectSelect } from "@/components/ui/academic-selects";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -26,13 +27,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { QuestionWithContext, getAllQuestions } from "@/lib/questions-storage";
 import { QuestionDifficulty } from "@/types/exam";
@@ -254,36 +248,24 @@ export function ManageQuestionsClient() {
 
           {/* Grade Select */}
           <div className="w-full sm:w-44">
-            <Select value={selectedGrade} onValueChange={handleGradeChange}>
-              <SelectTrigger className="bg-background">
-                <SelectValue placeholder={t("allGrades")} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{t("allGrades")}</SelectItem>
-                <SelectItem value="grade1">{tGrades("grade1")}</SelectItem>
-                <SelectItem value="grade2">{tGrades("grade2")}</SelectItem>
-                <SelectItem value="grade3">{tGrades("grade3")}</SelectItem>
-                <SelectItem value="university">{tGrades("university")}</SelectItem>
-              </SelectContent>
-            </Select>
+            <GradeSelect
+              value={selectedGrade}
+              onValueChange={handleGradeChange}
+              placeholder={t("allGrades")}
+              showAllOption
+              allOptionLabel={t("allGrades")}
+            />
           </div>
 
           {/* Subject Select */}
           <div className="w-full sm:w-44">
-            <Select value={selectedSubject} onValueChange={handleSubjectChange}>
-              <SelectTrigger className="bg-background">
-                <SelectValue placeholder={t("allSubjects")} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{t("allSubjects")}</SelectItem>
-                <SelectItem value="physics">{tSubjects("physics")}</SelectItem>
-                <SelectItem value="chemistry">{tSubjects("chemistry")}</SelectItem>
-                <SelectItem value="mathematics">{tSubjects("mathematics")}</SelectItem>
-                <SelectItem value="biology">{tSubjects("biology")}</SelectItem>
-                <SelectItem value="arabic">{tSubjects("arabic")}</SelectItem>
-                <SelectItem value="english">{tSubjects("english")}</SelectItem>
-              </SelectContent>
-            </Select>
+            <SubjectSelect
+              value={selectedSubject}
+              onValueChange={handleSubjectChange}
+              placeholder={t("allSubjects")}
+              showAllOption
+              allOptionLabel={t("allSubjects")}
+            />
           </div>
         </div>
 
