@@ -4,8 +4,10 @@ import { Course } from "@/types/course";
 const STORAGE_KEY_PREFIX = "rewaa_courses_";
 
 export function getStoredCourses(locale: string): Course[] {
+  const initialData = mockCoursesData[locale as "ar" | "en"] || mockCoursesData.ar;
+
   if (typeof window === "undefined") {
-    return mockCoursesData[locale as "ar" | "en"] || mockCoursesData.ar;
+    return initialData;
   }
 
   try {
@@ -13,8 +15,27 @@ export function getStoredCourses(locale: string): Course[] {
     const stored = localStorage.getItem(key);
     if (stored) {
       const parsed = JSON.parse(stored);
-      if (Array.isArray(parsed)) {
-        return parsed;
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        // Merge with fresh mock metadata (faqs, ratingsReviews, durationHours, averageRating, totalRatingsCount)
+        // in case old localStorage state doesn't have them yet
+        return parsed.map((course: Course) => {
+          const freshMock = initialData.find((m) => m.id === course.id);
+          if (freshMock) {
+            return {
+              ...freshMock,
+              ...course,
+              faqs: course.faqs && course.faqs.length > 0 ? course.faqs : freshMock.faqs,
+              ratingsReviews:
+                course.ratingsReviews && course.ratingsReviews.length > 0
+                  ? course.ratingsReviews
+                  : freshMock.ratingsReviews,
+              averageRating: course.averageRating ?? freshMock.averageRating,
+              totalRatingsCount: course.totalRatingsCount ?? freshMock.totalRatingsCount,
+              durationHours: course.durationHours ?? freshMock.durationHours,
+            };
+          }
+          return course;
+        });
       }
     }
   } catch (error) {
@@ -22,7 +43,6 @@ export function getStoredCourses(locale: string): Course[] {
   }
 
   // Initial load: seed localStorage with default mock data
-  const initialData = mockCoursesData[locale as "ar" | "en"] || mockCoursesData.ar;
   saveStoredCourses(locale, initialData);
   return initialData;
 }

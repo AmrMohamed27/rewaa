@@ -10,7 +10,8 @@ This document serves as the authoritative blueprint for building, extending, and
 
 - **Framework**: Next.js (App Router with `[locale]` dynamic route prefix).
 - **Styling**: Vanilla Tailwind CSS + Shadcn UI primitives + custom CSS variables.
-- **Package Manager**: `pnpm` (run `pnpm exec tsc --noEmit` and `pnpm lint`).
+- **Package Manager**: `pnpm` (always use `pnpm`, run `pnpm exec tsc --noEmit` and `pnpm lint`).
+- **Testing / Verification**: Do NOT perform automated browser verification or subagent browser runs; the user will handle all visual and browser verifications manually. Only run automated TypeScript (`pnpm exec tsc --noEmit`) and linter (`pnpm lint`) checks.
 - **Icons**: `lucide-react`.
 - **Localization**: `next-intl` with JSON dictionaries in `messages/en.json` and `messages/ar.json`.
 
@@ -70,7 +71,7 @@ All sub-pages across the app (Details, Creation, and Edit pages) MUST use the ex
 | **FormToggleSetting**  | `src/components/ui/form-toggle-setting.tsx`  | Switch setting row with label, subtitle description, and boolean`checked` state.   | Use for any toggle features (e.g. PDF attachment toggle, exam linking, free/paid). |
 | **FormRadioGroup**     | `src/components/ui/form-radio-group.tsx`     | Card-styled radio option selector with title and subtitle.                         | Use for selecting modes (e.g., Lesson Type: Video & Text vs. Text Only).           |
 | **FormMarkdownEditor** | `src/components/ui/form-markdown-editor.tsx` | Rich MDX Markdown editor with formatting toolbar and Live Preview mode.            | Use for long-form description fields.                                              |
-| **MarkdownViewer**     | `src/components/ui/markdown-viewer.tsx`      | Sanitized, styled Markdown & LaTeX math viewer ($...$ and                          |
+| **MarkdownViewer**     | `src/components/ui/markdown-viewer.tsx`      | Sanitized, styled Markdown & LaTeX math viewer ($...$ and                          |                                                                                    |
 
 $$
 ...
@@ -150,6 +151,7 @@ useEffect(() => {
 - **Header Row**:
   - Standardized round Back Button (`<Button size="icon" className="rounded-full">`).
   - Page `<h1>` title (e.g., `Create New Lesson` vs `Edit Lesson`) + subtitle description.
+
 - **Single-Column Form Container (`max-w-4xl mx-auto space-y-6`)**:
 - **Form Section Cards (`FormSectionCard`)**:
   1. **Type / Category Selection**: `FormRadioGroup` cards to choose item type.
@@ -187,6 +189,7 @@ useEffect(() => {
 
   4. **Category & Linking Constraints**:
      - If created inside a parent context (e.g., creating a lesson inside a course), auto-fill and lock category options (`course-dependent`) and show a locked badge.
+
   5. **Academic & Organization Info**: Dropdowns for Grade, Subject, Venue, Teacher, and Publish Status (`Published`, `Draft`, `Scheduled` with datetime-local picker).
   6. **Attachments & Exams**: `FormToggleSetting` switches for PDF upload (with minimum 1 PDF validation), explanatory image uploads, and linked backend exams.
 

@@ -1957,11 +1957,180 @@
       "noExpiry": "صلاحية غير محدودة",
       "empty": "لم تشترك في أي دورات حتى الآن."
     },
+    "coursesPage": {
+      "title": "دوراتي المشترك بها",
+      "subtitle": "استعرض وتابع تقدمك في كافة الدورات التي اشتركت بها",
+      "exploreAll": "استكشف جميع الدورات",
+      "searchPlaceholder": "بحث عن دورة أو مادة أو معلم...",
+      "clearFilters": "مسح الفلاتر",
+      "totalEnrolled": "{count, plural, =0 {لا دورات} zero {لا دورات} one {دورة واحدة} two {دورتين} few {{count} دورات} many {{count} دورة} other {{count} دورة}}",
+      "sort": {
+        "newest": "التاريخ: الأحدث أولاً",
+        "oldest": "التاريخ: الأقدم أولاً",
+        "titleAsc": "العنوان: أ إلى ي",
+        "titleDesc": "العنوان: ي إلى أ",
+        "progressHigh": "التقدم: الأعلى أولاً",
+        "progressLow": "التقدم: الأقل أولاً"
+      },
+      "empty": {
+        "title": "لم يتم العثور على أي دورات",
+        "description": "لم نجد أي نتائج تطابق البحث المحدد. حاول تغيير كلمات البحث أو إعادة تعيين الفلاتر."
+      },
+      "pagination": {
+        "showing": "عرض {start} إلى {end} من إجمالي {total, plural, =0 {لا دورات} zero {لا دورات} one {دورة واحدة} two {دورتين} few {{total} دورات} many {{total} دورة} other {{total} دورة}}"
+      }
+    },
+    "exploreCoursesPage": {
+      "title": "استكشاف الدورات",
+      "subtitle": "اكتشف كافة الدورات المتاحة واشترك في مسارات تعليمية جديدة",
+      "myCourses": "دوراتي المشترك بها",
+      "totalAvailable": "{count, plural, =0 {لا دورات} zero {لا دورات} one {دورة واحدة} two {دورتين} few {{count} دورات} many {{count} دورة} other {{count} دورة}}",
+      "searchPlaceholder": "بحث عن دورة أو مادة أو صف أو معلم...",
+      "clearFilters": "مسح الفلاتر",
+      "sort": {
+        "newest": "التاريخ: الأحدث أولاً",
+        "oldest": "التاريخ: الأقدم أولاً",
+        "titleAsc": "العنوان: أ إلى ي",
+        "titleDesc": "العنوان: ي إلى أ",
+        "studentsDesc": "الأكثر تسجيلاً",
+        "priceAsc": "السعر: من الأقل للأعلى",
+        "priceDesc": "السعر: من الأعلى للأقل"
+      },
+      "empty": {
+        "title": "لم يتم العثور على أي دورات",
+        "description": "لم نجد أي نتائج تطابق البحث المحدد. حاول تغيير كلمات البحث أو إعادة تعيين الفلاتر."
+      },
+      "pagination": {
+        "showing": "عرض {start} إلى {end} من إجمالي {total, plural, =0 {لا دورات} zero {لا دورات} one {دورة واحدة} two {دورتين} few {{total} دورات} many {{total} دورة} other {{total} دورة}}"
+      }
+    },
     "latestCourses": {
       "title": "أحدث الدورات",
       "viewAll": "عرض الكل",
       "enrollNow": "اشترك الآن",
+      "goToCourse": "الذهاب إلى الدورة",
       "empty": "لا توجد دورات جديدة متاحة حالياً."
+    },
+    "courseDetails": {
+      "backToCourses": "العودة إلى الدورات",
+      "courseContent": "محتوى الدورة",
+      "sectionsCount": "{count, plural, =0 {لا فصول} zero {لا فصول} one {فصل واحد} two {فصلين} few {{count} فصول} many {{count} فصلاً} other {{count} فصل}}",
+      "lessonsCount": "{count, plural, =0 {لا دروس} zero {لا دروس} one {درس واحد} two {درسين} few {{count} دروس} many {{count} درساً} other {{count} درس}}",
+      "totalProgress": "تم إنجاز {progress}٪",
+      "showCertificate": "عرض الشهادة",
+      "certificateModal": {
+        "title": "شهادة إتمام الدورة التدريبية",
+        "description": "شهادة رسمية ممنوحة عند إكمال جميع متطلبات ومنهج الدورة بنجاح",
+        "recipientLabel": "مُنحت للطالب",
+        "courseLabel": "الدورة التعليمية",
+        "instructorLabel": "المحاضر",
+        "issueDateLabel": "تاريخ الإتمام",
+        "verified": "معتمدة وموثقة",
+        "previewCertificate": "للمعاينة فقط",
+        "openInNewTab": "فتح في نافذة كاملة",
+        "close": "إغلاق"
+      },
+      "lesson": {
+        "completed": "مكتمل",
+        "markAsCompleted": "تحديد كمكتمل",
+        "videoLecture": "شرح الفيديو",
+        "description": "تفاصيل وملاحظات الدرس",
+        "attachedFiles": "الملفات المرفقة",
+        "downloadFile": "تحميل الملف",
+        "fileSize": "{size}",
+        "takeLinkedExam": "الانتقال للاختبار المرتبط",
+        "linkedExam": "اختبار مرتبط",
+        "nextLesson": "الدرس التالي",
+        "previousLesson": "الدرس السابق",
+        "noMediaOrNotes": "لا توجد ملاحظات أو وسائط إضافية لهذا الدرس حالياً."
+      },
+      "overview": {
+        "courseOverview": "نظرة عامة على الدورة",
+        "instructor": "المعلم",
+        "accessExpiry": "تاريخ انتهاء الصلاحية",
+        "unlimitedAccess": "صلاحية غير محدودة",
+        "syllabus": "نبذة عن محتوى المنهج",
+        "startFirstLesson": "بدء الدرس الأول",
+        "continueLearning": "متابعة المذاكرة"
+      },
+      "itemTypes": {
+        "video": "درس فيديو",
+        "reading": "قراءة / محتوى نصي",
+        "exam": "اختبار",
+        "file": "ملف للتحميل"
+      },
+      "empty": {
+        "noSections": "لا يوجد محتوى أو فصول دراسية متاحة في هذه الدورة حالياً."
+      },
+      "locked": {
+        "badge": "محتوى مقفل",
+        "tooltip": "هذا الفصل مقفل. يجب اجتياز اختبار الفصل السابق أولاً لفتحه.",
+        "mustPassExam": "يجب اجتياز الاختبار لفتح الفصل التالي",
+        "examPassed": "تم اجتياز الاختبار بنجاح",
+        "examRequired": "اجتياز الاختبار إلزامي لفك القفل",
+        "dialogTitle": "هذا المحتوى مقفل حالياً",
+        "dialogDescription": "لا يمكنك الوصول إلى هذا الفصل الدراسي أو دروسه قبل اجتياز الاختبار المحدد في الفصل السابق بنجاح.",
+        "takeExamCta": "الانتقال للاختبار وفك القفل",
+        "close": "إغلاق",
+        "prerequisiteExam": "الاختبار المطلوب:"
+      }
+    },
+    "coursePreview": {
+      "backToExplore": "العودة إلى الاستكشاف",
+      "studentsEnrolled": "{count, plural, =0 {لا طلاب} zero {لا طلاب} one {طالب واحد} two {طالبين} few {{count} طلاب} many {{count} طالباً} other {{count} طالب}}",
+      "ratingValue": "{rating} من 5",
+      "ratingsCount": "({count} تقييم)",
+      "free": "مجاناً",
+      "originalPrice": "السعر الأساسي:",
+      "enrollInCourse": "الاشتراك في الدورة",
+      "enrolling": "جاري الاشتراك...",
+      "enrollSuccess": "تم الاشتراك في الدورة بنجاح!",
+      "courseContents": "محتويات الدورة",
+      "videoHours": "{count, plural, =0 {لا ساعات فيديو مسجلة} zero {لا ساعات فيديو مسجلة} one {ساعة فيديو مسجلة واحدة} two {ساعتي فيديو مسجلة} few {{count} ساعات فيديو مسجلة} many {{count} ساعة فيديو مسجلة} other {{count} ساعة فيديو مسجلة}}",
+      "examsAndQuestions": "{examsCount, plural, =0 {لا اختبارات} zero {لا اختبارات} one {اختبار واحد} two {اختبارين} few {{examsCount} اختبارات} many {{examsCount} اختباراً} other {{examsCount} اختبار}} ({questionsCount, plural, =0 {لا أسئلة} zero {لا أسئلة} one {سؤال واحد} two {سؤالين} few {{questionsCount} أسئلة} many {{questionsCount} سؤالاً} other {{questionsCount} سؤال}})",
+      "attachedFilesCount": "{count, plural, =0 {لا ملفات مرفقة} zero {لا ملفات مرفقة} one {ملف مرفق واحد} two {ملفين مرفقين} few {{count} ملفات مرفقة} many {{count} ملفاً مرفقاً} other {{count} ملف مرفق}}",
+      "accessDuration": "{days, plural, =0 {صلاحية منتهية} zero {صلاحية منتهية} one {صلاحية الوصول: يوم واحد بعد الاشتراك} two {صلاحية الوصول: يومين بعد الاشتراك} few {صلاحية الوصول: {days} أيام بعد الاشتراك} many {صلاحية الوصول: {days} يوماً بعد الاشتراك} other {صلاحية الوصول: {days} يوم بعد الاشتراك}}",
+      "unlimitedAccess": "صلاحية وصول غير محدودة",
+      "tabs": {
+        "sections": "الفصول والدروس",
+        "description": "نبذة عن الدورة",
+        "attachments": "الملفات والمذكرات",
+        "faqs": "الأسئلة الشائعة",
+        "ratings": "تقييمات الطلاب"
+      },
+      "sectionsTab": {
+        "title": "فصول ومحتويات المنهج",
+        "previewNotice": "هذه معاينة لأسماء الفصول والدروس المتاحة في الدورة. يلزم الاشتراك لتشغيل المحاضرات وحل الاختبارات.",
+        "lessonsCount": "{count, plural, =0 {لا دروس} zero {لا دروس} one {درس واحد} two {درسين} few {{count} دروس} many {{count} درساً} other {{count} درس}}",
+        "examBadge": "اختبار مرتبط",
+        "requiredExamBadge": "اختبار إلزامي",
+        "videoLesson": "درس فيديو",
+        "textLesson": "محتوى نصي",
+        "lockedLesson": "يلزم الاشتراك للمشاهدة"
+      },
+      "descriptionTab": {
+        "title": "الوصف والمنهج التفصيلي",
+        "noDescription": "لا يتوفر وصف تفصيلي لهذه الدورة حالياً."
+      },
+      "attachmentsTab": {
+        "title": "الملفات والمذكرات المرفقة",
+        "subtitle": "استعرض قائمة المذكرات والملفات المتاحة مع الدورة لمعرفة محتواها قبل الاشتراك (التحميل متاح بعد الاشتراك)",
+        "fileSize": "{size}",
+        "lockedFile": "متاح للتحميل بعد الاشتراك",
+        "noAttachments": "لا توجد ملفات مرفقة مضافة لهذه الدورة حالياً."
+      },
+      "faqsTab": {
+        "title": "الأسئلة الأكثر شيوعاً",
+        "subtitle": "إجابات على أهم الاستفسارات حول هذه الدورة وطريقة دراستها",
+        "noFaqs": "لا توجد أسئلة شائعة مضافة حالياً."
+      },
+      "ratingsTab": {
+        "title": "تقييمات وآراء الطلاب المشتركين",
+        "averageRating": "التقييم العام",
+        "outOfFive": "من 5 نجوم",
+        "basedOnRatings": "بناءً على {count} تقييم",
+        "noRatings": "لا توجد تقييمات مضافة بعد لهذه الدورة."
+      }
     }
   }
 }

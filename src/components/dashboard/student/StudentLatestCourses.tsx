@@ -4,6 +4,7 @@ import { CourseCard } from "@/components/dashboard/courses/course-card";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/routing";
 import { getStoredCourses } from "@/lib/courses-storage";
+import { getEnrolledCourseIds } from "@/lib/student-enrollment-storage";
 import { Course } from "@/types/course";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
@@ -13,11 +14,14 @@ interface StudentLatestCoursesProps {
   enrolledCourseIds?: string[];
 }
 
-export function StudentLatestCourses({ enrolledCourseIds }: StudentLatestCoursesProps) {
+export function StudentLatestCourses({
+  enrolledCourseIds: propEnrolledCourseIds,
+}: StudentLatestCoursesProps) {
   const locale = useLocale();
   const t = useTranslations("studentDashboard.latestCourses");
 
   const [storedCourses, setStoredCourses] = useState<Course[]>([]);
+  const [activeEnrolledIds, setActiveEnrolledIds] = useState<string[]>([]);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   // Track whether we can scroll forward (towards the end of the list) or backward (towards the start)
   const [canScrollStart, setCanScrollStart] = useState(false);
@@ -27,23 +31,29 @@ export function StudentLatestCourses({ enrolledCourseIds }: StudentLatestCourses
   useEffect(() => {
     const loadCourses = () => {
       setStoredCourses(getStoredCourses(locale));
+      setActiveEnrolledIds(getEnrolledCourseIds());
     };
 
     loadCourses();
     window.addEventListener("rewaa_courses_updated", loadCourses);
-    return () => window.removeEventListener("rewaa_courses_updated", loadCourses);
+    window.addEventListener("rewaa_student_enrollment_updated", loadCourses);
+    window.addEventListener("storage", loadCourses);
+    return () => {
+      window.removeEventListener("rewaa_courses_updated", loadCourses);
+      window.removeEventListener("rewaa_student_enrollment_updated", loadCourses);
+      window.removeEventListener("storage", loadCourses);
+    };
   }, [locale]);
 
   // Determine latest 6 published courses not enrolled in
   const latestCourses = useMemo(() => {
-    // If no explicit enrolled ids are passed, exclude enrolled courses
-    const excludedIds = new Set(enrolledCourseIds ?? storedCourses.slice(0, 0).map((c) => c.id));
+    const excludedIds = new Set(propEnrolledCourseIds ?? activeEnrolledIds);
 
     return storedCourses
       .filter((c) => !c.isDraft && !excludedIds.has(c.id))
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
       .slice(0, 6);
-  }, [storedCourses, enrolledCourseIds]);
+  }, [storedCourses, propEnrolledCourseIds, activeEnrolledIds]);
 
   // Handle scroll check
   const checkScroll = useCallback(() => {
@@ -145,7 +155,7 @@ export function StudentLatestCourses({ enrolledCourseIds }: StudentLatestCourses
             size="sm"
             className="text-primary hover:text-primary hover:bg-primary/10 gap-1.5 font-semibold text-sm h-8 px-3 rounded-lg group"
           >
-            <Link href="/student-dashboard/courses">
+            <Link href="/student-dashboard/courses/explore">
               <span>{t("viewAll")}</span>
               <ArrowRight className="size-4 rtl:rotate-180 transition-transform group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5" />
             </Link>

@@ -3,6 +3,8 @@
 import { Award, BookOpen, FileCheck2, HelpCircle, Wallet } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { DashboardCard } from "@/components/dashboard/overview/dashboard-card";
+import { getEnrolledCourseIds } from "@/lib/student-enrollment-storage";
+import React from "react";
 
 interface StudentGeneralOverviewProps {
   totalExamScores?: number;
@@ -15,13 +17,32 @@ interface StudentGeneralOverviewProps {
 
 export function StudentGeneralOverview({
   totalExamScores = 1250,
-  coursesCount = 4,
+  coursesCount: propCoursesCount,
   walletBalance = 350,
   examsSolved = 12,
   correctQuestions = 140,
   wrongQuestions = 20,
 }: StudentGeneralOverviewProps) {
   const t = useTranslations("studentDashboard.overview");
+
+  const [activeCoursesCount, setActiveCoursesCount] = React.useState(2);
+
+  React.useEffect(() => {
+    const updateCount = () => {
+      const ids = getEnrolledCourseIds();
+      setActiveCoursesCount(ids.length);
+    };
+    updateCount();
+    window.addEventListener("rewaa_student_enrollment_updated", updateCount);
+    window.addEventListener("storage", updateCount);
+    return () => {
+      window.removeEventListener("rewaa_student_enrollment_updated", updateCount);
+      window.removeEventListener("storage", updateCount);
+    };
+  }, []);
+
+  const displayedCoursesCount =
+    propCoursesCount !== undefined ? propCoursesCount : activeCoursesCount;
 
   const totalQuestions = correctQuestions + wrongQuestions;
   const correctPct = totalQuestions > 0 ? Math.round((correctQuestions / totalQuestions) * 100) : 0;
@@ -70,7 +91,9 @@ export function StudentGeneralOverview({
             </div>
           </div>
           <div className="space-y-0.5">
-            <span className="text-2xl sm:text-3xl font-black text-foreground">{coursesCount}</span>
+            <span className="text-2xl sm:text-3xl font-black text-foreground">
+              {displayedCoursesCount}
+            </span>
           </div>
         </DashboardCard>
 

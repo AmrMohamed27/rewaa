@@ -35,6 +35,69 @@ export const mockCoursesData: Record<"ar" | "en", Course[]> = {
       venue: "all",
       numberOfParticipants: 1250,
       isDraft: false,
+      durationHours: 36,
+      averageRating: 4.9,
+      totalRatingsCount: 312,
+      faqs: [
+        {
+          id: "faq-001-1",
+          question: "هل تشمل الدورة حل نماذج امتحانات الثانوية العامة للأعوام السابقة؟",
+          answer:
+            "نعم، تتضمن الدورة ورش عمل مخصصة لحل أسئلة امتحانات الثانوية العامة من 2021 وحتى 2025 مع شرح تفصيلي لطرق التفكير والحل السريع.",
+        },
+        {
+          id: "faq-001-2",
+          question: "ما هي مدة صلاحية الوصول لمحتوى الدورة بعد الاشتراك؟",
+          answer:
+            "تظل جميع الدروس والملفات والاختبارات متاحة في حسابك لمدة 30 يوماً من تاريخ التفعيل، ويمكنك مشاهدة المحاضرات لعدد غير محدود من المرات.",
+        },
+        {
+          id: "faq-001-3",
+          question: "هل تتوفر مذكرات PDF للملخصات وقوانين الفيزياء؟",
+          answer:
+            "نعم، تشتمل كل محاضرة على ملخص PDF عالي الجودة جاهز للطباعة يحتوي على القوانين، الملاحظات الهامة، وأسئلة الواجب المنزلي.",
+        },
+      ],
+      ratingsReviews: [
+        {
+          id: "rev-001-1",
+          userName: "أحمد مصطفى",
+          userImage:
+            "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces",
+          rating: 5,
+          comment:
+            "شرح مستر محمد عبد المعبود لا يعلى عليه! الفهم أصبح أسهل بكثير وقوانين كيرشوف فهمتها من أول مرة.",
+          date: "2026-08-10",
+        },
+        {
+          id: "rev-001-2",
+          userName: "مريم إبراهيم",
+          userImage:
+            "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=faces",
+          rating: 5,
+          comment:
+            "أفضل كورس فيزياء بدون منازع، الاختبارات بعد كل درس ساعدتني جداً في تثبيت المعلومة.",
+          date: "2026-08-05",
+        },
+        {
+          id: "rev-001-3",
+          userName: "عمر خالد",
+          userImage:
+            "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=faces",
+          rating: 4.8,
+          comment: "مستوى رائع وتنظيم ممتاز للمنصة، المذكرات المرفقة شاملة لكل الأفكار.",
+          date: "2026-07-28",
+        },
+        {
+          id: "rev-001-4",
+          userName: "سما أحمد",
+          userImage:
+            "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=faces",
+          rating: 5,
+          comment: "المنهج مشروح بتسلسل منطقي جداً والمسائل الصعبة أصبح لها طرق حل بسيطة وسريعة.",
+          date: "2026-07-20",
+        },
+      ],
       sections: [
         {
           id: "sec-001",
@@ -71,12 +134,72 @@ export const mockCoursesData: Record<"ar" | "en", Course[]> = {
       price: 200,
       isFree: false,
       currency: "EGP",
-      hasOffer: false,
-      hasTimeLimit: false,
+      hasOffer: true,
+      offerPercentage: "20% خصم",
+      offerStartDate: "2026-09-01",
+      offerEndDate: "2026-09-30",
+      hasTimeLimit: true,
+      timeLimitValue: 45,
       isSplitToSections: false,
       venue: "online",
       numberOfParticipants: 850,
       isDraft: false,
+      durationHours: 24,
+      averageRating: 4.8,
+      totalRatingsCount: 198,
+      faqs: [
+        {
+          id: "faq-002-1",
+          question: "هل يحتاج الطالب لمعرفة سابقة قبل البدء في الكيمياء العضوية؟",
+          answer:
+            "تبدأ الدورة بمراجعة تأسيسية شاملة لروابط الكربون والتكافؤ، مما يجعلها مناسبة لجميع المستويات دون الحاجة لحفظ مسبق.",
+        },
+        {
+          id: "faq-002-2",
+          question: "كيف يتم التدريب على معادلات التحويلات العضوية؟",
+          answer:
+            "نوفر خرائط ذهنية ذكية لسلاسل التفاعلات العضوية تجمع كافة التحويلات في مخططات بصرية يسهل تذكرها وحلها في الامتحانات.",
+        },
+      ],
+      ratingsReviews: [
+        {
+          id: "rev-002-1",
+          userName: "سارة محمود",
+          userImage:
+            "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=faces",
+          rating: 5,
+          comment:
+            "دكتور إيهاب بسط العضوية جداً! التسمية كانت عقدتي والآن أحل أصعب الأسئلة بسهولة.",
+          date: "2026-08-14",
+        },
+        {
+          id: "rev-002-2",
+          userName: "يوسف حسن",
+          userImage:
+            "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&h=100&fit=crop&crop=faces",
+          rating: 4.7,
+          comment: "دورة ممتازة جداً والمخططات الذهنية وفرت علي وقت طويل في المذاكرة والمراجعة.",
+          date: "2026-08-01",
+        },
+        {
+          id: "rev-002-3",
+          userName: "فاطمة الزهراء",
+          userImage:
+            "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop&crop=faces",
+          rating: 5,
+          comment: "شرح وافي وكافي، والتطبيقات بعد كل محاضرة تثبت المعادلات العضوية في الذهن.",
+          date: "2026-07-25",
+        },
+        {
+          id: "rev-002-4",
+          userName: "زياد علاء",
+          userImage:
+            "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=100&h=100&fit=crop&crop=faces",
+          rating: 4.8,
+          comment: "الكورس منظم جداً، والمذكرات غنية بالأسئلة والأفكار الجديدة.",
+          date: "2026-07-15",
+        },
+      ],
       sections: [
         {
           id: "sec-003",
@@ -111,7 +234,53 @@ export const mockCoursesData: Record<"ar" | "en", Course[]> = {
       isSplitToSections: false,
       venue: "center",
       numberOfParticipants: 3200,
-      isDraft: true,
+      isDraft: false,
+      durationHours: 12,
+      averageRating: 4.7,
+      totalRatingsCount: 450,
+      faqs: [
+        {
+          id: "faq-003-1",
+          question: "هل هذه الدورة مجانية بالفعل؟",
+          answer:
+            "نعم، الدورة متاحة مجاناً 100% لجميع طلاب المرحلة الثانوية لدعم التأسيس الرياضي الصحيح.",
+        },
+        {
+          id: "faq-003-2",
+          question: "هل تناسب الطلاب الضعفاء في أساسيات الرياضيات؟",
+          answer:
+            "بالتأكيد، تبدأ الدورة من الصفر وتشرح القوانين والمفاهيم خطوة بخطوة مع أمثلة متدرجة الصعوبة.",
+        },
+      ],
+      ratingsReviews: [
+        {
+          id: "rev-003-1",
+          userName: "طارق سليم",
+          userImage:
+            "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=faces",
+          rating: 5,
+          comment: "شرح مبسط وواضح جداً، أستاذ أحمد سرور جعل الرياضيات ممتعة وسهلة.",
+          date: "2026-08-02",
+        },
+        {
+          id: "rev-003-2",
+          userName: "هدى عثمان",
+          userImage:
+            "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=faces",
+          rating: 4.6,
+          comment: "تأسيس قوي وممتاز ساعدني في فهم الهندسة وحساب المثلثات بكل وضوح.",
+          date: "2026-07-22",
+        },
+        {
+          id: "rev-003-3",
+          userName: "كريم شريف",
+          userImage:
+            "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=faces",
+          rating: 4.8,
+          comment: "دورة ممتازة وشرح راقي جداً، شكراً جزيلاً أستاذ أحمد سرور.",
+          date: "2026-07-10",
+        },
+      ],
       sections: [
         {
           id: "sec-004",
@@ -144,11 +313,61 @@ export const mockCoursesData: Record<"ar" | "en", Course[]> = {
       offerPercentage: "10% خصم",
       offerStartDate: "2026-08-20",
       offerEndDate: "2026-09-20",
-      hasTimeLimit: false,
+      hasTimeLimit: true,
+      timeLimitValue: 60,
       isSplitToSections: true,
       venue: "online",
       numberOfParticipants: 920,
       isDraft: false,
+      durationHours: 28,
+      averageRating: 4.9,
+      totalRatingsCount: 230,
+      faqs: [
+        {
+          id: "faq-004-1",
+          question: "هل تشرح الدورة تخليق البروتين وDNA برسومات توضيحية 3D؟",
+          answer:
+            "نعم، نستخدم مجسمات ثلاثية الأبعاد فائقة الدقة لتوضيح آليات تضاعف DNA وترجمة الشفرة الوراثية وتكوين البروتينات.",
+        },
+        {
+          id: "faq-004-2",
+          question: "هل توجد متابعة أسبوعية وواجبات؟",
+          answer:
+            "نعم، يتم تقديم اختبار إلكتروني وواجب تفاعلي بعد كل حصة مع تصحيح فوري ونموذج إجابة توضيحي.",
+        },
+      ],
+      ratingsReviews: [
+        {
+          id: "rev-004-1",
+          userName: "ندى عبد الرحمن",
+          userImage:
+            "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop&crop=faces",
+          rating: 5,
+          comment:
+            "أستاذ حسن محرم قامة علمية كبيرة، الرسومات والمجسمات جعلت الأحياء مادتي المفضلة.",
+          date: "2026-08-11",
+        },
+        {
+          id: "rev-004-2",
+          userName: "محمود الجيار",
+          userImage:
+            "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=100&h=100&fit=crop&crop=faces",
+          rating: 4.9,
+          comment:
+            "أفضل شرح لـ DNA والبيولوجيا الجزيئية على الإطلاق، الأسئلة والأفكار العالية مشروحة بوضوح.",
+          date: "2026-08-04",
+        },
+        {
+          id: "rev-004-3",
+          userName: "رنا سعيد",
+          userImage:
+            "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=faces",
+          rating: 5,
+          comment:
+            "المذكرات الملونة والملخصات الجداول ممتازة جداً للمراجعة السريعة قبل الامتحانات.",
+          date: "2026-07-29",
+        },
+      ],
       sections: [
         {
           id: "sec-005",
@@ -177,12 +396,62 @@ export const mockCoursesData: Record<"ar" | "en", Course[]> = {
       price: 250,
       isFree: false,
       currency: "EGP",
-      hasOffer: false,
-      hasTimeLimit: false,
+      hasOffer: true,
+      offerPercentage: "25% خصم",
+      offerStartDate: "2026-09-01",
+      offerEndDate: "2026-09-30",
+      hasTimeLimit: true,
+      timeLimitValue: 30,
       isSplitToSections: false,
       venue: "center",
       numberOfParticipants: 1100,
       isDraft: false,
+      durationHours: 30,
+      averageRating: 4.8,
+      totalRatingsCount: 165,
+      faqs: [
+        {
+          id: "faq-005-1",
+          question: "هل تغطي الدورة تدريبات النصوص المتحررة والبلاغة الحديثة؟",
+          answer:
+            "نعم، تشمل الدورة تدريبات عملية مكثفة على استخراج المحسنات البديعية والصور البيانية من نصوص متحررة مطابقة لنظام الامتحانات الجديد.",
+        },
+        {
+          id: "faq-005-2",
+          question: "كيف يتم تثبيت قواعد الإعراب الصعبة؟",
+          answer:
+            "نعتمد على خرائط إعرابية وقواعد ذهبية مبسطة مع تدريب أسبوعي على قطع إعرابية متدرجة.",
+        },
+      ],
+      ratingsReviews: [
+        {
+          id: "rev-005-1",
+          userName: "محمود عادل",
+          userImage:
+            "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=100&h=100&fit=crop&crop=faces",
+          rating: 5,
+          comment: "أستاذ وليد جعل النحو أسهل فرع في اللغة العربية، جزاك الله كل خير.",
+          date: "2026-08-09",
+        },
+        {
+          id: "rev-005-2",
+          userName: "إسراء مجدي",
+          userImage:
+            "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=faces",
+          rating: 4.8,
+          comment: "البلاغة والتعبير والنصوص مشروحين بأسلوب عصري ممتاز يفيد جداً في الامتحان.",
+          date: "2026-08-03",
+        },
+        {
+          id: "rev-005-3",
+          userName: "أنس فؤاد",
+          userImage:
+            "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&h=100&fit=crop&crop=faces",
+          rating: 4.7,
+          comment: "مستر وليد محسن متميز جداً وشرحه ممتع وسهل الاستيعاب.",
+          date: "2026-07-21",
+        },
+      ],
       sections: [],
     },
   ],
@@ -213,6 +482,55 @@ export const mockCoursesData: Record<"ar" | "en", Course[]> = {
       venue: "all",
       numberOfParticipants: 1250,
       isDraft: false,
+      durationHours: 36,
+      averageRating: 4.9,
+      totalRatingsCount: 312,
+      faqs: [
+        {
+          id: "faq-001-1-en",
+          question: "Does this course include solving previous years' national exams?",
+          answer:
+            "Yes, the course includes dedicated workshops solving past national high school exams from 2021 to 2025 with step-by-step problem-solving techniques.",
+        },
+        {
+          id: "faq-001-2-en",
+          question: "What is the access validity period after enrollment?",
+          answer:
+            "All lectures, resources, and quizzes remain accessible in your account for 30 days with unlimited replays.",
+        },
+      ],
+      ratingsReviews: [
+        {
+          id: "rev-001-1-en",
+          userName: "Ahmed Mostafa",
+          userImage:
+            "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=faces",
+          rating: 5,
+          comment:
+            "Mr. Mohamed's explanations are extraordinary! Kirchhoff's laws are finally crystal clear.",
+          date: "2026-08-10",
+        },
+        {
+          id: "rev-001-2-en",
+          userName: "Mariam Ibrahim",
+          userImage:
+            "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=faces",
+          rating: 5,
+          comment:
+            "Undoubtedly the best physics course! The quizzes after each lesson helped solidify the concepts.",
+          date: "2026-08-05",
+        },
+        {
+          id: "rev-001-3-en",
+          userName: "Omar Khaled",
+          userImage:
+            "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=faces",
+          rating: 4.8,
+          comment:
+            "Great teaching style and well-organized platform. Handouts cover every potential exam idea.",
+          date: "2026-07-28",
+        },
+      ],
       sections: [
         {
           id: "sec-001",
@@ -249,12 +567,57 @@ export const mockCoursesData: Record<"ar" | "en", Course[]> = {
       price: 200,
       isFree: false,
       currency: "EGP",
-      hasOffer: false,
-      hasTimeLimit: false,
+      hasOffer: true,
+      offerPercentage: "20% OFF",
+      offerStartDate: "2026-09-01",
+      offerEndDate: "2026-09-30",
+      hasTimeLimit: true,
+      timeLimitValue: 45,
       isSplitToSections: false,
       venue: "online",
       numberOfParticipants: 850,
       isDraft: false,
+      durationHours: 24,
+      averageRating: 4.8,
+      totalRatingsCount: 198,
+      faqs: [
+        {
+          id: "faq-002-1-en",
+          question: "Do I need prior chemistry knowledge before starting?",
+          answer:
+            "The course begins with a fundamental review of carbon bonding and valency, making it ideal for all levels.",
+        },
+      ],
+      ratingsReviews: [
+        {
+          id: "rev-002-1-en",
+          userName: "Sarah Mahmoud",
+          userImage:
+            "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=faces",
+          rating: 5,
+          comment: "Dr. Ihab made organic chemistry so intuitive and easy to master!",
+          date: "2026-08-14",
+        },
+        {
+          id: "rev-002-2-en",
+          userName: "Youssef Hassan",
+          userImage:
+            "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&h=100&fit=crop&crop=faces",
+          rating: 4.7,
+          comment: "Excellent course! The visual mind maps saved me tons of revision time.",
+          date: "2026-08-01",
+        },
+        {
+          id: "rev-002-3-en",
+          userName: "Fatima Al-Zahra",
+          userImage:
+            "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop&crop=faces",
+          rating: 5,
+          comment:
+            "Comprehensive and detailed explanations. The exercises after every lecture are top-tier.",
+          date: "2026-07-25",
+        },
+      ],
       sections: [
         {
           id: "sec-003",
@@ -289,7 +652,37 @@ export const mockCoursesData: Record<"ar" | "en", Course[]> = {
       isSplitToSections: false,
       venue: "center",
       numberOfParticipants: 3200,
-      isDraft: true,
+      isDraft: false,
+      durationHours: 12,
+      averageRating: 4.7,
+      totalRatingsCount: 450,
+      faqs: [
+        {
+          id: "faq-003-1-en",
+          question: "Is this course completely free?",
+          answer: "Yes, this foundational course is 100% free for all students.",
+        },
+      ],
+      ratingsReviews: [
+        {
+          id: "rev-003-1-en",
+          userName: "Tarek Selim",
+          userImage:
+            "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=faces",
+          rating: 5,
+          comment: "Clear and straightforward explanations. Mathematics feels enjoyable now!",
+          date: "2026-08-02",
+        },
+        {
+          id: "rev-003-2-en",
+          userName: "Hoda Osman",
+          userImage:
+            "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=faces",
+          rating: 4.6,
+          comment: "Strong foundation building! Helped me master geometry theorems easily.",
+          date: "2026-07-22",
+        },
+      ],
       sections: [
         {
           id: "sec-004",
@@ -322,11 +715,44 @@ export const mockCoursesData: Record<"ar" | "en", Course[]> = {
       offerPercentage: "10% OFF",
       offerStartDate: "2026-08-20",
       offerEndDate: "2026-09-20",
-      hasTimeLimit: false,
+      hasTimeLimit: true,
+      timeLimitValue: 60,
       isSplitToSections: true,
       venue: "online",
       numberOfParticipants: 920,
       isDraft: false,
+      durationHours: 28,
+      averageRating: 4.9,
+      totalRatingsCount: 230,
+      faqs: [
+        {
+          id: "faq-004-1-en",
+          question: "Does the course use 3D molecular models?",
+          answer:
+            "Yes, 3D visualizations are used to explain DNA replication and protein synthesis clearly.",
+        },
+      ],
+      ratingsReviews: [
+        {
+          id: "rev-004-1-en",
+          userName: "Nada Abdelrahman",
+          userImage:
+            "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop&crop=faces",
+          rating: 5,
+          comment: "Outstanding presentation and 3D graphics. Highly recommended!",
+          date: "2026-08-11",
+        },
+        {
+          id: "rev-004-2-en",
+          userName: "Mahmoud El-Gayar",
+          userImage:
+            "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=100&h=100&fit=crop&crop=faces",
+          rating: 4.9,
+          comment:
+            "Best DNA and molecular biology breakdown ever! Complex questions explained clearly.",
+          date: "2026-08-04",
+        },
+      ],
       sections: [
         {
           id: "sec-005",
@@ -355,12 +781,46 @@ export const mockCoursesData: Record<"ar" | "en", Course[]> = {
       price: 250,
       isFree: false,
       currency: "EGP",
-      hasOffer: false,
-      hasTimeLimit: false,
+      hasOffer: true,
+      offerPercentage: "25% OFF",
+      offerStartDate: "2026-09-01",
+      offerEndDate: "2026-09-30",
+      hasTimeLimit: true,
+      timeLimitValue: 30,
       isSplitToSections: false,
       venue: "center",
       numberOfParticipants: 1100,
       isDraft: false,
+      durationHours: 30,
+      averageRating: 4.8,
+      totalRatingsCount: 165,
+      faqs: [
+        {
+          id: "faq-005-1-en",
+          question: "Does this course cover modern exam syntax and rhetorical questions?",
+          answer: "Yes, it contains extensive practice following the latest exam blueprints.",
+        },
+      ],
+      ratingsReviews: [
+        {
+          id: "rev-005-1-en",
+          userName: "Mahmoud Adel",
+          userImage:
+            "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=100&h=100&fit=crop&crop=faces",
+          rating: 5,
+          comment: "Mr. Waleed made Arabic grammar very accessible and logical.",
+          date: "2026-08-09",
+        },
+        {
+          id: "rev-005-2-en",
+          userName: "Esraa Magdy",
+          userImage:
+            "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop&crop=faces",
+          rating: 4.8,
+          comment: "Rhetoric and text analysis are presented in a very engaging, modern way.",
+          date: "2026-08-03",
+        },
+      ],
       sections: [],
     },
   ],

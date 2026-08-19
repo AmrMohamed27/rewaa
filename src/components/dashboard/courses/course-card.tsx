@@ -35,6 +35,7 @@ interface CourseCardProps {
   onDeleteRequest?: (course: Course) => void;
   mode?: "dashboard" | "student";
   enrollHref?: string;
+  isEnrolled?: boolean;
 }
 
 export function CourseCard({
@@ -45,6 +46,7 @@ export function CourseCard({
   onDeleteRequest,
   mode = "dashboard",
   enrollHref,
+  isEnrolled = false,
 }: CourseCardProps) {
   const locale = useLocale();
   const isAr = locale === "ar";
@@ -170,16 +172,23 @@ export function CourseCard({
           <div className="flex items-center justify-between gap-3 mt-4 pt-1">
             <Button
               asChild
+              variant={isEnrolled ? "outline" : "default"}
               size="sm"
-              className="flex-1 font-bold text-sm py-3.5! cursor-pointer shadow-xs"
+              className={
+                isEnrolled
+                  ? "w-full font-bold text-sm py-3.5! cursor-pointer border border-primary! text-primary hover:text-primary"
+                  : "flex-1 font-bold text-sm py-3.5! cursor-pointer shadow-xs"
+              }
             >
               <Link href={enrollHref || `/student-dashboard/courses/${course.id}`}>
-                {tStudent("enrollNow")}
+                {isEnrolled ? tStudent("goToCourse") : tStudent("enrollNow")}
               </Link>
             </Button>
-            <div className="font-bold text-sm sm:text-base text-foreground shrink-0">
-              {formatPrice(course.price, course.currency, course.isFree)}
-            </div>
+            {!isEnrolled && (
+              <div className="font-bold text-sm sm:text-base text-foreground shrink-0">
+                {formatPrice(course.price, course.currency, course.isFree)}
+              </div>
+            )}
           </div>
         ) : (
           <div className="flex items-center gap-2 mt-4 pt-1">

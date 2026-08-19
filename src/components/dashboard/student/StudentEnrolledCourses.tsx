@@ -1,15 +1,15 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import { Link } from "@/i18n/routing";
 import { getStoredCourses } from "@/lib/courses-storage";
 import { getStoredTeachers } from "@/lib/settings-storage";
+import { getEnrolledCourseIds } from "@/lib/student-enrollment-storage";
 import { Course } from "@/types/course";
-import { ArrowRight, Calendar, Play, User } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
+import { StudentEnrolledCourseCard } from "./StudentEnrolledCourseCard";
 
 export interface EnrolledCourseItem {
   course: Course;
@@ -24,24 +24,29 @@ interface StudentEnrolledCoursesProps {
 
 export function StudentEnrolledCourses({ courses: customCourses }: StudentEnrolledCoursesProps) {
   const locale = useLocale();
-  const isAr = locale === "ar";
   const t = useTranslations("studentDashboard.enrolledCourses");
 
   const [storedCourses, setStoredCourses] = useState<Course[]>([]);
   const [teachers, setTeachers] = useState(getStoredTeachers());
+  const [enrolledCourseIds, setEnrolledCourseIds] = useState<string[]>([]);
 
   useEffect(() => {
     const loadData = () => {
       setStoredCourses(getStoredCourses(locale));
       setTeachers(getStoredTeachers());
+      setEnrolledCourseIds(getEnrolledCourseIds());
     };
 
     loadData();
     window.addEventListener("rewaa_courses_updated", loadData);
     window.addEventListener("rewaa_settings_updated", loadData);
+    window.addEventListener("rewaa_student_enrollment_updated", loadData);
+    window.addEventListener("storage", loadData);
     return () => {
       window.removeEventListener("rewaa_courses_updated", loadData);
       window.removeEventListener("rewaa_settings_updated", loadData);
+      window.removeEventListener("rewaa_student_enrollment_updated", loadData);
+      window.removeEventListener("storage", loadData);
     };
   }, [locale]);
 
@@ -51,13 +56,12 @@ export function StudentEnrolledCourses({ courses: customCourses }: StudentEnroll
       return customCourses;
     }
 
-    // Default mock sample progress data mapped to stored courses
-    const defaultProgress = [65, 40, 85, 20];
-    const defaultEndDates = ["2026-12-31", "2026-11-15", "", "2027-01-30"];
+    const defaultProgress = [65, 40, 20, 0];
+    const defaultEndDates = ["2026-12-31", "2026-11-15", "2026-10-30", "2026-12-01"];
 
-    // Filter published courses first or take top courses
+    const enrolledSet = new Set(enrolledCourseIds);
     const available = storedCourses.length > 0 ? storedCourses : [];
-    const enrolled = available.slice(0, 4);
+    const enrolled = available.filter((c) => !c.isDraft && enrolledSet.has(c.id));
 
     return enrolled.map((course, idx) => {
       const matchedTeacher = teachers.find(
@@ -74,22 +78,7 @@ export function StudentEnrolledCourses({ courses: customCourses }: StudentEnroll
         progressPercentage: defaultProgress[idx % defaultProgress.length],
       };
     });
-  }, [customCourses, storedCourses, teachers]);
-
-  const formatDate = (dateStr?: string) => {
-    if (!dateStr) return null;
-    try {
-      const date = new Date(dateStr);
-      if (isNaN(date.getTime())) return dateStr;
-      return new Intl.DateTimeFormat(isAr ? "ar-EG" : "en-US", {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-      }).format(date);
-    } catch {
-      return dateStr;
-    }
-  };
+  }, [customCourses, storedCourses, teachers, enrolledCourseIds]);
 
   return (
     <section className="space-y-4 w-full">
@@ -119,103 +108,15 @@ export function StudentEnrolledCourses({ courses: customCourses }: StudentEnroll
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-4">
-          {enrolledCourses.map(({ course, teacherImage, accessEndDate, progressPercentage }) => {
-            const formattedDate = formatDate(accessEndDate);
-
-            return (
-              <div
-                key={course.id}
-                className="group relative flex flex-col md:flex-row items-stretch md:items-center justify-between gap-5 p-4 sm:p-5 rounded-2xl bg-card border border-border/70 shadow-xs hover:shadow-md hover:border-primary/40 transition-all duration-200"
-              >
-                {/* Left Side (Cover Image + Column of Title / Teacher / Access Date) */}
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 flex-1 min-w-0">
-                  {/* Cover Image */}
-                  <div className="relative aspect-video sm:aspect-4/3 w-full sm:w-36 md:w-44 h-auto sm:h-28 rounded-xl overflow-hidden bg-muted shrink-0 shadow-xs">
-                    {course.coverImage ? (
-                      <Image
-                        src={course.coverImage}
-                        alt={course.title}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-300"
-                        sizes="(max-width: 640px) 100vw, 180px"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-primary/10 text-primary font-bold text-lg">
-                        {course.title.slice(0, 2)}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Column of Course Title + Teacher Info & Access Date + Progress Bar */}
-                  <div className="flex flex-col gap-2.5 flex-1 min-w-0">
-                    <Link
-                      href={`/student-dashboard/courses`}
-                      className="text-base sm:text-lg font-bold text-foreground hover:text-primary transition-colors line-clamp-2 leading-snug"
-                    >
-                      {course.title}
-                    </Link>
-
-                    {/* Teacher Image & Name + Access End Date */}
-                    <div className="flex flex-wrap items-center gap-y-2 gap-x-4 text-xs text-muted-foreground">
-                      {/* Teacher info */}
-                      <div className="flex items-center gap-2">
-                        <div className="relative size-6 rounded-full overflow-hidden bg-muted border border-border shrink-0 flex items-center justify-center">
-                          {teacherImage ? (
-                            <Image
-                              src={teacherImage}
-                              alt={course.teacherName}
-                              fill
-                              className="object-cover"
-                              sizes="24px"
-                            />
-                          ) : (
-                            <User className="size-3.5 text-muted-foreground" />
-                          )}
-                        </div>
-                        <span className="font-medium text-foreground truncate max-w-[140px] sm:max-w-[200px]">
-                          {course.teacherName}
-                        </span>
-                      </div>
-
-                      {/* Access End Date (if exists) */}
-                      {formattedDate && (
-                        <>
-                          <span className="text-border hidden sm:inline">•</span>
-                          <div className="flex items-center gap-1.5 text-muted-foreground/90">
-                            <Calendar className="size-3.5 text-primary/70 shrink-0" />
-                            <span>{t("accessEnds", { date: formattedDate })}</span>
-                          </div>
-                        </>
-                      )}
-                    </div>
-
-                    {/* Progress Bar under teacher and date */}
-                    <div className="space-y-1.5 pt-1 max-w-md w-full">
-                      <div className="flex items-center justify-between text-xs font-semibold">
-                        <span className="text-muted-foreground">{t("progress")}</span>
-                        <span className="text-primary font-mono">{progressPercentage}%</span>
-                      </div>
-                      <Progress value={progressPercentage} className="h-2 bg-primary/15" />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Continue Button at the bottom end */}
-                <div className="flex items-center justify-end shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-border/50 self-end md:self-center">
-                  <Button
-                    asChild
-                    size="default"
-                    className="font-semibold gap-2 shadow-xs shrink-0 px-5"
-                  >
-                    <Link href={`/student-dashboard/courses/${course.id}`}>
-                      <span>{t("continue")}</span>
-                      <Play className="size-3.5 fill-current rtl:rotate-180" />
-                    </Link>
-                  </Button>
-                </div>
-              </div>
-            );
-          })}
+          {enrolledCourses.map(({ course, teacherImage, accessEndDate, progressPercentage }) => (
+            <StudentEnrolledCourseCard
+              key={course.id}
+              course={course}
+              teacherImage={teacherImage}
+              accessEndDate={accessEndDate}
+              progressPercentage={progressPercentage}
+            />
+          ))}
         </div>
       )}
     </section>

@@ -61,6 +61,21 @@ export interface CourseSection {
   lessons: Lesson[];
 }
 
+export interface CourseFAQ {
+  id: string;
+  question: string;
+  answer: string;
+}
+
+export interface CourseRatingReview {
+  id: string;
+  userName: string;
+  userImage?: string;
+  rating: number; // 1 to 5
+  comment?: string;
+  date: string;
+}
+
 export interface Course {
   id: string;
   coverImage: string;
@@ -87,4 +102,9 @@ export interface Course {
   numberOfParticipants: number;
   isDraft: boolean;
   sections: CourseSection[];
+  faqs?: CourseFAQ[];
+  ratingsReviews?: CourseRatingReview[];
+  averageRating?: number;
+  totalRatingsCount?: number;
+  durationHours?: number;
 }

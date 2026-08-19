@@ -1957,11 +1957,180 @@
       "noExpiry": "Unlimited Access",
       "empty": "You have not enrolled in any courses yet."
     },
+    "coursesPage": {
+      "title": "My Enrolled Courses",
+      "subtitle": "Browse and track your progress across all your enrolled courses",
+      "exploreAll": "Explore All Courses",
+      "searchPlaceholder": "Search by course, subject, or teacher...",
+      "clearFilters": "Clear Filters",
+      "totalEnrolled": "{count, plural, =0 {No courses} one {1 course} other {{count} courses}}",
+      "sort": {
+        "newest": "Date: Newest First",
+        "oldest": "Date: Oldest First",
+        "titleAsc": "Title: A to Z",
+        "titleDesc": "Title: Z to A",
+        "progressHigh": "Progress: Highest First",
+        "progressLow": "Progress: Lowest First"
+      },
+      "empty": {
+        "title": "No courses found",
+        "description": "We couldn't find any courses matching your search criteria. Try adjusting your filters or search terms."
+      },
+      "pagination": {
+        "showing": "Showing {start} to {end} of {total, plural, =0 {no courses} one {1 course} other {{total} courses}}"
+      }
+    },
+    "exploreCoursesPage": {
+      "title": "Explore Courses",
+      "subtitle": "Discover all available courses and enroll in new learning paths",
+      "myCourses": "My Courses",
+      "totalAvailable": "{count, plural, =0 {No courses} one {1 course} other {{count} courses}}",
+      "searchPlaceholder": "Search by course, subject, grade, or teacher...",
+      "clearFilters": "Clear Filters",
+      "sort": {
+        "newest": "Date: Newest First",
+        "oldest": "Date: Oldest First",
+        "titleAsc": "Title: A to Z",
+        "titleDesc": "Title: Z to A",
+        "studentsDesc": "Most Popular",
+        "priceAsc": "Price: Low to High",
+        "priceDesc": "Price: High to Low"
+      },
+      "empty": {
+        "title": "No courses found",
+        "description": "We couldn't find any courses matching your search criteria. Try adjusting your filters or search terms."
+      },
+      "pagination": {
+        "showing": "Showing {start} to {end} of {total, plural, =0 {no courses} one {1 course} other {{total} courses}}"
+      }
+    },
     "latestCourses": {
       "title": "Latest Courses",
       "viewAll": "View All",
       "enrollNow": "Enroll Now",
+      "goToCourse": "Go to Course",
       "empty": "No new courses available at the moment."
+    },
+    "courseDetails": {
+      "backToCourses": "Back to Courses",
+      "courseContent": "Course Content",
+      "sectionsCount": "{count, plural, =0 {No sections} one {1 section} other {{count} sections}}",
+      "lessonsCount": "{count, plural, =0 {No lessons} one {1 lesson} other {{count} lessons}}",
+      "totalProgress": "Completed {progress}%",
+      "showCertificate": "Show the Certificate",
+      "certificateModal": {
+        "title": "Course Certificate of Completion",
+        "description": "Certificate awarded upon completing all course curriculum items",
+        "recipientLabel": "Issued To",
+        "courseLabel": "Course",
+        "instructorLabel": "Instructor",
+        "issueDateLabel": "Completion Date",
+        "verified": "Verified & Authenticated",
+        "previewCertificate": "Preview Certificate",
+        "openInNewTab": "Open Fullscreen",
+        "close": "Close"
+      },
+      "lesson": {
+        "completed": "Completed",
+        "markAsCompleted": "Mark as completed",
+        "videoLecture": "Video Lecture",
+        "description": "Lesson Details & Notes",
+        "attachedFiles": "Attached Files",
+        "downloadFile": "Download",
+        "fileSize": "{size}",
+        "takeLinkedExam": "Go to Linked Exam",
+        "linkedExam": "Linked Exam",
+        "nextLesson": "Next Lesson",
+        "previousLesson": "Previous Lesson",
+        "noMediaOrNotes": "No additional notes or resources provided for this lesson."
+      },
+      "overview": {
+        "courseOverview": "Course Overview",
+        "instructor": "Instructor",
+        "accessExpiry": "Access Expiration",
+        "unlimitedAccess": "Unlimited Access",
+        "syllabus": "About the Course",
+        "startFirstLesson": "Start First Lesson",
+        "continueLearning": "Continue Learning"
+      },
+      "itemTypes": {
+        "video": "Video Lesson",
+        "reading": "Reading / Material",
+        "exam": "Exam",
+        "file": "File Download"
+      },
+      "empty": {
+        "noSections": "No sections or content available in this course."
+      },
+      "locked": {
+        "badge": "Locked Content",
+        "tooltip": "This section is locked. You must pass the previous section's exam first to unlock it.",
+        "mustPassExam": "You must pass this exam to unlock the next section",
+        "examPassed": "Exam passed successfully",
+        "examRequired": "Passing this exam is required to unlock the next section",
+        "dialogTitle": "This Content is Currently Locked",
+        "dialogDescription": "You cannot access this section or its lessons until you successfully pass the required exam from the previous section.",
+        "takeExamCta": "Take Required Exam to Unlock",
+        "close": "Close",
+        "prerequisiteExam": "Required Exam:"
+      }
+    },
+    "coursePreview": {
+      "backToExplore": "Back to Explore",
+      "studentsEnrolled": "{count, plural, =0 {No students} one {1 student} other {{count} students}}",
+      "ratingValue": "{rating} of 5",
+      "ratingsCount": "({count} reviews)",
+      "free": "Free",
+      "originalPrice": "Original Price:",
+      "enrollInCourse": "Enroll in Course",
+      "enrolling": "Enrolling...",
+      "enrollSuccess": "Successfully enrolled in the course!",
+      "courseContents": "Course Contents",
+      "videoHours": "{count, plural, =0 {No video hours} one {1 hour on-demand video} other {{count} hours on-demand video}}",
+      "examsAndQuestions": "{examsCount, plural, =0 {No exams} one {1 exam} other {{examsCount} exams}} ({questionsCount, plural, =0 {no questions} one {1 question} other {{questionsCount} questions}})",
+      "attachedFilesCount": "{count, plural, =0 {No files} one {1 downloadable file} other {{count} downloadable files}}",
+      "accessDuration": "{days, plural, =0 {Expired access} one {Access Validity: 1 day upon enrollment} other {Access Validity: {days} days upon enrollment}}",
+      "unlimitedAccess": "Unlimited full lifetime access",
+      "tabs": {
+        "sections": "Sections & Content",
+        "description": "About Course",
+        "attachments": "Attached Files",
+        "faqs": "FAQ",
+        "ratings": "Reviews & Ratings"
+      },
+      "sectionsTab": {
+        "title": "Course Curriculum & Sections",
+        "previewNotice": "This is a preview of the topics and lessons included in this course. Enrollment is required to access lecture videos and take exams.",
+        "lessonsCount": "{count, plural, =0 {No lessons} one {1 lesson} other {{count} lessons}}",
+        "examBadge": "Linked Exam",
+        "requiredExamBadge": "Required Exam",
+        "videoLesson": "Video Lecture",
+        "textLesson": "Reading Material",
+        "lockedLesson": "Enroll to access"
+      },
+      "descriptionTab": {
+        "title": "Detailed Course Description",
+        "noDescription": "No detailed description provided for this course yet."
+      },
+      "attachmentsTab": {
+        "title": "Attached Study Materials",
+        "subtitle": "Explore the list of handouts and resources included in this course (downloads unlocked after enrollment)",
+        "fileSize": "{size}",
+        "lockedFile": "Unlocked upon enrollment",
+        "noAttachments": "No additional attachments added to this course."
+      },
+      "faqsTab": {
+        "title": "Frequently Asked Questions",
+        "subtitle": "Common answers regarding this course and study methodology",
+        "noFaqs": "No FAQs available at the moment."
+      },
+      "ratingsTab": {
+        "title": "Student Ratings & Feedback",
+        "averageRating": "Average Rating",
+        "outOfFive": "out of 5 stars",
+        "basedOnRatings": "Based on {count} student reviews",
+        "noRatings": "No student reviews added yet for this course."
+      }
     }
   }
 }
