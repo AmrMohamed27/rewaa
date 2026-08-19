@@ -33,15 +33,11 @@ export function ProfileDropdown({
   user,
   handleLogout,
   isPending,
-  // expanded: expandedProp,
   showRole = false,
   variant = "dark",
 }: ProfileDropdownProps) {
-  // const { state, isMobile } = useSidebar();
   const locale = useLocale();
   const t = useTranslations("nav");
-  // const isCollapsed = state === "collapsed" && !isMobile;
-  // const expanded = expandedProp ?? !isCollapsed;
 
   // Localized user display name
   const isAr = locale === "ar";
@@ -59,6 +55,9 @@ export function ProfileDropdown({
         : user.role || t("roles.user");
 
   const isLight = variant === "light";
+  const isStudent = rawRole === "student";
+  const profileHref = isStudent ? "/student-dashboard/profile" : "/dashboard/profile";
+  const settingsHref = isStudent ? "/student-dashboard/settings" : "/dashboard/settings";
 
   return (
     <DropdownMenu>
@@ -118,13 +117,13 @@ export function ProfileDropdown({
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href="/dashboard/profile" className="cursor-pointer flex items-center">
+          <Link href={profileHref} className="cursor-pointer flex items-center">
             <User className="mr-2 h-4 w-4 rtl:ml-2 rtl:mr-0" />
             <span>{t("profile")}</span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href="/dashboard/settings" className="cursor-pointer flex items-center">
+          <Link href={settingsHref} className="cursor-pointer flex items-center">
             <Settings className="mr-2 h-4 w-4 rtl:ml-2 rtl:mr-0" />
             <span>{t("settings")}</span>
           </Link>

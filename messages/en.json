@@ -126,6 +126,7 @@
     "profile": "Profile",
     "logout": "Log out",
     "loggingOut": "Logging out...",
+    "teachers": "Teachers",
     "courses": "Courses",
     "lectures": "Lectures",
     "exams": "Exams",
@@ -1917,6 +1918,50 @@
         "cancel": "Cancel",
         "confirm": "Delete Announcement"
       }
+    }
+  },
+  "studentDashboard": {
+    "hero": {
+      "welcome": "Welcome, {name}",
+      "defaultStudentName": "Student",
+      "description": "Continue your learning journey and discover new lessons to grow today. You've made great progress this week!",
+      "contactUs": "Contact Us",
+      "discoverCourses": "Discover Courses",
+      "bgAlt": "Hero background"
+    },
+    "overview": {
+      "title": "General Overview",
+      "subtitle": "Track your learning progress, exam scores, and account statistics",
+      "totalExamScores": "Total Exam Scores",
+      "coursesEnrolled": "Courses Enrolled",
+      "walletBalance": "Wallet Balance",
+      "examsSolved": "Exams Solved",
+      "questionsSolved": "Questions Solved",
+      "correctAnswers": "Correct",
+      "wrongAnswers": "Wrong",
+      "currency": "EGP",
+      "grades": "Marks"
+    },
+    "announcement": {
+      "badge": "Latest Announcement",
+      "viewLink": "View Details",
+      "contactUs": "Contact Us",
+      "imageAlt": "Announcement Image"
+    },
+    "enrolledCourses": {
+      "title": "Courses Enrolled In",
+      "viewAll": "View All",
+      "continue": "Continue",
+      "progress": "Progress",
+      "accessEnds": "Access ends: {date}",
+      "noExpiry": "Unlimited Access",
+      "empty": "You have not enrolled in any courses yet."
+    },
+    "latestCourses": {
+      "title": "Latest Courses",
+      "viewAll": "View All",
+      "enrollNow": "Enroll Now",
+      "empty": "No new courses available at the moment."
     }
   }
 }

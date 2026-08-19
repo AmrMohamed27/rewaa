@@ -4,8 +4,8 @@ import { cookies } from "next/headers";
 const mockUser = {
   id: "usr_mock_123",
   email: "user@rewaa.com",
-  firstName: "John",
-  lastName: "Doe",
+  firstName: "علي",
+  lastName: "أحمد",
   role: "admin",
   emailVerified: true,
   createdAt: new Date().toISOString(),

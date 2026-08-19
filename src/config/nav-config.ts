@@ -72,3 +72,43 @@ export const navConfig: NavConfig = {
     },
   ],
 };
+
+export const studentNavConfig: NavConfig = {
+  primaryLink: {
+    label: "Home",
+    href: "/student-dashboard",
+  },
+  sidebarNav: [
+    {
+      label: "Home",
+      href: "/student-dashboard",
+      icon: LayoutDashboard,
+    },
+    {
+      label: "Courses",
+      href: "/student-dashboard/courses",
+      icon: BookOpen,
+    },
+    {
+      label: "Teachers",
+      href: "/student-dashboard/teachers",
+      icon: Users,
+    },
+    {
+      label: "Billing",
+      href: "/student-dashboard/billing",
+      icon: CreditCard,
+    },
+    {
+      label: "Settings",
+      href: "/student-dashboard/settings",
+      icon: Settings,
+    },
+  ],
+};
+
+export const studentNavbarLinks = [
+  { label: "Home", href: "/student-dashboard" },
+  { label: "Courses", href: "/student-dashboard/courses" },
+  { label: "Teachers", href: "/student-dashboard/teachers" },
+];

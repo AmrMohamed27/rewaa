@@ -24,6 +24,8 @@ interface DashboardNavbarProps {
   variant?: "light" | "dark";
   links?: NavLinkItem[];
   initialProfileData?: AuthControllerGetProfile200;
+  primaryHref?: string;
+  centerContent?: React.ReactNode;
 }
 
 const DEFAULT_LINKS: NavLinkItem[] = [
@@ -38,6 +40,8 @@ export function DashboardNavbar({
   variant = "light",
   links = DEFAULT_LINKS,
   initialProfileData,
+  primaryHref = navConfig.primaryLink.href,
+  centerContent,
 }: DashboardNavbarProps = {}) {
   const pathname = usePathname();
   const t = useTranslations("nav");
@@ -73,12 +77,12 @@ export function DashboardNavbar({
   };
 
   return (
-    <header className="sticky top-0 z-10 w-full border-b bg-white/95 backdrop-blur supports-backdrop-filter:bg-white/60">
+    <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-backdrop-filter:bg-white/80">
       <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-8">
         {/* Brand Logo & Main Nav Links */}
         <div className="flex items-center gap-4 md:gap-8">
           <Link
-            href={navConfig.primaryLink.href}
+            href={primaryHref}
             className="flex items-center text-primary hover:text-primary/90 transition-colors"
           >
             <Logo brandName={tCommon("brandName")} brandNameClassName="text-inherit" />
@@ -89,7 +93,7 @@ export function DashboardNavbar({
           {links && links.length > 0 && (
             <nav className="hidden md:flex items-center gap-1 md:gap-2 h-16">
               {links.map((link) => {
-                const isActive = pathname === link.href || pathname.startsWith(`${link.href}/`);
+                const isActive = pathname === link.href;
                 return (
                   <Link
                     key={link.href}
@@ -108,6 +112,9 @@ export function DashboardNavbar({
             </nav>
           )}
         </div>
+
+        {/* Center Content (e.g., Search Bar) */}
+        {centerContent && <div className="flex items-center mx-2">{centerContent}</div>}
 
         {/* User Actions & Controls */}
         <div className="flex items-center gap-2 md:gap-4">

@@ -14,7 +14,7 @@ export default function NotFound() {
       <h1 className="text-4xl font-bold tracking-tight">{t("title")}</h1>
       <p className="text-muted-foreground">{t("description")}</p>
       <Button asChild>
-        <Link href="/">{t("returnHome")}</Link>
+        <Link href="/student-dashboard">{t("returnHome")}</Link>
       </Button>
     </div>
   );

@@ -17,7 +17,7 @@ import { useAuthControllerGetProfile, useAuthControllerLogout } from "@/hooks/us
 import { AuthControllerGetProfile200 } from "@/types/api";
 import { Link, usePathname, useRouter } from "@/i18n/routing";
 import { ProfileDropdown } from "./ProfileDropdown";
-import { navConfig } from "@/config/nav-config";
+import { navConfig, studentNavConfig } from "@/config/nav-config";
 import { cn } from "@/lib/utils";
 import { useLocale, useTranslations } from "next-intl";
 import { PanelLeftIcon } from "lucide-react";
@@ -25,10 +25,15 @@ import { PanelLeftIcon } from "lucide-react";
 export function AppSidebar({
   initialProfileData,
   side: sideProp,
+  variant = "admin",
 }: {
   initialProfileData: AuthControllerGetProfile200;
   side?: "left" | "right";
+  variant?: "admin" | "student";
 }) {
+  const currentNavConfig = variant === "student" ? studentNavConfig : navConfig;
+  const navItems = currentNavConfig.sidebarNav;
+  const primaryLink = currentNavConfig.primaryLink;
   const locale = useLocale();
   const side = sideProp ?? (locale === "ar" ? "right" : "left");
   const t = useTranslations("nav");
@@ -80,7 +85,7 @@ export function AppSidebar({
         </button>
         <div className="flex w-full items-center justify-between group-data-[collapsible=icon]:hidden">
           <Link
-            href={navConfig.primaryLink.href}
+            href={primaryLink.href}
             className="flex items-center text-white text-start overflow-hidden rounded-md p-2"
           >
             <Logo brandName={tCommon("brandName")} width={20} height={20} />
@@ -91,7 +96,7 @@ export function AppSidebar({
       <SidebarContent className="flex flex-col gap-y-1">
         <SidebarGroup>
           <SidebarMenu className="space-y-2 flex flex-col items-center">
-            {navConfig.sidebarNav.map((item) => {
+            {navItems.map((item) => {
               const translatedLabel = getNavLabel(item.label);
               const isActive = pathname === item.href;
               return (

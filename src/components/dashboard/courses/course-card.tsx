@@ -20,6 +20,7 @@ import {
   MoreVertical,
   Pencil,
   Trash2,
+  User,
   Users,
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
@@ -28,23 +29,28 @@ import Link from "next/link";
 
 interface CourseCardProps {
   course: Course;
-  copiedId: string | null;
-  onPublishToggle: (courseId: string) => void;
-  onCopyLink: (courseId: string) => void;
-  onDeleteRequest: (course: Course) => void;
+  copiedId?: string | null;
+  onPublishToggle?: (courseId: string) => void;
+  onCopyLink?: (courseId: string) => void;
+  onDeleteRequest?: (course: Course) => void;
+  mode?: "dashboard" | "student";
+  enrollHref?: string;
 }
 
 export function CourseCard({
   course,
-  copiedId,
+  copiedId = null,
   onPublishToggle,
   onCopyLink,
   onDeleteRequest,
+  mode = "dashboard",
+  enrollHref,
 }: CourseCardProps) {
   const locale = useLocale();
   const isAr = locale === "ar";
   const t = useTranslations("courses");
   const tNew = useTranslations("courses.new");
+  const tStudent = useTranslations("studentDashboard.latestCourses");
 
   const formatGrade = (gradeKey: string) => {
     return tNew.has(`grades.${gradeKey}` as Parameters<typeof tNew.has>[0])
@@ -73,18 +79,20 @@ export function CourseCard({
         />
         <div className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-black/20" />
 
-        {/* Status Badge on top-start */}
-        <div className="absolute top-2.5 inset-s-2.5">
-          {!course.isDraft ? (
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-success-bg text-success shadow-xs">
-              {t("status.published")}
-            </span>
-          ) : (
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-warning-bg text-warning backdrop-blur-xs">
-              {t("status.draft")}
-            </span>
-          )}
-        </div>
+        {/* Status Badge on top-start (hidden in student mode) */}
+        {mode !== "student" && (
+          <div className="absolute top-2.5 inset-s-2.5">
+            {!course.isDraft ? (
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-success-bg text-success shadow-xs">
+                {t("status.published")}
+              </span>
+            ) : (
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-warning-bg text-warning backdrop-blur-xs">
+                {t("status.draft")}
+              </span>
+            )}
+          </div>
+        )}
 
         {/* Venue Badge on top-end */}
         <div className="absolute top-2.5 inset-e-2.5">
@@ -113,9 +121,17 @@ export function CourseCard({
         </div>
 
         {/* Course Title */}
-        <h3 className="font-bold text-foreground line-clamp-2 text-base leading-snug mb-3 group-hover:text-primary transition-colors">
+        <h3 className="font-bold text-foreground line-clamp-2 text-base leading-snug mb-2 group-hover:text-primary transition-colors">
           {course.title}
         </h3>
+
+        {/* Teacher Info */}
+        {course.teacherName && (
+          <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-3 truncate">
+            <User className="size-3.5 text-primary/70 shrink-0" />
+            <span className="font-medium truncate">{course.teacherName}</span>
+          </div>
+        )}
 
         {/* Info Row */}
         <div className="mt-auto pt-3 border-t border-border/40 flex flex-row gap-1 justify-between text-xs text-muted-foreground">
@@ -141,115 +157,136 @@ export function CourseCard({
             </span>
           </div>
 
-          {/* 3. Formatted Price */}
-          <div className="flex items-center justify-end font-bold text-foreground truncate">
-            <span>{formatPrice(course.price, course.currency, course.isFree)}</span>
-          </div>
+          {/* 3. Formatted Price (only for dashboard mode to avoid duplicate in student mode) */}
+          {mode !== "student" && (
+            <div className="flex items-center justify-end font-bold text-foreground truncate">
+              <span>{formatPrice(course.price, course.currency, course.isFree)}</span>
+            </div>
+          )}
         </div>
 
         {/* Action Buttons Row */}
-        <div className="flex items-center gap-2 mt-4 pt-1">
-          {!course.isDraft ? (
+        {mode === "student" ? (
+          <div className="flex items-center justify-between gap-3 mt-4 pt-1">
             <Button
               asChild
-              variant="outline"
               size="sm"
-              className="flex-1 font-bold text-sm border border-primary! text-primary hover:text-primary py-3.5! cursor-pointer"
+              className="flex-1 font-bold text-sm py-3.5! cursor-pointer shadow-xs"
             >
-              <Link href={`/${locale}/dashboard/courses/${course.id}`}>{t("card.viewStats")}</Link>
+              <Link href={enrollHref || `/student-dashboard/courses/${course.id}`}>
+                {tStudent("enrollNow")}
+              </Link>
             </Button>
-          ) : (
-            <Button
-              onClick={() => onPublishToggle(course.id)}
-              size="sm"
-              className="flex-1 font-bold text-sm py-3.5! cursor-pointer"
-            >
-              {t("card.publishNow")}
-            </Button>
-          )}
-
-          {/* Options Menu Button */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon-sm" className="shrink-0">
-                <MoreVertical className="h-4 w-4" />
-                <span className="sr-only">Menu</span>
+            <div className="font-bold text-sm sm:text-base text-foreground shrink-0">
+              {formatPrice(course.price, course.currency, course.isFree)}
+            </div>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2 mt-4 pt-1">
+            {!course.isDraft ? (
+              <Button
+                asChild
+                variant="outline"
+                size="sm"
+                className="flex-1 font-bold text-sm border border-primary! text-primary hover:text-primary py-3.5! cursor-pointer"
+              >
+                <Link href={`/${locale}/dashboard/courses/${course.id}`}>
+                  {t("card.viewStats")}
+                </Link>
               </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align={isAr ? "start" : "end"}>
-              {course.isDraft ? (
-                <>
-                  <DropdownMenuItem asChild>
-                    <Link
-                      href={`/${locale}/dashboard/courses/${course.id}`}
+            ) : (
+              <Button
+                onClick={() => onPublishToggle?.(course.id)}
+                size="sm"
+                className="flex-1 font-bold text-sm py-3.5! cursor-pointer"
+              >
+                {t("card.publishNow")}
+              </Button>
+            )}
+
+            {/* Options Menu Button */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon-sm" className="shrink-0">
+                  <MoreVertical className="h-4 w-4" />
+                  <span className="sr-only">Menu</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align={isAr ? "start" : "end"}>
+                {course.isDraft ? (
+                  <>
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href={`/${locale}/dashboard/courses/${course.id}`}
+                        className="flex items-center gap-2"
+                      >
+                        <Eye className="h-4 w-4" />
+                        <span>{t("card.viewDetails")}</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href={`/${locale}/dashboard/courses/${course.id}/codes`}
+                        className="flex items-center gap-2"
+                      >
+                        <Barcode className="h-4 w-4" />
+                        <span>{t("activationCodes")}</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href={`/${locale}/dashboard/courses/${course.id}/edit`}
+                        className="flex items-center gap-2"
+                      >
+                        <Pencil className="h-4 w-4" />
+                        <span>{t("card.modify")}</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => onDeleteRequest?.(course)}
+                      className="flex items-center gap-2 text-destructive focus:text-destructive"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                      <span>{t("card.delete")}</span>
+                    </DropdownMenuItem>
+                  </>
+                ) : (
+                  <>
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href={`/${locale}/dashboard/courses/${course.id}/codes`}
+                        className="flex items-center gap-2"
+                      >
+                        <Barcode className="h-4 w-4" />
+                        <span>{t("activationCodes")}</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => onCopyLink?.(course.id)}
                       className="flex items-center gap-2"
                     >
-                      <Eye className="h-4 w-4" />
-                      <span>{t("card.viewDetails")}</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link
-                      href={`/${locale}/dashboard/courses/${course.id}/codes`}
-                      className="flex items-center gap-2"
+                      {copiedId === course.id ? (
+                        <Check className="h-4 w-4 text-emerald-500" />
+                      ) : (
+                        <Copy className="h-4 w-4" />
+                      )}
+                      <span>
+                        {copiedId === course.id ? t("card.linkCopied") : t("card.copyLink")}
+                      </span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => onDeleteRequest?.(course)}
+                      className="flex items-center gap-2 text-destructive focus:text-destructive"
                     >
-                      <Barcode className="h-4 w-4" />
-                      <span>{t("activationCodes")}</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link
-                      href={`/${locale}/dashboard/courses/${course.id}/edit`}
-                      className="flex items-center gap-2"
-                    >
-                      <Pencil className="h-4 w-4" />
-                      <span>{t("card.modify")}</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => onDeleteRequest(course)}
-                    className="flex items-center gap-2 text-destructive focus:text-destructive"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                    <span>{t("card.delete")}</span>
-                  </DropdownMenuItem>
-                </>
-              ) : (
-                <>
-                  <DropdownMenuItem asChild>
-                    <Link
-                      href={`/${locale}/dashboard/courses/${course.id}/codes`}
-                      className="flex items-center gap-2"
-                    >
-                      <Barcode className="h-4 w-4" />
-                      <span>{t("activationCodes")}</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => onCopyLink(course.id)}
-                    className="flex items-center gap-2"
-                  >
-                    {copiedId === course.id ? (
-                      <Check className="h-4 w-4 text-emerald-500" />
-                    ) : (
-                      <Copy className="h-4 w-4" />
-                    )}
-                    <span>
-                      {copiedId === course.id ? t("card.linkCopied") : t("card.copyLink")}
-                    </span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => onDeleteRequest(course)}
-                    className="flex items-center gap-2 text-destructive focus:text-destructive"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                    <span>{t("card.delete")}</span>
-                  </DropdownMenuItem>
-                </>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+                      <Trash2 className="h-4 w-4" />
+                      <span>{t("card.delete")}</span>
+                    </DropdownMenuItem>
+                  </>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        )}
       </div>
     </div>
   );

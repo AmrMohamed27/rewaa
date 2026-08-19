@@ -5,7 +5,7 @@
     "arabic": "العربية",
     "notifications": "الإشعارات",
     "noNotifications": "لا توجد إشعارات جديدة",
-    "search": "بحث...",
+    "search": "بحث في الدورات المتاحة...",
     "loading": "جاري التحميل...",
     "reset": "إعادة ضبط",
     "submitting": "جاري الإرسال...",
@@ -126,6 +126,7 @@
     "profile": "الملف الشخصي",
     "logout": "تسجيل الخروج",
     "loggingOut": "جاري تسجيل الخروج...",
+    "teachers": "المعلمون",
     "courses": "الدورات",
     "lectures": "المحاضرات",
     "exams": "الامتحانات",
@@ -1917,6 +1918,50 @@
         "cancel": "إلغاء",
         "confirm": "تأكيد الحذف"
       }
+    }
+  },
+  "studentDashboard": {
+    "hero": {
+      "welcome": "مرحباً، {name}",
+      "defaultStudentName": "طالبنا العزيز",
+      "description": "استمر في رحلتك التعليمية واكتشف دروساً جديدة للنمو اليوم. لقد حققت تقدماً رائعاً هذا الأسبوع!",
+      "contactUs": "تواصل معنا",
+      "discoverCourses": "استكشف الدورات",
+      "bgAlt": "خلفية الترحيب"
+    },
+    "overview": {
+      "title": "نظرة عامة",
+      "subtitle": "تابع تقدمك الدراسي، مجموع درجاتك، وإحصائيات حسابك",
+      "totalExamScores": "مجموع الدرجات",
+      "coursesEnrolled": "الدورات المشترك بها",
+      "walletBalance": "رصيد المحفظة",
+      "examsSolved": "الاختبارات المنجزة",
+      "questionsSolved": "الأسئلة المجابة",
+      "correctAnswers": "صحيحة",
+      "wrongAnswers": "خاطئة",
+      "currency": "ج.م",
+      "grades": "درجة"
+    },
+    "announcement": {
+      "badge": "آخر الأخبار والإعلانات",
+      "viewLink": "عرض التفاصيل",
+      "contactUs": "تواصل معنا",
+      "imageAlt": "صورة الإعلان"
+    },
+    "enrolledCourses": {
+      "title": "الدورات المشترك بها",
+      "viewAll": "عرض الكل",
+      "continue": "متابعة",
+      "progress": "نسبة الإنجاز",
+      "accessEnds": "ينتهي الاشتراك في: {date}",
+      "noExpiry": "صلاحية غير محدودة",
+      "empty": "لم تشترك في أي دورات حتى الآن."
+    },
+    "latestCourses": {
+      "title": "أحدث الدورات",
+      "viewAll": "عرض الكل",
+      "enrollNow": "اشترك الآن",
+      "empty": "لا توجد دورات جديدة متاحة حالياً."
     }
   }
 }
