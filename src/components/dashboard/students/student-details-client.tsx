@@ -261,6 +261,14 @@ export function StudentDetailsClient({ studentId }: StudentDetailsClientProps) {
                 <h1 className="text-xl sm:text-2xl font-black tracking-tight text-foreground">
                   {fullName}
                 </h1>
+                {student.status === "suspended" && (
+                  <Badge
+                    variant="outline"
+                    className="text-xs bg-rose-500/10 text-rose-600 border-rose-500/20 font-semibold"
+                  >
+                    {t("statuses.suspended")}
+                  </Badge>
+                )}
                 <Badge
                   variant="outline"
                   className={`text-xs font-semibold ${REGISTRATION_TYPE_BADGES[student.registrationType]}`}

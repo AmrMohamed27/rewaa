@@ -1357,14 +1357,23 @@
       "state": "Governorate / Country",
       "coursesCount": "Enrolled Courses",
       "grade": "Grade",
+      "averageRating": "Cumulative GPA",
       "registrationDate": "Registration Date",
       "registrationType": "Registration Type",
       "actions": "Actions"
     },
     "actions": {
       "viewDetails": "View Details",
-      "editStudent": "Edit Student",
-      "deleteStudent": "Delete Student"
+      "editStudent": "Edit",
+      "viewReport": "View Report",
+      "changeBalance": "Change Balance",
+      "suspend": "Suspend",
+      "activate": "Activate",
+      "deleteStudent": "Delete"
+    },
+    "statuses": {
+      "active": "Active",
+      "suspended": "Suspended"
     },
     "deleteDialog": {
       "title": "Delete Student",

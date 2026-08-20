@@ -14,7 +14,16 @@ export function getStoredStudents(locale: string): Student[] {
     if (stored) {
       const parsed = JSON.parse(stored);
       if (Array.isArray(parsed)) {
-        return parsed;
+        const freshMocks = mockStudentsData[locale as "ar" | "en"] || mockStudentsData.ar;
+        return parsed.map((student) => {
+          const freshMock = freshMocks.find((m) => m.id === student.id);
+          return {
+            ...student,
+            averageRating: student.averageRating ?? freshMock?.averageRating ?? 3.85,
+            gpa: student.gpa ?? freshMock?.gpa ?? "3.85 / 4.0",
+            status: student.status ?? freshMock?.status ?? "active",
+          };
+        });
       }
     }
   } catch (error) {

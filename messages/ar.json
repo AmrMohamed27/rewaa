@@ -1357,14 +1357,23 @@
       "state": "المحافظة / الدولة",
       "coursesCount": "عدد الدورات",
       "grade": "الصف الدراسي",
+      "averageRating": "المعدل التراكمي",
       "registrationDate": "تاريخ التسجيل",
       "registrationType": "نوع التسجيل",
       "actions": "الإجراءات"
     },
     "actions": {
       "viewDetails": "عرض التفاصيل",
-      "editStudent": "تعديل البيانات",
-      "deleteStudent": "حذف الطالب"
+      "editStudent": "تعديل",
+      "viewReport": "عرض التقرير",
+      "changeBalance": "تغيير الرصيد",
+      "suspend": "تعليق الحساب",
+      "activate": "تفعيل الحساب",
+      "deleteStudent": "حذف"
+    },
+    "statuses": {
+      "active": "نشط",
+      "suspended": "موقوف"
     },
     "deleteDialog": {
       "title": "حذف الطالب",

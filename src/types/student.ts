@@ -13,6 +13,8 @@ export interface StudentTransaction {
   createdAt: string;
 }
 
+export type StudentStatus = "active" | "suspended";
+
 export interface Student {
   id: string;
   firstName: string;
@@ -32,6 +34,9 @@ export interface Student {
   coursesCount?: number;
   enrolledCourseIds?: string[];
   balance?: number;
+  averageRating?: number;
+  gpa?: string;
+  status?: StudentStatus;
   createdAt?: string;
   updatedAt?: string;
 }

@@ -6,6 +6,7 @@ import {
   BookOpen,
   Edit2,
   Eye,
+  FileText,
   FilterX,
   GraduationCap,
   MapPin,
@@ -16,7 +17,10 @@ import {
   Search,
   Shield,
   Trash2,
+  UserCheck,
   Users,
+  UserX,
+  Wallet,
   X,
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
@@ -31,9 +35,11 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
+import { PhoneLink } from "@/components/ui/phone-link";
 import {
   Select,
   SelectContent,
@@ -43,16 +49,22 @@ import {
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { PhoneLink } from "@/components/ui/phone-link";
 
+import { getStoredCourses } from "@/lib/courses-storage";
+import { getStoredExams } from "@/lib/exams-storage";
 import {
   deleteStoredStudent,
   getStoredStudents,
   resetStoredStudents,
+  updateStoredStudent,
 } from "@/lib/students-storage";
-import { RegistrationType, Student } from "@/types/student";
+import { Course } from "@/types/course";
+import { Exam } from "@/types/exam";
+import { RegistrationType, Student, TransactionType } from "@/types/student";
 import { ContentPagination } from "../common/content-pagination";
+import { BalanceTransactionDialog } from "./balance-transaction-dialog";
 import { DeleteStudentDialog } from "./delete-student-dialog";
+import { StudentReportModal } from "./student-report-modal";
 
 export type StudentSortOption =
   | "date-newest"
@@ -68,15 +80,6 @@ const REGISTRATION_TYPE_BADGES: Record<RegistrationType, string> = {
   hybrid: "bg-purple-500/10 text-purple-600 border-purple-500/20",
   external: "bg-amber-500/10 text-amber-600 border-amber-500/20",
 };
-
-function formatDate(iso?: string, locale: string = "ar") {
-  if (!iso) return "-";
-  return new Date(iso).toLocaleDateString(locale === "ar" ? "ar-EG" : "en-GB", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
-}
 
 export function ManageStudentsClient() {
   const locale = useLocale();
@@ -127,23 +130,35 @@ export function ManageStudentsClient() {
   );
 
   const [students, setStudents] = React.useState<Student[]>([]);
+  const [courses, setCourses] = React.useState<Course[]>([]);
+  const [exams, setExams] = React.useState<Exam[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
 
-  // Deletion State
+  // Dialog & Modal States
   const [deletingStudent, setDeletingStudent] = React.useState<Student | null>(null);
+  const [balanceStudent, setBalanceStudent] = React.useState<Student | null>(null);
+  const [reportStudent, setReportStudent] = React.useState<Student | null>(null);
 
   React.useEffect(() => {
     setStudents(getStoredStudents(locale));
+    setCourses(getStoredCourses(locale));
+    setExams(getStoredExams(locale));
     setIsLoading(false);
 
     const handleUpdate = () => {
       setStudents(getStoredStudents(locale));
+      setCourses(getStoredCourses(locale));
+      setExams(getStoredExams(locale));
     };
 
     window.addEventListener("rewaa_students_updated", handleUpdate);
+    window.addEventListener("rewaa_courses_updated", handleUpdate);
+    window.addEventListener("rewaa_exams_updated", handleUpdate);
     window.addEventListener("storage", handleUpdate);
     return () => {
       window.removeEventListener("rewaa_students_updated", handleUpdate);
+      window.removeEventListener("rewaa_courses_updated", handleUpdate);
+      window.removeEventListener("rewaa_exams_updated", handleUpdate);
       window.removeEventListener("storage", handleUpdate);
     };
   }, [locale]);
@@ -285,6 +300,38 @@ export function ManageStudentsClient() {
       sort: null,
       page: 1,
     });
+  };
+
+  const handleSuspendToggle = (student: Student) => {
+    const newStatus = student.status === "suspended" ? "active" : "suspended";
+    updateStoredStudent(locale, student.id, { status: newStatus });
+    setStudents((prev) => prev.map((s) => (s.id === student.id ? { ...s, status: newStatus } : s)));
+  };
+
+  const handleBalanceSubmit = ({
+    type,
+    amount,
+  }: {
+    type: TransactionType;
+    amount: number;
+    notes?: string;
+  }) => {
+    if (!balanceStudent) return;
+    const current = balanceStudent.balance ?? 0;
+    let newBalance = current;
+
+    if (type === "deposit" || type === "refund") {
+      newBalance = current + amount;
+    } else if (type === "withdraw") {
+      newBalance = Math.max(0, current - amount);
+    } else if (type === "adjustment") {
+      newBalance = amount;
+    }
+
+    const updated = updateStoredStudent(locale, balanceStudent.id, { balance: newBalance });
+    if (updated) {
+      setStudents((prev) => prev.map((s) => (s.id === updated.id ? updated : s)));
+    }
   };
 
   const handleDeleteConfirm = () => {
@@ -503,8 +550,8 @@ export function ManageStudentsClient() {
                     {t("columns.coursesCount")}
                   </th>
                   <th className="px-4 py-3.5 text-start font-medium">{t("columns.grade")}</th>
-                  <th className="px-4 py-3.5 text-start font-medium">
-                    {t("columns.registrationDate")}
+                  <th className="px-4 py-3.5 text-center font-medium">
+                    {t("columns.averageRating")}
                   </th>
                   <th className="px-4 py-3.5 text-center font-medium">
                     {t("columns.registrationType")}
@@ -528,8 +575,15 @@ export function ManageStudentsClient() {
                     `registrationTypes.${regTypeKey}` as Parameters<typeof t>[0],
                   );
 
+                  const isSuspended = student.status === "suspended";
+
                   return (
-                    <tr key={student.id} className="hover:bg-muted/30 transition-colors group">
+                    <tr
+                      key={student.id}
+                      className={`hover:bg-muted/30 transition-colors group ${
+                        isSuspended ? "bg-muted/15 opacity-80 hover:opacity-100" : ""
+                      }`}
+                    >
                       {/* Full Name & ID */}
                       <td className="px-4 py-3.5">
                         <div className="flex flex-col">
@@ -538,6 +592,14 @@ export function ManageStudentsClient() {
                             className="font-semibold text-foreground hover:text-primary transition-colors flex items-center gap-1.5"
                           >
                             <span>{fullName}</span>
+                            {isSuspended && (
+                              <Badge
+                                variant="outline"
+                                className="text-[10px] bg-rose-500/10 text-rose-600 border-rose-500/20 font-medium h-4 px-1.5"
+                              >
+                                {t("statuses.suspended")}
+                              </Badge>
+                            )}
                           </Link>
                         </div>
                       </td>
@@ -616,10 +678,10 @@ export function ManageStudentsClient() {
                         </div>
                       </td>
 
-                      {/* Registration Date */}
-                      <td className="px-4 py-3.5">
-                        <span className="text-xs text-muted-foreground">
-                          {formatDate(student.createdAt, locale)}
+                      {/* Average CGPA / GPA Column */}
+                      <td className="px-4 py-3.5 text-center">
+                        <span className="text-xs font-semibold text-foreground">
+                          {student.gpa || `${(student.averageRating ?? 3.85).toFixed(2)} / 4.0`}
                         </span>
                       </td>
 
@@ -644,27 +706,72 @@ export function ManageStudentsClient() {
                               <span className="sr-only">Open menu</span>
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align={isAr ? "start" : "end"} className="w-44">
+                          <DropdownMenuContent align={isAr ? "start" : "end"} className="w-48">
+                            {/* 1. View Details */}
                             <DropdownMenuItem asChild>
                               <Link
                                 href={`/${locale}/dashboard/students/${student.id}`}
                                 className="cursor-pointer gap-2"
                               >
-                                <Eye className="size-4" />
+                                <Eye className="size-4 text-muted-foreground" />
                                 <span>{t("actions.viewDetails")}</span>
                               </Link>
                             </DropdownMenuItem>
 
+                            {/* 2. Edit */}
                             <DropdownMenuItem asChild>
                               <Link
                                 href={`/${locale}/dashboard/students/${student.id}/edit`}
                                 className="cursor-pointer gap-2"
                               >
-                                <Edit2 className="size-4" />
+                                <Edit2 className="size-4 text-muted-foreground" />
                                 <span>{t("actions.editStudent")}</span>
                               </Link>
                             </DropdownMenuItem>
 
+                            {/* 3. View Report */}
+                            <DropdownMenuItem
+                              onClick={() => setReportStudent(student)}
+                              className="cursor-pointer gap-2"
+                            >
+                              <FileText className="size-4 text-primary" />
+                              <span>{t("actions.viewReport")}</span>
+                            </DropdownMenuItem>
+
+                            {/* 4. Change Balance */}
+                            <DropdownMenuItem
+                              onClick={() => setBalanceStudent(student)}
+                              className="cursor-pointer gap-2"
+                            >
+                              <Wallet className="size-4 text-emerald-600" />
+                              <span>{t("actions.changeBalance")}</span>
+                            </DropdownMenuItem>
+
+                            <DropdownMenuSeparator />
+
+                            {/* 5. Suspend / Activate (Status) */}
+                            <DropdownMenuItem
+                              onClick={() => handleSuspendToggle(student)}
+                              className={`cursor-pointer gap-2 ${
+                                isSuspended
+                                  ? "text-emerald-600 focus:text-emerald-600"
+                                  : "text-amber-600 focus:text-amber-600"
+                              }`}
+                            >
+                              {isSuspended ? (
+                                <>
+                                  <UserCheck className="size-4" />
+                                  <span>{t("actions.activate")}</span>
+                                </>
+                              ) : (
+                                <>
+                                  <UserX className="size-4" />
+                                  <span>{t("actions.suspend")}</span>
+                                </>
+                              )}
+                            </DropdownMenuItem>
+
+                            {/* 6. Delete */}
                             <DropdownMenuItem
                               onClick={() => setDeletingStudent(student)}
                               className="cursor-pointer gap-2 text-destructive focus:text-destructive"
@@ -702,6 +809,31 @@ export function ManageStudentsClient() {
           </div>
         )}
       </div>
+
+      {/* Balance Transaction Dialog */}
+      {balanceStudent && (
+        <BalanceTransactionDialog
+          studentName={[balanceStudent.firstName, balanceStudent.lastName]
+            .filter(Boolean)
+            .join(" ")}
+          currentBalance={balanceStudent.balance ?? 0}
+          isOpen={!!balanceStudent}
+          onClose={() => setBalanceStudent(null)}
+          onConfirm={handleBalanceSubmit}
+        />
+      )}
+
+      {/* Student Comprehensive Report Modal */}
+      {reportStudent && (
+        <StudentReportModal
+          student={reportStudent}
+          courses={courses}
+          exams={exams}
+          isOpen={!!reportStudent}
+          onClose={() => setReportStudent(null)}
+          formatGrade={formatGrade}
+        />
+      )}
 
       {/* Delete Confirmation Dialog */}
       {deletingStudent && (
