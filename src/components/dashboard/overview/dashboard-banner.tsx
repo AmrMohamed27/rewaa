@@ -2,11 +2,39 @@
 
 import React from "react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
+import { useAuthControllerGetProfile } from "@/hooks/use-auth";
 
 export function DashboardBanner() {
+  const locale = useLocale();
+  const isAr = locale === "ar";
   const t = useTranslations("dashboard");
+
+  const { data } = useAuthControllerGetProfile({
+    query: {
+      staleTime: 1000 * 60 * 5,
+    },
+  });
+
+  const user = data?.data;
+
+  // Localized user display name
+  const firstName =
+    isAr && (user as Record<string, unknown>)?.firstNameAr
+      ? String((user as Record<string, unknown>).firstNameAr)
+      : user?.firstName || "";
+  const lastName =
+    isAr && (user as Record<string, unknown>)?.lastNameAr
+      ? String((user as Record<string, unknown>).lastNameAr)
+      : user?.lastName || "";
+  const resolvedFullName =
+    `${firstName} ${lastName}`.trim() ||
+    (typeof (user as Record<string, unknown>)?.name === "string"
+      ? ((user as Record<string, unknown>).name as string)
+      : "") ||
+    user?.email?.split("@")[0] ||
+    "Admin";
 
   return (
     <div className="relative h-64 w-full rounded-2xl border bg-card p-6 md:p-8 flex flex-col justify-center overflow-hidden shadow-sm">
@@ -23,7 +51,7 @@ export function DashboardBanner() {
 
       <div className="relative z-10 flex flex-col gap-2 max-w-2xl">
         <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground">
-          {t("welcomeTitle", { userName: "Admin" })}
+          {t("welcomeTitle", { userName: resolvedFullName })}
         </h1>
         <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
           {t("welcomeSubtitle")}

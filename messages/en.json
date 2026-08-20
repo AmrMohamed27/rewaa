@@ -1140,6 +1140,7 @@
         "questionName": "Question Title",
         "subject": "Subject",
         "grade": "Grade Level",
+        "category": "Category",
         "type": "Question Type",
         "difficulty": "Difficulty",
         "timesUsed": "Times Used in Exams",

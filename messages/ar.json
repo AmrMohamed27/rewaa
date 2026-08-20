@@ -133,7 +133,7 @@
     "questions": "بنك الأسئلة",
     "students": "الطلاب",
     "lessons": "الدروس",
-    "billing": "الفواتير والاشتراكات",
+    "billing": "المالية",
     "userSettings": "إعدادات المستخدم",
     "expandSidebar": "توسيع الشريط الجانبي",
     "roles": {
@@ -1140,6 +1140,7 @@
         "questionName": "اسم / عنوان السؤال",
         "subject": "المادة",
         "grade": "المرحلة الدراسية",
+        "category": "تصنيف السؤال",
         "type": "نوع السؤال",
         "difficulty": "الصعوبة",
         "timesUsed": "مرات الاستخدام بالامتحانات",
@@ -1969,7 +1970,7 @@
           "manage-courses": "إدارة الدورات",
           "manage-exams-and-questions": "إدارة الامتحانات والأسئلة",
           "manage-students": "إدارة الطلاب",
-          "manage-billing": "إدارة الفواتير والاشتراكات"
+          "manage-billing": "إدارة المالية"
         },
         "save": "حفظ المساعد",
         "cancel": "إلغاء"

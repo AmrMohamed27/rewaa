@@ -4,7 +4,6 @@
 import {
   ArrowUpDown,
   Edit2,
-  Eye,
   FileQuestion,
   MoreVertical,
   Plus,
@@ -29,7 +28,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { QuestionWithContext, getAllQuestions } from "@/lib/questions-storage";
-import { QuestionDifficulty } from "@/types/exam";
+import { QuestionDifficulty, QuestionKind } from "@/types/exam";
 import { ContentPagination } from "../common/content-pagination";
 
 const DIFFICULTY_COLORS: Record<QuestionDifficulty, string> = {
@@ -195,6 +194,25 @@ export function ManageQuestionsClient() {
     return tExams("questionDialog.types.text");
   };
 
+  const formatKind = (kind?: QuestionKind) => {
+    switch (kind) {
+      case "theoretical":
+        return tExams("questionDialog.kinds.theoretical");
+      case "practical":
+        return tExams("questionDialog.kinds.practical");
+      case "application-based":
+        return tExams("questionDialog.kinds.applicationBased");
+      case "analytical":
+        return tExams("questionDialog.kinds.analytical");
+      case "oral":
+        return tExams("questionDialog.kinds.oral");
+      case "skill-based":
+        return tExams("questionDialog.kinds.skillBased");
+      default:
+        return tExams("questionDialog.kinds.theoretical");
+    }
+  };
+
   const formatDifficulty = (d: QuestionDifficulty) => tExams(`questionDialog.difficulties.${d}`);
 
   const isFilterActive =
@@ -311,6 +329,7 @@ export function ManageQuestionsClient() {
                   t("table.columns.questionName"),
                   t("table.columns.subject"),
                   t("table.columns.grade"),
+                  t("table.columns.category"),
                   t("table.columns.type"),
                   t("table.columns.difficulty"),
                   t("table.columns.timesUsed"),
@@ -330,14 +349,14 @@ export function ManageQuestionsClient() {
               {isLoading ? (
                 Array.from({ length: 5 }).map((_, i) => (
                   <tr key={i} className="border-b border-border/40">
-                    <td colSpan={7} className="px-4 py-3">
+                    <td colSpan={8} className="px-4 py-3">
                       <Skeleton className="h-6 w-full rounded-md" />
                     </td>
                   </tr>
                 ))
               ) : paginatedQuestions.length === 0 ? (
                 <tr>
-                  <td colSpan={7}>
+                  <td colSpan={8}>
                     <div className="flex flex-col items-center justify-center py-16 text-center">
                       <FileQuestion className="h-12 w-12 text-muted-foreground/40 mb-3" />
                       <h3 className="text-base font-semibold text-foreground">
@@ -389,6 +408,16 @@ export function ManageQuestionsClient() {
                         {formatGrade(q.academicGrade)}
                       </td>
 
+                      {/* Category (Theoretical, etc.) */}
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        <Badge
+                          variant="outline"
+                          className="text-xs font-medium bg-muted/50 border-border/70 text-foreground"
+                        >
+                          {formatKind(q.questionType)}
+                        </Badge>
+                      </td>
+
                       {/* Question Type */}
                       <td className="px-4 py-3 whitespace-nowrap">
                         <Badge variant="secondary" className="text-xs font-medium">
@@ -420,15 +449,6 @@ export function ManageQuestionsClient() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end" className="w-44">
-                            <DropdownMenuItem asChild>
-                              <Link
-                                href={`/${locale}/dashboard/questions/${q.id}`}
-                                className="flex items-center gap-2 cursor-pointer"
-                              >
-                                <Eye className="h-4 w-4" />
-                                <span>{t("actions.viewDetails")}</span>
-                              </Link>
-                            </DropdownMenuItem>
                             <DropdownMenuItem asChild>
                               <Link
                                 href={`/${locale}/dashboard/questions/${q.id}/edit`}
