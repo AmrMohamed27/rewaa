@@ -2304,6 +2304,81 @@
         "courseButton": "Go to Course"
       }
     },
+    "examTakingPage": {
+      "intro": {
+        "title": "Exam Instructions & Overview",
+        "subtitle": "Please review the exam guidelines before starting the timer",
+        "startExamButton": "Start Exam Now",
+        "guidelinesTitle": "Important Guidelines",
+        "guidelineTimer": "The timer will begin ticking immediately once you click 'Start Exam'.",
+        "guidelineSkipping": "You can answer questions or skip them and navigate back at any time before final submission.",
+        "guidelineAutoSubmit": "The exam will automatically submit when the countdown reaches zero.",
+        "guidelineSubmission": "Make sure to answer all questions before submitting your attempt.",
+        "detailsTitle": "Exam Details",
+        "totalQuestions": "Total Questions",
+        "questionsCount": "{count, plural, =0 {No questions} one {1 question} other {{count} questions}}",
+        "duration": "Time Allowed",
+        "durationMinutes": "{count} minutes",
+        "passingScore": "Passing Score",
+        "passingPercentage": "{percent}%",
+        "triesAllowed": "Attempts Allowed",
+        "triesCount": "{count, plural, =0 {No attempts} one {1 attempt} other {{count} attempts}}",
+        "venue": "Venue",
+        "teacher": "Instructor"
+      },
+      "timerBar": {
+        "timeRemaining": "Time Remaining",
+        "progressText": "Question {current} of {total}",
+        "answeredCount": "{answered} of {total} Answered",
+        "submitExam": "Finish & Submit Exam",
+        "timeWarning": "Hurry! Less than 2 minutes left"
+      },
+      "question": {
+        "questionBadge": "Question {number} of {total}",
+        "points": "{points, plural, =0 {0 pts} one {1 pt} other {{points} pts}}",
+        "required": "Required",
+        "optional": "Optional",
+        "typeMcqPrompt": "Select the correct answer from the options below:",
+        "typeTrueFalsePrompt": "Select True or False:",
+        "typeTextPrompt": "Write your detailed answer in the box below:",
+        "textPlaceholder": "Type your answer here...",
+        "trueOption": "True",
+        "falseOption": "False",
+        "flagQuestion": "Flag for Review",
+        "flagged": "Flagged",
+        "unflag": "Remove Flag",
+        "hintTitle": "Need a hint?",
+        "viewHint": "Show Teacher Hint",
+        "hideHint": "Hide Hint"
+      },
+      "actions": {
+        "previous": "Previous Question",
+        "skip": "Skip Question",
+        "next": "Confirm & Next",
+        "finishAndReview": "Review & Submit"
+      },
+      "sidebar": {
+        "title": "Questions Navigator",
+        "subtitle": "Click any question number to jump to it",
+        "legend": {
+          "answered": "Answered",
+          "unanswered": "Unanswered / Skipped",
+          "flagged": "Flagged",
+          "current": "Current"
+        },
+        "summary": "Progress: {answered}/{total} answered"
+      },
+      "submitDialog": {
+        "title": "Submit Exam Attempt?",
+        "description": "Are you sure you want to finish and submit your exam? You cannot modify your answers after submission.",
+        "warningUnanswered": "Warning: You still have {count, plural, =0 {no unanswered questions} one {1 unanswered question} other {{count} unanswered questions}}.",
+        "allAnswered": "All questions have been answered. You are ready to submit.",
+        "cancel": "Return to Exam",
+        "confirmSubmit": "Yes, Submit Now",
+        "submitting": "Submitting..."
+      },
+      "autoSubmitToast": "Time's up! Your exam attempt has been automatically submitted."
+    },
     "exploreCoursesPage": {
       "title": "Explore Courses",
       "subtitle": "Discover all available courses and enroll in new learning paths",

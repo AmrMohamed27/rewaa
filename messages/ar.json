@@ -2304,6 +2304,81 @@
         "courseButton": "الذهاب إلى الدورة"
       }
     },
+    "examTakingPage": {
+      "intro": {
+        "title": "تعليمات وتفاصيل الامتحان",
+        "subtitle": "يرجى مراجعة إرشادات وتفاصيل الامتحان قبل بدء احتساب الوقت",
+        "startExamButton": "بدء الامتحان الآن",
+        "guidelinesTitle": "إرشادات هامة",
+        "guidelineTimer": "سيبدأ العداد التنازلي للوقت بالعمل فور الضغط على زر 'بدء الامتحان الآن'.",
+        "guidelineSkipping": "يمكنك الإجابة عن الأسئلة أو تخطيها والرجوع إليها في أي وقت قبل إنهاء وتسليم المحاولة.",
+        "guidelineAutoSubmit": "سيتم تسليم الامتحان تلقائياً عند انتهاء الوقت المحدد.",
+        "guidelineSubmission": "تأكد من مراجعة كافة الأسئلة وإجاباتك قبل تأكيد التسليم النهائي.",
+        "detailsTitle": "بيانات الامتحان",
+        "totalQuestions": "إجمالي الأسئلة",
+        "questionsCount": "{count, plural, =0 {لا أسئلة} zero {لا أسئلة} one {سؤال واحد} two {سؤالين} few {{count} أسئلة} many {{count} سؤالاً} other {{count} سؤال}}",
+        "duration": "المدة المتاحة",
+        "durationMinutes": "{count} دقيقة",
+        "passingScore": "نسبة النجاح",
+        "passingPercentage": "{percent}٪",
+        "triesAllowed": "المحاولات المسموحة",
+        "triesCount": "{count, plural, =0 {لا محاولات} zero {لا محاولات} one {محاولة واحدة} two {محاولتان} few {{count} محاولات} many {{count} محاولة} other {{count} محاولة}}",
+        "venue": "مكان الحضور",
+        "teacher": "المعلم"
+      },
+      "timerBar": {
+        "timeRemaining": "الوقت المتبقي",
+        "progressText": "السؤال {current} من {total}",
+        "answeredCount": "تمت إجابة {answered} من {total}",
+        "submitExam": "إنهاء وتسليم الامتحان",
+        "timeWarning": "انتبه! متبقي أقل من دقيقتين"
+      },
+      "question": {
+        "questionBadge": "السؤال {number} من {total}",
+        "points": "{points, plural, =0 {0 درجات} zero {0 درجات} one {درجة واحدة} two {درجتان} few {{points} درجات} many {{points} درجة} other {{points} درجة}}",
+        "required": "إجباري",
+        "optional": "اختياري",
+        "typeMcqPrompt": "اختر الإجابة الصحيحة من الخيارات التالية:",
+        "typeTrueFalsePrompt": "حدد صواب أو خطأ:",
+        "typeTextPrompt": "اكتب إجابتك التوضيحية في المساحة أدناه:",
+        "textPlaceholder": "اكتب إجابتك هنا بالتفصيل...",
+        "trueOption": "صواب",
+        "falseOption": "خطأ",
+        "flagQuestion": "تمييز للمراجعة",
+        "flagged": "مميز للمراجعة",
+        "unflag": "إلغاء التمييز",
+        "hintTitle": "هل تحتاج تلميحاً؟",
+        "viewHint": "عرض تلميح المعلم",
+        "hideHint": "إخفاء التلميح"
+      },
+      "actions": {
+        "previous": "السؤال السابق",
+        "skip": "تخطي السؤال",
+        "next": "تأكيد والتالي",
+        "finishAndReview": "مراجعة وتسليم"
+      },
+      "sidebar": {
+        "title": "فهرس الأسئلة",
+        "subtitle": "انقر على رقم أي سؤال للانتقال إليه مباشرة",
+        "legend": {
+          "answered": "تمت الإجابة",
+          "unanswered": "لم تتم الإجابة / تم التخطي",
+          "flagged": "مميز للمراجعة",
+          "current": "السؤال الحالي"
+        },
+        "summary": "الإنجاز: {answered}/{total} أسئلة مجابة"
+      },
+      "submitDialog": {
+        "title": "تأكيد تسليم الامتحان؟",
+        "description": "هل أنت متأكد من إنهاء وتسليم محاولة الامتحان؟ لن تتمكن من تعديل إجاباتك بعد التسليم.",
+        "warningUnanswered": "تنبيه: لا يزال لديك {count, plural, =0 {لا أسئلة غير مجابة} zero {لا أسئلة غير مجابة} one {سؤال واحد لم تتم إجابته} two {سؤالين لم تتم إجابتهما} few {{count} أسئلة لم تتم إجابتها} many {{count} سؤالاً لم تتم إجابته} other {{count} سؤال لم تتم إجابته}}.",
+        "allAnswered": "لقد قمت بالإجابة على جميع الأسئلة. أنت جاهز للتسليم الآن.",
+        "cancel": "الرجوع للامتحان",
+        "confirmSubmit": "نعم، تسليم الآن",
+        "submitting": "جاري التسليم..."
+      },
+      "autoSubmitToast": "انتهى الوقت المحدد! تم تسليم محاولة الامتحان تلقائياً."
+    },
     "exploreCoursesPage": {
       "title": "استكشاف الدورات",
       "subtitle": "اكتشف كافة الدورات المتاحة واشترك في مسارات تعليمية جديدة",

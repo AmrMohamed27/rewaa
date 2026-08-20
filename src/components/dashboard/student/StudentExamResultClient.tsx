@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
 import { Badge } from "@/components/ui/badge";
@@ -27,6 +28,9 @@ import {
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import * as React from "react";
+
+import { StudentExamIntroView } from "./StudentExamIntroView";
+import { StudentExamTakingView } from "./StudentExamTakingView";
 
 interface StudentExamResultClientProps {
   examId: string;
@@ -64,6 +68,8 @@ export function StudentExamResultClient({ examId }: StudentExamResultClientProps
   const [passedExamIds, setPassedExamIds] = React.useState<string[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [filterType, setFilterType] = React.useState<QuestionFilterType>("all");
+  const [activeMode, setActiveMode] = React.useState<"intro" | "taking" | "review" | null>(null);
+  const [customAnswers, setCustomAnswers] = React.useState<Record<string, string> | null>(null);
   // Load Exam and Passed state
   React.useEffect(() => {
     const loadData = () => {
@@ -137,21 +143,26 @@ export function StudentExamResultClient({ examId }: StudentExamResultClientProps
           ? qGlobalIndex % 5 !== 4 // 80-90% correct
           : qGlobalIndex % 2 === 0; // 50% correct
 
-        let studentAns = q.modelAnswer;
-        if (!shouldBeCorrect) {
-          if (q.type === "mcq" && q.options && q.options.length > 1) {
-            const wrongOpt = q.options.find((o) => o.id !== q.modelAnswer);
-            studentAns = wrongOpt ? wrongOpt.id : "opt-wrong";
-          } else if (q.type === "true/false") {
-            studentAns = q.modelAnswer === "true" ? "false" : "true";
+        // If student submitted actual answers in this session, use them; otherwise use deterministic mock
+        let studentAns = customAnswers ? customAnswers[q.id] || "" : "";
+        if (!customAnswers) {
+          if (!shouldBeCorrect) {
+            if (q.type === "mcq" && q.options && q.options.length > 1) {
+              const wrongOpt = q.options.find((o) => o.id !== q.modelAnswer);
+              studentAns = wrongOpt ? wrongOpt.id : "opt-wrong";
+            } else if (q.type === "true/false") {
+              studentAns = q.modelAnswer === "true" ? "false" : "true";
+            } else {
+              studentAns = isAr
+                ? "إجابة الطالب التقريبية غير المكتملة"
+                : "Incomplete student response";
+            }
           } else {
-            studentAns = isAr
-              ? "إجابة الطالب التقريبية غير المكتملة"
-              : "Incomplete student response";
+            studentAns = q.modelAnswer;
           }
         }
 
-        const isCorrect = studentAns === q.modelAnswer;
+        const isCorrect = studentAns.trim().toLowerCase() === q.modelAnswer.trim().toLowerCase();
         const earnedPoints = isCorrect ? q.grade || 5 : 0;
 
         list.push({
@@ -168,7 +179,7 @@ export function StudentExamResultClient({ examId }: StudentExamResultClientProps
     });
 
     return list;
-  }, [exam, passedExamIds, isAr]);
+  }, [exam, passedExamIds, isAr, customAnswers]);
 
   // Totals & KPI metrics
   const totalScore = React.useMemo(() => {
@@ -212,14 +223,35 @@ export function StudentExamResultClient({ examId }: StudentExamResultClientProps
     return evaluatedQuestions;
   }, [evaluatedQuestions, filterType]);
 
+  // Initialize mode once data loads
+  React.useEffect(() => {
+    if (!isLoading && exam) {
+      const passed = passedExamIds.includes(exam.id);
+      if (activeMode === null) {
+        setActiveMode(passed ? "review" : "intro");
+      }
+    }
+  }, [isLoading, exam, passedExamIds, activeMode]);
+
+  // Handle Starting Exam
+  const handleStartExam = () => {
+    setActiveMode("taking");
+  };
+
+  // Handle Exam Submission
+  const handleSubmitExam = (submittedAnswers: Record<string, string>) => {
+    if (!exam) return;
+    setCustomAnswers(submittedAnswers);
+    // Mark as passed/completed
+    recordExamPass(exam.id, true);
+    setActiveMode("review");
+  };
+
   // Retake action handler
   const handleRetakeExam = () => {
     if (!exam) return;
-    // For demo/interactive behavior, toggle or reset pass state and toast
-    recordExamPass(exam.id, true);
-    alert(
-      isAr ? "تم بدء محاولة جديدة لهذا الامتحان بنجاح!" : "New exam attempt started successfully!",
-    );
+    setCustomAnswers(null);
+    setActiveMode("taking");
   };
 
   if (isLoading) {
@@ -251,6 +283,32 @@ export function StudentExamResultClient({ examId }: StudentExamResultClientProps
     );
   }
 
+  // ── Mode 1: Pre-Exam Briefing / Intro Screen ──────────────────────────────
+  if (activeMode === "intro") {
+    return (
+      <StudentExamIntroView
+        exam={exam}
+        onStartExam={handleStartExam}
+        formatSubject={formatSubject}
+        formatGrade={formatGrade}
+        formatCategory={formatCategory}
+        formatVenue={formatVenue}
+      />
+    );
+  }
+
+  // ── Mode 2: Active Exam Taking Workspace ────────────────────────────────────
+  if (activeMode === "taking") {
+    return (
+      <StudentExamTakingView
+        exam={exam}
+        onSubmitExam={handleSubmitExam}
+        formatDifficulty={formatDifficulty}
+      />
+    );
+  }
+
+  // ── Mode 3: Completed Exam Results & Review ─────────────────────────────────
   const completedDateStr = exam.createdAt
     ? new Date(exam.createdAt).toLocaleDateString(locale === "ar" ? "ar-EG" : "en-GB", {
         year: "numeric",
