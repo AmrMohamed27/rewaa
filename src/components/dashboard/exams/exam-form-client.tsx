@@ -407,6 +407,11 @@ export function ExamFormClient({ mode, initialData }: ExamFormClientProps) {
             currentStep={currentStep}
             disclaimerTitle={tCourses("new.disclaimerTitle")}
             disclaimerDescription={tCourses("new.disclaimerDescription")}
+            onStepClick={
+              mode === "edit" || Boolean(initialData)
+                ? (stepId) => setCurrentStep(stepId as 1 | 2)
+                : undefined
+            }
           />
         </div>
 

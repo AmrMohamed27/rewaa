@@ -18,6 +18,7 @@ interface FormTimelineSidebarProps {
   currentStep: number;
   disclaimerTitle?: string;
   disclaimerDescription?: string;
+  onStepClick?: (stepId: number) => void;
 }
 
 export function FormTimelineSidebar({
@@ -26,6 +27,7 @@ export function FormTimelineSidebar({
   currentStep,
   disclaimerTitle,
   disclaimerDescription,
+  onStepClick,
 }: FormTimelineSidebarProps) {
   return (
     <aside className="flex flex-col gap-6 order-2 lg:order-1">
@@ -43,42 +45,66 @@ export function FormTimelineSidebar({
               const StepIcon = step.icon;
               const isActive = currentStep === step.id;
               const isDone = Boolean(step.complete) || step.id < currentStep;
+              const allowClick = Boolean(onStepClick);
 
-              return (
-                <div key={step.id} className="relative flex items-center gap-4 py-1">
+              const content = (
+                <>
                   <span
-                    className={`absolute -left-7 rtl:-left-auto rtl:-right-7 flex size-6.5 items-center justify-center rounded-full text-xs font-bold ring-4 ring-background transition-colors ${
+                    className={`absolute -left-7 rtl:-left-auto rtl:-right-7 flex size-6.5 items-center justify-center rounded-full text-xs font-bold ring-4 ring-background transition-all ${
                       isDone
                         ? "bg-emerald-500 text-white"
                         : isActive
                           ? "bg-primary text-primary-foreground"
                           : "bg-muted text-muted-foreground"
+                    } ${
+                      allowClick
+                        ? "group-hover:scale-110 group-hover:ring-primary/30 cursor-pointer"
+                        : ""
                     }`}
                   >
                     {isDone ? <CheckCircle2 className="size-4" /> : step.id}
                   </span>
                   <div className="flex items-center gap-2.5 min-w-0 ms-2">
                     <StepIcon
-                      className={`size-5 shrink-0 ${
+                      className={`size-5 shrink-0 transition-colors ${
                         isActive
                           ? "text-primary"
                           : isDone
                             ? "text-emerald-500"
-                            : "text-muted-foreground"
+                            : "text-muted-foreground group-hover:text-foreground"
                       }`}
                     />
                     <span
-                      className={`text-base font-medium truncate ${
+                      className={`text-base font-medium truncate transition-colors ${
                         isActive
                           ? "text-foreground font-semibold"
                           : isDone
                             ? "text-foreground"
-                            : "text-muted-foreground"
+                            : "text-muted-foreground group-hover:text-foreground"
                       }`}
                     >
                       {step.label}
                     </span>
                   </div>
+                </>
+              );
+
+              if (allowClick && onStepClick) {
+                return (
+                  <button
+                    key={step.id}
+                    type="button"
+                    onClick={() => onStepClick(step.id)}
+                    className="group relative flex w-full items-center gap-4 py-1 text-start cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-md"
+                  >
+                    {content}
+                  </button>
+                );
+              }
+
+              return (
+                <div key={step.id} className="relative flex items-center gap-4 py-1">
+                  {content}
                 </div>
               );
             })}

@@ -439,6 +439,11 @@ export function NewCourseClient({ initialCourseId }: NewCourseClientProps = {}) 
             currentStep={currentStep}
             disclaimerTitle={t("disclaimerTitle")}
             disclaimerDescription={t("disclaimerDescription")}
+            onStepClick={
+              initialCourseId || createdCourseId
+                ? (stepId) => setCurrentStep(stepId as 1 | 2)
+                : undefined
+            }
           />
         </div>
 
