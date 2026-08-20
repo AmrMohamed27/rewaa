@@ -517,11 +517,6 @@ export function ManageExamsClient() {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end" className="w-44">
                             <DropdownMenuItem asChild>
-                              <Link href={`/${locale}/dashboard/exams/${exam.id}`}>
-                                {t("actions.viewDetails")}
-                              </Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem asChild>
                               <Link href={`/${locale}/dashboard/exams/${exam.id}/edit`}>
                                 {t("actions.edit")}
                               </Link>

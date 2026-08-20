@@ -22,6 +22,7 @@ import {
   Users,
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
+import { getStoredTeachers } from "@/lib/settings-storage";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -126,12 +127,37 @@ export function CourseCard({
         </h3>
 
         {/* Teacher Info */}
-        {course.teacherName && (
-          <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-3 truncate">
-            <User className="size-3.5 text-primary/70 shrink-0" />
-            <span className="font-medium truncate">{course.teacherName}</span>
-          </div>
-        )}
+        {course.teacherName &&
+          (() => {
+            const teachers = typeof window !== "undefined" ? getStoredTeachers() : [];
+            const matchedTeacher = teachers.find(
+              (t) =>
+                t.name.trim().toLowerCase() === course.teacherName.trim().toLowerCase() ||
+                t.id === course.teacherName,
+            );
+            const teacherImg = matchedTeacher?.image;
+
+            return (
+              <div className="flex items-center gap-2 text-xs text-muted-foreground mb-3 truncate">
+                <div className="relative size-5 rounded-full overflow-hidden bg-primary/10 border border-border/60 shrink-0 flex items-center justify-center">
+                  {teacherImg ? (
+                    <Image
+                      src={teacherImg}
+                      alt={course.teacherName}
+                      fill
+                      className="object-cover"
+                      unoptimized
+                    />
+                  ) : (
+                    <User className="size-3 text-primary/70" />
+                  )}
+                </div>
+                <span className="font-medium truncate text-foreground/80">
+                  {course.teacherName}
+                </span>
+              </div>
+            );
+          })()}
 
         {/* Info Row */}
         <div className="mt-auto pt-3 border-t border-border/40 flex flex-row gap-1 justify-between text-xs text-muted-foreground">

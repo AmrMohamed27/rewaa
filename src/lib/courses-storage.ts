@@ -24,6 +24,7 @@ export function getStoredCourses(locale: string): Course[] {
             return {
               ...freshMock,
               ...course,
+              teacherName: course.teacherName || freshMock.teacherName,
               faqs: course.faqs && course.faqs.length > 0 ? course.faqs : freshMock.faqs,
               ratingsReviews:
                 course.ratingsReviews && course.ratingsReviews.length > 0

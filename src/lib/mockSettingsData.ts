@@ -3,29 +3,48 @@ import { Teacher, GradeItem, SubjectItem, AssistantItem } from "@/types/settings
 export const initialTeachers: Teacher[] = [
   {
     id: "tch-1",
-    name: "د. أحمد حسن",
+    name: "أ. محمد عبد المعبود",
     phone: "+20 100 123 4567",
     image:
       "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80",
     grades: ["grade_10", "grade_11", "grade_12"],
-    subjects: ["الفيزياء", "الرياضيات"],
+    subjects: ["الفيزياء", "physics"],
   },
   {
     id: "tch-2",
-    name: "أ. سارة محمد",
+    name: "د. إيهاب عبد العزيز",
     phone: "+20 111 987 6543",
     image:
-      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80",
-    grades: ["grade_9", "grade_10"],
-    subjects: ["الكيمياء", "الأحياء"],
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80",
+    grades: ["grade_11", "grade_12"],
+    subjects: ["الكيمياء", "chemistry"],
   },
   {
     id: "tch-3",
-    name: "م. محمود علي",
+    name: "أ. أحمد سرور",
     phone: "+20 122 345 6789",
-    image: "",
+    image:
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80",
+    grades: ["grade_10", "grade_11"],
+    subjects: ["الرياضيات", "mathematics"],
+  },
+  {
+    id: "tch-4",
+    name: "أ. حسن محرم",
+    phone: "+20 115 555 4321",
+    image:
+      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=200&q=80",
     grades: ["grade_11", "grade_12"],
-    subjects: ["الرياضيات"],
+    subjects: ["الأحياء", "biology"],
+  },
+  {
+    id: "tch-5",
+    name: "أ. وليد محسن",
+    phone: "+20 102 444 8899",
+    image:
+      "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=200&q=80",
+    grades: ["grade_10", "grade_11", "grade_12"],
+    subjects: ["اللغة العربية", "arabic"],
   },
 ];
 

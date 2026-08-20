@@ -29,8 +29,11 @@ export const getStoredTeachers = (): Teacher[] => {
   }
   try {
     const parsed: Teacher[] = JSON.parse(stored);
-    // If old mock data with English names is stored, reset to new Arabic initialTeachers
-    if (parsed.some((t) => t.name.includes("Dr. Ahmed") || t.name.includes("Prof. Sarah"))) {
+    // If old mock data with English names or old 3-teacher roster is stored, reset to new initialTeachers
+    if (
+      parsed.some((t) => t.name.includes("Dr. Ahmed") || t.name.includes("Prof. Sarah")) ||
+      !parsed.some((t) => t.name.includes("عبد المعبود"))
+    ) {
       localStorage.setItem(TEACHERS_KEY, JSON.stringify(initialTeachers));
       return initialTeachers;
     }

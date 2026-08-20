@@ -27,6 +27,7 @@ import {
   User,
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
+import { getStoredTeachers } from "@/lib/settings-storage";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -75,6 +76,17 @@ export function LessonCard({
   const fallbackCover = lesson.coverImage || "/courses/physics.jpg";
   const pdfCount = (lesson.pdfFiles || []).length || (lesson.hasPdfAttachments ? 1 : 0);
 
+  // Look up teacher image
+  const teachers = typeof window !== "undefined" ? getStoredTeachers() : [];
+  const teacherImage =
+    lesson.teacherImage ||
+    teachers.find(
+      (t) =>
+        t.name.trim().toLowerCase() === (lesson.teacherName || "").trim().toLowerCase() ||
+        t.id === lesson.teacherName,
+    )?.image ||
+    "";
+
   const subjectAndGradeText = [formatSubject(lesson.subject), formatGrade(lesson.grade)]
     .filter(Boolean)
     .join(" • ");
@@ -93,25 +105,8 @@ export function LessonCard({
         />
         <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-black/30" />
 
-        {/* Lesson Type Icon & Badge on top-start */}
-        <div className="absolute top-2.5 inset-s-2.5 flex items-center gap-1.5">
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-primary text-white shadow-xs">
-            {lesson.type === "text" ? (
-              <>
-                <FileText className="h-3 w-3" />
-                {t("card.textOnly")}
-              </>
-            ) : (
-              <>
-                <Video className="h-3 w-3" />
-                {t("card.videoText")}
-              </>
-            )}
-          </span>
-        </div>
-
-        {/* Publish Status Badge on top-end */}
-        <div className="absolute top-2.5 inset-e-2.5">
+        {/* Publish Status Badge on top-start */}
+        <div className="absolute top-2.5 inset-s-2.5">
           {lesson.publishStatus === "published" || (!lesson.publishStatus && lesson.title) ? (
             <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-success-bg text-success shadow-xs">
               {t("card.published")}
@@ -126,6 +121,20 @@ export function LessonCard({
               {t("card.draft")}
             </span>
           )}
+        </div>
+
+        {/* Lesson Type Icon Badge on top-end (icon only) */}
+        <div className="absolute top-2.5 inset-e-2.5 flex items-center gap-1.5">
+          <span
+            className="inline-flex items-center justify-center p-1.5 rounded-full bg-black/60 text-white backdrop-blur-xs shadow-xs"
+            title={lesson.type === "text" ? t("card.textOnly") : t("card.videoText")}
+          >
+            {lesson.type === "text" ? (
+              <FileText className="h-3.5 w-3.5" />
+            ) : (
+              <Video className="h-3.5 w-3.5" />
+            )}
+          </span>
         </div>
       </div>
 
@@ -157,11 +166,25 @@ export function LessonCard({
           </h3>
 
           {/* Teacher and Subject Info */}
-          <div className="mt-2 text-xs text-muted-foreground space-y-1">
+          <div className="mt-2 text-xs text-muted-foreground space-y-1.5">
             {lesson.teacherName && (
-              <div className="flex items-center gap-1.5">
-                <User className="h-3.5 w-3.5 text-muted-foreground/70 shrink-0" />
-                <span className="truncate">{lesson.teacherName}</span>
+              <div className="flex items-center gap-2">
+                <div className="relative size-5 rounded-full overflow-hidden bg-primary/10 border border-border/60 shrink-0 flex items-center justify-center">
+                  {teacherImage ? (
+                    <Image
+                      src={teacherImage}
+                      alt={lesson.teacherName}
+                      fill
+                      className="object-cover"
+                      unoptimized
+                    />
+                  ) : (
+                    <User className="size-3 text-primary/70" />
+                  )}
+                </div>
+                <span className="truncate font-medium text-foreground/80">
+                  {lesson.teacherName}
+                </span>
               </div>
             )}
             {subjectAndGradeText && (
@@ -176,9 +199,12 @@ export function LessonCard({
         {/* Additional Metadata Badges: PDFs & Exam */}
         <div className="flex items-center gap-2 flex-wrap text-[11px]">
           {pdfCount > 0 && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-blue-500/10 text-blue-600 border border-blue-500/20 font-medium">
+            <span
+              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-blue-500/10 text-blue-600 border border-blue-500/20 font-medium"
+              title={t("card.pdfsCount", { count: pdfCount })}
+            >
               <Paperclip className="h-3 w-3" />
-              {t("card.pdfsCount", { count: pdfCount })}
+              <span>{pdfCount}</span>
             </span>
           )}
 

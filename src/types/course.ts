@@ -23,6 +23,7 @@ export interface Lesson {
   grade?: string;
   subject?: string;
   teacherName?: string;
+  teacherImage?: string;
 
   // Attachments and Exams
   hasPdfAttachments?: boolean;
