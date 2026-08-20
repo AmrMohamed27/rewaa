@@ -86,7 +86,7 @@ export function ContentFilters<TTab extends string = string, TSort extends strin
               onClick={() => onTabChange(tab.value)}
               className={`px-3 py-1.5 rounded-md transition-all cursor-pointer ${
                 activeTab === tab.value
-                  ? "bg-background text-foreground shadow-xs font-semibold"
+                  ? "bg-primary text-white shadow-xs font-semibold"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >

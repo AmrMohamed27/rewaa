@@ -1,15 +1,15 @@
 import { notFound } from "next/navigation";
 import { getStoredExams } from "@/lib/exams-storage";
-import { ExamStatsClient } from "@/components/dashboard/exams/stats/exam-stats-client";
+import { ExamComplaintsClient } from "@/components/dashboard/exams/complaints/exam-complaints-client";
 
-interface ExamDetailPageProps {
+interface ExamComplaintsPageProps {
   params: Promise<{
     locale: string;
     id: string;
   }>;
 }
 
-export default async function ExamDetailPage({ params }: ExamDetailPageProps) {
+export default async function ExamComplaintsPage({ params }: ExamComplaintsPageProps) {
   const { locale, id } = await params;
   const storedExams = getStoredExams(locale);
   const exam = storedExams.find((e) => e.id === id);
@@ -18,5 +18,5 @@ export default async function ExamDetailPage({ params }: ExamDetailPageProps) {
     notFound();
   }
 
-  return <ExamStatsClient examId={id} />;
+  return <ExamComplaintsClient examId={id} />;
 }

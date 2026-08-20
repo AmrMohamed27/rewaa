@@ -2,8 +2,10 @@
 "use client";
 
 import {
+  BarChart3,
   CalendarClock,
   CalendarDays,
+  CircleAlert,
   CircleQuestionMark,
   ExternalLink,
   FileQuestion,
@@ -11,8 +13,10 @@ import {
   Globe2,
   House,
   MoreVertical,
+  Pencil,
   Plus,
   RotateCcw,
+  Trash2,
   Users,
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
@@ -31,20 +35,13 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 
 import { getStoredExams, resetStoredExams, saveStoredExams } from "@/lib/exams-storage";
-import { Exam, ExamPublishStatus } from "@/types/exam";
+import { Exam } from "@/types/exam";
 import { ContentFilters, SortOptionItem, TabItem } from "../common/content-filters";
 import { ContentPagination } from "../common/content-pagination";
 import { DeleteExamDialog } from "./delete-exam-dialog";
 
 export type ExamFilterTab = "all" | "published" | "draft";
 export type ExamSortOption = "date-newest" | "date-oldest" | "title-asc" | "title-desc";
-
-// ─── Status badge styles ──────────────────────────────────────────────────────
-const STATUS_COLORS: Record<ExamPublishStatus, string> = {
-  published: "bg-success-bg/20 text-success",
-  draft: "bg-muted text-muted-foreground",
-  scheduled: "bg-blue-100 text-blue-700",
-};
 
 // ─── Success-rate colour ──────────────────────────────────────────────────────
 function successRateColor(rate: number) {
@@ -177,14 +174,6 @@ export function ManageExamsClient() {
 
   const handlePageChange = (page: number) => updateUrlParams({ page });
 
-  const handlePublish = (examId: string) => {
-    const updated = exams.map((e) =>
-      e.id === examId ? { ...e, publishStatus: "published" as ExamPublishStatus } : e,
-    );
-    setExams(updated);
-    saveStoredExams(locale, updated);
-  };
-
   const confirmDelete = () => {
     if (examToDelete) {
       const updated = exams.filter((e) => e.id !== examToDelete.id);
@@ -230,9 +219,6 @@ export function ManageExamsClient() {
       : cat;
   };
 
-  const formatStatus = (status: ExamPublishStatus) =>
-    t(`status.${status}` as Parameters<typeof t>[0]);
-
   // ─── Tabs & sort options ────────────────────────────────────────────────────
   const tabs: TabItem<ExamFilterTab>[] = [
     { value: "all", label: t("tabs.all"), count: exams.length },
@@ -272,7 +258,7 @@ export function ManageExamsClient() {
   // ─── Skeleton rows ──────────────────────────────────────────────────────────
   const SkeletonRow = () => (
     <tr className="border-b border-border/50">
-      {Array.from({ length: 10 }).map((_, i) => (
+      {Array.from({ length: 9 }).map((_, i) => (
         <td key={i} className="px-4 py-3">
           <Skeleton className="h-4 w-full rounded" />
         </td>
@@ -339,7 +325,6 @@ export function ManageExamsClient() {
                   t("table.columns.questionsStudents"),
                   t("table.columns.successRate"),
                   t("table.columns.timesUsed"),
-                  t("table.columns.status"),
                   t("table.columns.dates"),
                   t("table.columns.actions"),
                 ].map((col) => (
@@ -358,7 +343,7 @@ export function ManageExamsClient() {
                 Array.from({ length: 5 }).map((_, i) => <SkeletonRow key={i} />)
               ) : paginatedExams.length === 0 ? (
                 <tr>
-                  <td colSpan={10}>
+                  <td colSpan={9}>
                     <div className="flex flex-col items-center justify-center py-16 text-center">
                       <FileQuestion className="h-12 w-12 text-muted-foreground/40 mb-3" />
                       <h3 className="text-base font-semibold text-foreground">
@@ -373,6 +358,8 @@ export function ManageExamsClient() {
               ) : (
                 paginatedExams.map((exam, idx) => {
                   const rowBg = idx % 2 === 0 ? "" : "bg-muted/20";
+                  const subjectStr = formatSubject(exam.subject);
+                  const gradeStr = formatGrade(exam.grade);
 
                   return (
                     <tr
@@ -380,27 +367,25 @@ export function ManageExamsClient() {
                       className={`border-b border-border/40 hover:bg-accent/40 transition-colors ${rowBg}`}
                     >
                       {/* ── Title ────────────────────────────────────────── */}
-                      <td className="px-4 py-3 max-w-64">
+                      <td className="px-4 py-3 min-w-60 max-w-90">
                         <Link
                           href={`/${locale}/dashboard/exams/${exam.id}`}
                           className="group block"
                           title={exam.title}
                         >
-                          <p className="font-semibold text-foreground line-clamp-2 leading-snug group-hover:text-primary transition-colors">
+                          <p className="text-sm font-bold text-foreground hover:text-primary transition-colors leading-relaxed">
                             {exam.title}
                           </p>
                         </Link>
                       </td>
 
-                      {/* ── Subject & Grade ───────────────────────────────── */}
+                      {/* ── Subject / Grade ───────────────────────────────── */}
                       <td className="px-4 py-3 whitespace-nowrap">
-                        <div className=" flex flex-col gap-0.5">
-                          <span className="text-foreground/80 text-xs">
-                            {formatSubject(exam.subject)}
+                        <div className="flex flex-col">
+                          <span className="text-xs font-medium text-foreground/90">
+                            {subjectStr}
                           </span>
-                          <span className="text-muted-foreground text-xs">
-                            {formatGrade(exam.grade)}
-                          </span>
+                          <span className="text-xs font-medium text-foreground/90">{gradeStr}</span>
                         </div>
                       </td>
 
@@ -444,12 +429,12 @@ export function ManageExamsClient() {
 
                       {/* ── Questions & Students ──────────────────────────── */}
                       <td className="px-4 py-3">
-                        <div className="flex flex-col gap-1 text-xs text-foreground/80">
-                          <span className="flex items-center gap-1.5">
+                        <div className="flex flex-col gap-1 text-xs">
+                          <span className="flex items-center gap-1.5 font-medium">
                             <CircleQuestionMark className="h-3.5 w-3.5 shrink-0" />
                             {t("table.questionsCount", { count: exam.numberOfQuestions })}
                           </span>
-                          <span className="flex items-center gap-1.5">
+                          <span className="flex items-center gap-1.5 font-medium text-sky-600">
                             <Users className="h-3.5 w-3.5 shrink-0" />
                             {t("table.studentsCount", { count: exam.numberOfStudents })}
                           </span>
@@ -469,17 +454,6 @@ export function ManageExamsClient() {
                       <td className="px-4 py-3">
                         <span className="flex items-center gap-1.5 text-xs text-foreground/80">
                           {t("table.timesUsedCount", { count: exam.timesUsed })}
-                        </span>
-                      </td>
-
-                      {/* ── Status ────────────────────────────────────────── */}
-                      <td className="px-4 py-3">
-                        <span
-                          className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold whitespace-nowrap ${
-                            STATUS_COLORS[exam.publishStatus]
-                          }`}
-                        >
-                          {formatStatus(exam.publishStatus)}
                         </span>
                       </td>
 
@@ -515,23 +489,41 @@ export function ManageExamsClient() {
                               <span className="sr-only">{t("table.columns.actions")}</span>
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="w-44">
+                          <DropdownMenuContent align="end" className="w-48">
                             <DropdownMenuItem asChild>
-                              <Link href={`/${locale}/dashboard/exams/${exam.id}/edit`}>
-                                {t("actions.edit")}
+                              <Link
+                                href={`/${locale}/dashboard/exams/${exam.id}`}
+                                className="flex items-center gap-2 cursor-pointer"
+                              >
+                                <BarChart3 className="h-4 w-4" />
+                                <span>{t("actions.viewStats")}</span>
                               </Link>
                             </DropdownMenuItem>
-                            {exam.publishStatus !== "published" && (
-                              <DropdownMenuItem onClick={() => handlePublish(exam.id)}>
-                                {t("actions.publish")}
-                              </DropdownMenuItem>
-                            )}
+                            <DropdownMenuItem asChild>
+                              <Link
+                                href={`/${locale}/dashboard/exams/${exam.id}/complaints`}
+                                className="flex items-center gap-2 cursor-pointer"
+                              >
+                                <CircleAlert className="h-4 w-4" />
+                                <span>{t("actions.viewComplaints")}</span>
+                              </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem asChild>
+                              <Link
+                                href={`/${locale}/dashboard/exams/${exam.id}/edit`}
+                                className="flex items-center gap-2 cursor-pointer"
+                              >
+                                <Pencil className="h-4 w-4" />
+                                <span>{t("actions.edit")}</span>
+                              </Link>
+                            </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem
-                              className="text-destructive focus:text-destructive"
+                              className="text-destructive focus:text-destructive flex items-center gap-2 cursor-pointer"
                               onClick={() => setExamToDelete(exam)}
                             >
-                              {t("actions.delete")}
+                              <Trash2 className="h-4 w-4" />
+                              <span>{t("actions.delete")}</span>
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>

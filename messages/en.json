@@ -769,9 +769,11 @@
     },
     "actions": {
       "viewDetails": "View Details",
-      "edit": "Edit Exam",
+      "viewStats": "View Stats",
+      "viewComplaints": "View Complaints",
+      "edit": "Edit",
       "publish": "Publish",
-      "delete": "Delete Exam"
+      "delete": "Delete"
     },
     "deleteDialog": {
       "title": "Delete Exam",
@@ -996,6 +998,117 @@
           "oral": "Oral",
           "skill-based": "Skill-based"
         }
+      }
+    },
+    "stats": {
+      "subtitle": "Performance Overview",
+      "lastUpdatedAt": "Last Updated at:",
+      "justNow": "Just now",
+      "minutesAgo": "{count, plural, =1 {1 min ago} other {{count} mins ago}}",
+      "hoursAgo": "{count, plural, =1 {1 hour ago} other {{count} hours ago}}",
+      "refresh": "Refresh Data",
+      "refreshedToast": "Exam stats updated successfully",
+      "kpi": {
+        "numberOfStudents": "Number of Students",
+        "deltaFromLastMonth": "{delta}% from last month",
+        "averagePercentage": "Average Percentage",
+        "passRate": "Pass Rate",
+        "passedStudentsCount": "{count, plural, =1 {1 student passed} other {{count} students passed}}",
+        "highestPercentage": "Highest Percentage",
+        "highestScorersCount": "{count, plural, =1 {1 student} other {{count} students}} achieved this",
+        "lowestPercentage": "Lowest Percentage",
+        "lowestScorersCount": "{count, plural, =1 {1 student} other {{count} students}}"
+      },
+      "charts": {
+        "examStatistics": "Exam Statistics",
+        "distributionSubtitle": "Distribution of student counts by score percentage bands",
+        "studentsCount": "Number of Students",
+        "passingRange": "Passing Range",
+        "failingRange": "Below Passing Threshold"
+      },
+      "difficulty": {
+        "title": "Analysis by difficulty",
+        "subtitle": "Question count and success rate per difficulty level",
+        "easy": "Easy",
+        "medium": "Medium",
+        "hard": "Hard",
+        "questionsCount": "{count, plural, =1 {1 Question} other {{count} Questions}}",
+        "successRate": "Success rate: {rate}%"
+      },
+      "studentResults": {
+        "title": "Detailed Student Results",
+        "subtitle": "Review individual student performance, attempts, and scores",
+        "searchPlaceholder": "Search by student name or phone number...",
+        "allResults": "All Results",
+        "passedOnly": "Passed Only",
+        "failedOnly": "Failed Only",
+        "sortBy": "Sort By",
+        "sortScoreDesc": "Highest Score",
+        "sortScoreAsc": "Lowest Score",
+        "sortNameAsc": "Name (A - Z)",
+        "sortNameDesc": "Name (Z - A)",
+        "sortNewest": "Recently Submitted",
+        "resetFilters": "Reset",
+        "columns": {
+          "studentName": "Student Full Name",
+          "phoneNumber": "Phone Number",
+          "gpa": "Cumulative GPA / Equivalent",
+          "triesCount": "Number of Tries",
+          "scoreRatio": "Total Student Degree / Total Exam",
+          "result": "Result"
+        },
+        "tries": "{count, plural, =1 {1 try} other {{count} tries}}",
+        "resultPassed": "Passed",
+        "resultFailed": "Failed",
+        "emptyTitle": "No matching student results",
+        "emptyDescription": "Try adjusting your search query or filters to find student records."
+      }
+    },
+    "complaints": {
+      "title": "Exam Complaints",
+      "subtitle": "Review and manage all student issues and complaints submitted for this exam.",
+      "resetMock": "Reset Data",
+      "searchPlaceholder": "Search by complaint title, student name, or phone...",
+      "clearFilters": "Clear Filters",
+      "stats": {
+        "totalComplaints": "{count, plural, =0 {No complaints} one {1 complaint} other {{count} complaints}}"
+      },
+      "tabs": {
+        "all": "All Complaints"
+      },
+      "sort": {
+        "newest": "Newest First",
+        "oldest": "Oldest First",
+        "titleAsc": "Title (A-Z)",
+        "titleDesc": "Title (Z-A)",
+        "studentNameAsc": "Student Name (A-Z)"
+      },
+      "columns": {
+        "complaintTitle": "Complaint Title",
+        "studentName": "Student Name",
+        "phoneNumber": "Phone Number",
+        "dateOfComplaint": "Date of Complaint",
+        "actions": "Actions"
+      },
+      "actions": {
+        "share": "Share",
+        "dismiss": "Dismiss",
+        "copiedToast": "Complaint details copied to clipboard",
+        "dismissedToast": "Complaint has been dismissed",
+        "resetToast": "Complaints data has been reset"
+      },
+      "empty": {
+        "title": "No complaints found",
+        "description": "No complaints matching your criteria. Either all issues are resolved or search filters returned no results."
+      },
+      "pagination": {
+        "showing": "Showing {start} to {end} of {total} complaints"
+      },
+      "shareFormat": {
+        "exam": "Exam: {examTitle}",
+        "title": "Complaint: {complaintTitle}",
+        "student": "Student: {studentName} ({phoneNumber})",
+        "description": "Description: {complaintDescription}"
       }
     }
   },

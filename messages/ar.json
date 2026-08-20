@@ -737,7 +737,7 @@
         "typeVenue": "النطاق",
         "questionsStudents": "الأسئلة والطلاب",
         "successRate": "معدل النجاح",
-        "timesUsed": "عدد مرات الاستخدام",
+        "timesUsed": "الاستخدام",
         "status": "الحالة",
         "dates": "التواريخ",
         "actions": "الإجراءات"
@@ -769,9 +769,11 @@
     },
     "actions": {
       "viewDetails": "عرض التفاصيل",
-      "edit": "تعديل الامتحان",
+      "viewStats": "عرض الإحصائيات",
+      "viewComplaints": "عرض الشكاوى",
+      "edit": "تعديل",
       "publish": "نشر",
-      "delete": "حذف الامتحان"
+      "delete": "حذف"
     },
     "deleteDialog": {
       "title": "حذف الامتحان",
@@ -996,6 +998,117 @@
           "oral": "شفهي",
           "skill-based": "مهاري"
         }
+      }
+    },
+    "stats": {
+      "subtitle": "نظرة عامة على الأداء",
+      "lastUpdatedAt": "آخر تحديث:",
+      "justNow": "الآن",
+      "minutesAgo": "منذ {count, plural, =1 {دقيقة واحدة} =2 {دقيقتين} few {{count} دقائق} many {{count} دقيقة} other {{count} دقيقة}}",
+      "hoursAgo": "منذ {count, plural, =1 {ساعة واحدة} =2 {ساعتين} few {{count} ساعات} many {{count} ساعة} other {{count} ساعة}}",
+      "refresh": "تحديث البيانات",
+      "refreshedToast": "تم تحديث إحصائيات الامتحان بنجاح",
+      "kpi": {
+        "numberOfStudents": "عدد الطلاب",
+        "deltaFromLastMonth": "{delta}% مقارنة بالشهر الماضي",
+        "averagePercentage": "متوسط النسبة المئوية",
+        "passRate": "معدل الاجتياز",
+        "passedStudentsCount": "{count, plural, =0 {لا طلاب اجتازوا} zero {لا طلاب اجتازوا} one {اجتاز طالب واحد} two {اجتاز طالبان} few {اجتاز {count} طلاب} many {اجتاز {count} طالباً} other {اجتاز {count} طالب}}",
+        "highestPercentage": "أعلى نسبة مئوية",
+        "highestScorersCount": "{count, plural, =0 {لا طلاب} zero {لا طلاب} one {طالب واحد} two {طالبان} few {{count} طلاب} many {{count} طالباً} other {{count} طالب}} حققوها",
+        "lowestPercentage": "أدنى نسبة مئوية",
+        "lowestScorersCount": "{count, plural, =0 {لا طلاب} zero {لا طلاب} one {طالب واحد} two {طالبان} few {{count} طلاب} many {{count} طالباً} other {{count} طالب}}"
+      },
+      "charts": {
+        "examStatistics": "إحصائيات الامتحان",
+        "distributionSubtitle": "توزيع عدد الطلاب حسب النطاقات المئوية للدرجات",
+        "studentsCount": "عدد الطلاب",
+        "passingRange": "نطاق ناجح",
+        "failingRange": "دون نسبة النجاح"
+      },
+      "difficulty": {
+        "title": "التحليل حسب مستوى الصعوبة",
+        "subtitle": "توزيع الأسئلة ومعدل الحل الصحيح لكل مستوى",
+        "easy": "سهل",
+        "medium": "متوسط",
+        "hard": "صعب",
+        "questionsCount": "{count, plural, =0 {لا أسئلة} zero {لا أسئلة} one {سؤال واحد} two {سؤالان} few {{count} أسئلة} many {{count} سؤالاً} other {{count} سؤال}}",
+        "successRate": "نسبة الحل الصحيح: {rate}%"
+      },
+      "studentResults": {
+        "title": "النتائج التفصيلية للطلاب",
+        "subtitle": "عرض سجل درجات ومحاولات كل طالب في الامتحان",
+        "searchPlaceholder": "ابحث باسم الطالب أو رقم الهاتف...",
+        "allResults": "جميع النتائج",
+        "passedOnly": "الناجحون فقط",
+        "failedOnly": "الراسبون فقط",
+        "sortBy": "الترتيب حسب",
+        "sortScoreDesc": "الأعلى درجات",
+        "sortScoreAsc": "الأدنى درجات",
+        "sortNameAsc": "الاسم (أ - ي)",
+        "sortNameDesc": "الاسم (ي - أ)",
+        "sortNewest": "الأحدث تسليماً",
+        "resetFilters": "إعادة ضبط",
+        "columns": {
+          "studentName": "اسم الطالب",
+          "phoneNumber": "رقم الهاتف",
+          "gpa": "المعدل التراكمي / العام",
+          "triesCount": "عدد المحاولات",
+          "scoreRatio": "الدرجة / الكلية",
+          "result": "النتيجة"
+        },
+        "tries": "{count, plural, =1 {محاولة واحدة} =2 {محاولتان} few {{count} محاولات} many {{count} محاولة} other {{count} محاولة}}",
+        "resultPassed": "ناجح",
+        "resultFailed": "راسب",
+        "emptyTitle": "لا توجد نتائج تطابق البحث",
+        "emptyDescription": "جرب تغيير كلمات البحث أو إعادة تعيين الفلاتر لعرض نتائج الطلاب."
+      }
+    },
+    "complaints": {
+      "title": "شكاوى الامتحان",
+      "subtitle": "متابعة وإدارة ملاحظات وشكاوى الطلاب المسجلة على هذا الامتحان.",
+      "resetMock": "إعادة ضبط البيانات",
+      "searchPlaceholder": "ابحث بعنوان الشكوى أو اسم الطالب أو رقم الهاتف...",
+      "clearFilters": "مسح الفلاتر",
+      "stats": {
+        "totalComplaints": "{count, plural, =0 {لا شكاوى} zero {لا شكاوى} one {شكوى واحدة} two {شكوتان} few {{count} شكاوى} many {{count} شكوى} other {{count} شكوى}}"
+      },
+      "tabs": {
+        "all": "جميع الشكاوى"
+      },
+      "sort": {
+        "newest": "الأحدث أولاً",
+        "oldest": "الأقدم أولاً",
+        "titleAsc": "العنوان (أ - ي)",
+        "titleDesc": "العنوان (ي - أ)",
+        "studentNameAsc": "اسم الطالب (أ - ي)"
+      },
+      "columns": {
+        "complaintTitle": "عنوان الشكوى",
+        "studentName": "اسم الطالب",
+        "phoneNumber": "رقم الهاتف",
+        "dateOfComplaint": "تاريخ الشكوى",
+        "actions": "الإجراءات"
+      },
+      "actions": {
+        "share": "مشاركة",
+        "dismiss": "استبعاد / حذف",
+        "copiedToast": "تم نسخ تفاصيل الشكوى إلى الحافظة",
+        "dismissedToast": "تم حذف الشكوى بنجاح",
+        "resetToast": "تمت استعادة بيانات الشكاوى بنجاح"
+      },
+      "empty": {
+        "title": "لا توجد شكاوى",
+        "description": "لم يتم العثور على أي شكاوى مطابقة. إما أنه لا توجد مشاكل معلقة أو أن نتائج البحث فارغة."
+      },
+      "pagination": {
+        "showing": "عرض {start} إلى {end} من إجمالي {total} شكوى"
+      },
+      "shareFormat": {
+        "exam": "الامتحان: {examTitle}",
+        "title": "عنوان الشكوى: {complaintTitle}",
+        "student": "الطالب: {studentName} ({phoneNumber})",
+        "description": "تفاصيل الشكوى: {complaintDescription}"
       }
     }
   },
