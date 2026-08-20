@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { FormMarkdownEditor } from "@/components/ui/form-markdown-editor";
 import { FormSectionCard } from "@/components/ui/form-section-card";
 import { FormToggleSetting } from "@/components/ui/form-toggle-setting";
+import { ImageUploadField } from "@/components/ui/image-upload-field";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -204,17 +205,6 @@ export function NewLessonClient({ initialLessonId }: NewLessonClientProps = {}) 
       };
       setPdfFiles((prev) => [...prev, newPdf]);
       setPdfError(null);
-    }
-  };
-
-  const handleCoverImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const file = e.target.files[0];
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setCoverImage(reader.result as string);
-      };
-      reader.readAsDataURL(file);
     }
   };
 
@@ -442,61 +432,19 @@ export function NewLessonClient({ initialLessonId }: NewLessonClientProps = {}) 
             </div>
           )}
 
-          <div className="flex flex-col gap-2">
-            <label
-              htmlFor="standalone-cover-image"
-              className="text-sm font-medium text-foreground flex items-center gap-1.5"
-            >
-              <ImageIcon className="size-4 text-muted-foreground" />
-              {tDialog("coverImage")}
-            </label>
-            <div className="relative border-2 border-dashed border-input hover:border-primary/50 transition-colors rounded-xl p-4 flex flex-col items-center justify-center gap-2 bg-muted/20 text-center">
-              {coverImage ? (
-                <div className="flex flex-col items-center gap-2 w-full">
-                  <div className="relative w-full max-w-xs h-36 rounded-lg overflow-hidden border shadow-xs">
-                    <Image
-                      src={coverImage}
-                      alt="Cover preview"
-                      fill
-                      className="object-cover"
-                      unoptimized
-                    />
-                  </div>
-                  <span className="text-xs font-semibold text-primary flex items-center gap-1">
-                    <Upload className="size-3.5" />
-                    <span>{tCourses("new.fields.coverImageDrag")}</span>
-                  </span>
-                </div>
-              ) : (
-                <>
-                  <div className="p-3 rounded-full bg-background border shadow-xs text-muted-foreground">
-                    <Upload className="size-6" />
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-sm font-medium text-foreground">
-                      {tCourses("new.fields.coverImageDrag")}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {tCourses("new.fields.coverImageNote")}
-                    </p>
-                  </div>
-                </>
-              )}
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleCoverImageChange}
-                className="absolute inset-0 size-full opacity-0 cursor-pointer"
-              />
-            </div>
-            <Input
-              id="standalone-cover-image"
-              value={coverImage}
-              onChange={(e) => setCoverImage(e.target.value)}
-              placeholder={tDialog("coverImagePlaceholder")}
-              className="text-xs"
-            />
-          </div>
+          <ImageUploadField
+            id="standalone-cover-image"
+            label={tDialog("coverImage")}
+            labelIcon={<ImageIcon className="size-4 text-muted-foreground" />}
+            value={coverImage}
+            onChange={(dataUrl) => setCoverImage(dataUrl)}
+            onClear={() => setCoverImage("")}
+            aspectRatio="auto"
+            prompt={tCourses("new.fields.coverImageDrag")}
+            hint={tCourses("new.fields.coverImageNote")}
+            changePrompt={tCourses("new.fields.coverImageDrag")}
+            previewAlt="Lesson cover preview"
+          />
         </FormSectionCard>
 
         {/* 4. LESSON CATEGORY & COURSE LINKING */}

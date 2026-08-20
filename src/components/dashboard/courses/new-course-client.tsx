@@ -13,6 +13,7 @@ import { FormMarkdownEditor } from "@/components/ui/form-markdown-editor";
 import { FormRadioGroup } from "@/components/ui/form-radio-group";
 import { FormSectionCard } from "@/components/ui/form-section-card";
 import { FormToggleSetting } from "@/components/ui/form-toggle-setting";
+import { ImageUploadField } from "@/components/ui/image-upload-field";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -45,11 +46,9 @@ import {
   MapPin,
   Plus,
   Tag,
-  Upload,
   Video,
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -82,7 +81,6 @@ export function NewCourseClient({ initialCourseId }: NewCourseClientProps = {}) 
   const [description, setDescription] = useState("");
   const [previewVideoLink, setPreviewVideoLink] = useState("");
   const [coverImage, setCoverImage] = useState<string | null>(null);
-  const [coverFileName, setCoverFileName] = useState<string | null>(null);
 
   const [grade, setGrade] = useState("");
   const [subject, setSubject] = useState("");
@@ -258,19 +256,6 @@ export function NewCourseClient({ initialCourseId }: NewCourseClientProps = {}) 
   const resolveCoverImage = () => {
     if (coverImage) return coverImage;
     return SUBJECT_COVER_PLACEHOLDERS[subject] || DEFAULT_COVER_PLACEHOLDER;
-  };
-
-  // File Upload preview simulator
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setCoverFileName(file.name);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setCoverImage(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
   };
 
   const handleSubmit = (e: React.FormEvent, isDraftOnly = false) => {
@@ -506,48 +491,19 @@ export function NewCourseClient({ initialCourseId }: NewCourseClientProps = {}) 
                 </div>
 
                 {/* Cover Image Upload Area */}
-                <div className="flex flex-col gap-2">
-                  <label className="text-sm font-medium text-foreground flex items-center gap-1.5">
-                    <ImageIcon className="size-4 text-muted-foreground" />
-                    {t("fields.coverImage")}
-                  </label>
-                  <div className="relative border-2 border-dashed border-input hover:border-primary/50 transition-colors rounded-xl p-6 flex flex-col items-center justify-center gap-3 bg-muted/20 text-center">
-                    {coverImage ? (
-                      <div className="flex flex-col items-center gap-2 w-full">
-                        <Image
-                          src={coverImage}
-                          alt="Cover Preview"
-                          width={300}
-                          height={300}
-                          className="max-h-40 w-auto rounded-lg object-cover border shadow-xs"
-                        />
-                        <span className="text-xs text-muted-foreground font-mono">
-                          {coverFileName}
-                        </span>
-                      </div>
-                    ) : (
-                      <>
-                        <div className="p-3 rounded-full bg-background border shadow-xs text-muted-foreground">
-                          <Upload className="size-6" />
-                        </div>
-                        <div className="space-y-1">
-                          <p className="text-sm font-medium text-foreground">
-                            {t("fields.coverImageDrag")}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            {t("fields.coverImageNote")}
-                          </p>
-                        </div>
-                      </>
-                    )}
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageChange}
-                      className="absolute inset-0 size-full opacity-0 cursor-pointer"
-                    />
-                  </div>
-                </div>
+                <ImageUploadField
+                  id="course-cover-image"
+                  label={t("fields.coverImage")}
+                  labelIcon={<ImageIcon className="size-4 text-muted-foreground" />}
+                  value={coverImage}
+                  onChange={(dataUrl) => setCoverImage(dataUrl)}
+                  onClear={() => setCoverImage("")}
+                  aspectRatio="video"
+                  prompt={t("fields.coverImageDrag")}
+                  hint={t("fields.coverImageNote")}
+                  changePrompt={t("fields.coverImageDrag")}
+                  previewAlt="Course cover"
+                />
               </FormSectionCard>
 
               {/* 2. CATEGORY INFORMATION */}

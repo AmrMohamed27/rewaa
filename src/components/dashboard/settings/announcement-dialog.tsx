@@ -1,11 +1,10 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
-import { useState, useEffect, ChangeEvent } from "react";
+import { useState, useEffect } from "react";
 
 import { useTranslations } from "next-intl";
-import Image from "next/image";
-import { Upload, AlertTriangle, Link as LinkIcon, Image as ImageIcon } from "lucide-react";
+import { AlertTriangle, Link as LinkIcon } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -15,6 +14,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { ImageUploadField } from "@/components/ui/image-upload-field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FormMarkdownEditor } from "@/components/ui/form-markdown-editor";
@@ -70,17 +70,6 @@ export function AnnouncementDialog({
     }
   }, [open, announcementToEdit]);
 
-  const handleImageFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setCoverImage(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -131,53 +120,18 @@ export function AnnouncementDialog({
           )}
 
           {/* Cover Image Upload Area */}
-          <div className="space-y-2">
-            <Label>{t("coverImageLabel")}</Label>
-            <div className="relative border-2 border-dashed border-input hover:border-primary/50 transition-colors rounded-xl p-4 flex flex-col items-center justify-center gap-2 bg-muted/20 text-center">
-              {coverImage ? (
-                <div className="flex flex-col items-center gap-2 w-full">
-                  <div className="relative w-full h-36 rounded-lg overflow-hidden border shadow-xs bg-muted">
-                    <Image
-                      src={coverImage}
-                      alt="Cover preview"
-                      fill
-                      className="object-cover"
-                      unoptimized
-                    />
-                  </div>
-                  <span className="text-xs font-semibold text-primary flex items-center gap-1.5 pt-1">
-                    <Upload className="size-3.5" />
-                    <span>{t("changeCoverImage")}</span>
-                  </span>
-                </div>
-              ) : (
-                <div className="flex flex-col items-center gap-2 py-3">
-                  <div className="size-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                    <ImageIcon className="size-5" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-medium text-foreground">{t("uploadCoverPrompt")}</p>
-                    <p className="text-[11px] text-muted-foreground mt-0.5">
-                      {t("uploadCoverFormats")}
-                    </p>
-                  </div>
-                </div>
-              )}
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageFileChange}
-                className="absolute inset-0 size-full opacity-0 cursor-pointer"
-              />
-            </div>
-            {/* Direct URL input fallback */}
-            <Input
-              value={coverImage}
-              onChange={(e) => setCoverImage(e.target.value)}
-              placeholder={t("imageUrlPlaceholder")}
-              className="text-xs"
-            />
-          </div>
+          <ImageUploadField
+            id="announcement-cover-image"
+            label={t("coverImageLabel")}
+            value={coverImage}
+            onChange={(dataUrl) => setCoverImage(dataUrl)}
+            onClear={() => setCoverImage("")}
+            aspectRatio="banner"
+            prompt={t("uploadCoverPrompt")}
+            hint={t("uploadCoverFormats")}
+            changePrompt={t("changeCoverImage")}
+            previewAlt="Cover preview"
+          />
 
           {/* Announcement Title */}
           <div className="space-y-2">

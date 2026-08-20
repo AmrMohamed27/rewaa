@@ -29,10 +29,13 @@ export const getStoredTeachers = (): Teacher[] => {
   }
   try {
     const parsed: Teacher[] = JSON.parse(stored);
-    // If old mock data with English names or old 3-teacher roster is stored, reset to new initialTeachers
+    // If old mock data with English names or old dual-subject arrays is stored, reset to new initialTeachers
     if (
       parsed.some((t) => t.name.includes("Dr. Ahmed") || t.name.includes("Prof. Sarah")) ||
-      !parsed.some((t) => t.name.includes("عبد المعبود"))
+      !parsed.some((t) => t.name.includes("عبد المعبود")) ||
+      parsed.some(
+        (t) => t.subjects && t.subjects.includes("الفيزياء") && t.subjects.includes("physics"),
+      )
     ) {
       localStorage.setItem(TEACHERS_KEY, JSON.stringify(initialTeachers));
       return initialTeachers;

@@ -8,7 +8,7 @@ export const initialTeachers: Teacher[] = [
     image:
       "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80",
     grades: ["grade_10", "grade_11", "grade_12"],
-    subjects: ["الفيزياء", "physics"],
+    subjects: ["physics"],
   },
   {
     id: "tch-2",
@@ -17,7 +17,7 @@ export const initialTeachers: Teacher[] = [
     image:
       "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80",
     grades: ["grade_11", "grade_12"],
-    subjects: ["الكيمياء", "chemistry"],
+    subjects: ["chemistry"],
   },
   {
     id: "tch-3",
@@ -26,7 +26,7 @@ export const initialTeachers: Teacher[] = [
     image:
       "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80",
     grades: ["grade_10", "grade_11"],
-    subjects: ["الرياضيات", "mathematics"],
+    subjects: ["mathematics"],
   },
   {
     id: "tch-4",
@@ -35,7 +35,7 @@ export const initialTeachers: Teacher[] = [
     image:
       "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=200&q=80",
     grades: ["grade_11", "grade_12"],
-    subjects: ["الأحياء", "biology"],
+    subjects: ["biology"],
   },
   {
     id: "tch-5",
@@ -44,7 +44,7 @@ export const initialTeachers: Teacher[] = [
     image:
       "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=200&q=80",
     grades: ["grade_10", "grade_11", "grade_12"],
-    subjects: ["اللغة العربية", "arabic"],
+    subjects: ["arabic"],
   },
 ];
 

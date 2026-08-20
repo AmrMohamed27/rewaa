@@ -11,13 +11,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { ImageUploadField } from "@/components/ui/image-upload-field";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Teacher } from "@/types/settings";
-import { Check, Upload, User } from "lucide-react";
+import { Check } from "lucide-react";
 import { useTranslations } from "next-intl";
-import Image from "next/image";
-import { ChangeEvent, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { getStoredGrades, getStoredSubjects } from "@/lib/settings-storage";
 
 interface TeacherDialogProps {
@@ -101,17 +101,6 @@ export function TeacherDialog({ open, onOpenChange, teacherToEdit, onSave }: Tea
     }
   }
 
-  const handleImageFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImage(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   const toggleGrade = (gradeId: string) => {
     setSelectedGrades((prev) =>
       prev.includes(gradeId) ? prev.filter((g) => g !== gradeId) : [...prev, gradeId],
@@ -149,50 +138,17 @@ export function TeacherDialog({ open, onOpenChange, teacherToEdit, onSave }: Tea
 
         <form onSubmit={handleSubmit} className="space-y-5 py-2">
           {/* Image Upload Area */}
-          <div className="space-y-2">
-            <Label>{t("imageUpload")}</Label>
-            <div className="relative border-2 border-dashed border-input hover:border-primary/50 transition-colors rounded-xl p-4 flex flex-col items-center justify-center gap-2 bg-muted/20 text-center">
-              {image ? (
-                <div className="flex flex-col items-center gap-2 w-full">
-                  <div className="relative size-20 rounded-full overflow-hidden border-2 border-primary/20 shadow-xs">
-                    <Image
-                      src={image}
-                      alt="Teacher profile"
-                      fill
-                      className="object-cover"
-                      unoptimized
-                    />
-                  </div>
-                  <span className="text-xs font-semibold text-primary flex items-center gap-1">
-                    <Upload className="size-3.5" />
-                    <span>{t("imageChange")}</span>
-                  </span>
-                </div>
-              ) : (
-                <div className="flex flex-col items-center gap-2 text-muted-foreground py-2">
-                  <div className="size-12 rounded-full bg-muted flex items-center justify-center">
-                    <User className="size-6 text-muted-foreground/70" />
-                  </div>
-                  <div className="text-xs">
-                    <span className="font-medium text-foreground">{t("imageUpload")}</span>
-                  </div>
-                </div>
-              )}
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageFileChange}
-                className="absolute inset-0 size-full opacity-0 cursor-pointer"
-              />
-            </div>
-            <Input
-              type="text"
-              placeholder={t("imageUrlPlaceholder")}
-              value={image}
-              onChange={(e) => setImage(e.target.value)}
-              className="text-xs h-8"
-            />
-          </div>
+          <ImageUploadField
+            id="teacher-profile-image"
+            label={t("imageUpload")}
+            value={image}
+            onChange={(dataUrl) => setImage(dataUrl)}
+            onClear={() => setImage("")}
+            variant="avatar"
+            prompt={t("imageUpload")}
+            changePrompt={t("imageChange")}
+            previewAlt="Teacher profile"
+          />
 
           {/* Teacher Name */}
           <div className="space-y-2">

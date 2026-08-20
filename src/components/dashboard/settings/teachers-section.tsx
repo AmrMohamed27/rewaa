@@ -33,10 +33,18 @@ import { TeacherDialog } from "./teacher-dialog";
 
 export function TeachersSection() {
   const t = useTranslations("settings.teachers");
+  const tSubjects = useTranslations("courses.new.subjects");
 
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [teacherToEdit, setTeacherToEdit] = useState<Teacher | null>(null);
+
+  const formatSubject = (sub: string) => {
+    if (!sub) return "";
+    return tSubjects.has(sub as Parameters<typeof tSubjects.has>[0])
+      ? tSubjects(sub as Parameters<typeof tSubjects>[0])
+      : sub;
+  };
 
   const [teacherToDelete, setTeacherToDelete] = useState<Teacher | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -160,7 +168,7 @@ export function TeachersSection() {
                       {teacher.subjects && teacher.subjects.length > 0 ? (
                         teacher.subjects.map((sub, idx) => (
                           <Badge key={idx} variant="secondary" className="text-[11px]">
-                            {sub}
+                            {formatSubject(sub)}
                           </Badge>
                         ))
                       ) : (
