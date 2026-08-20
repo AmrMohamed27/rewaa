@@ -1589,6 +1589,9 @@
       "acceptedRequests": "Accepted Requests",
       "rejectedRequests": "Rejected Requests"
     },
+    "actions": {
+      "viewFinancialReport": "Financial Summary Report"
+    },
     "filters": {
       "searchPlaceholder": "Search by student name, phone, or transaction ID...",
       "tabs": {

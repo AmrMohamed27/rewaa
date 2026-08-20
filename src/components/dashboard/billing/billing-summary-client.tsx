@@ -6,6 +6,7 @@ import Link from "next/link";
 import { pdf } from "@react-pdf/renderer";
 import { useTranslations, useLocale } from "next-intl";
 import {
+  ArrowLeft,
   TrendingUp,
   TrendingDown,
   Printer,
@@ -224,9 +225,16 @@ export function BillingSummaryClient() {
           SECTION 1: PAGE HEADER & SELECT YEAR & ACTIONS
       ────────────────────────────────────────────────────────────────────────────── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="space-y-1">
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">{t("title")}</h1>
-          <p className="text-sm text-muted-foreground">{t("description")}</p>
+        <div className="flex items-center gap-3">
+          <Button asChild variant="outline" size="icon" className="h-9 w-9 rounded-full shrink-0">
+            <Link href="/dashboard/billing">
+              <ArrowLeft className="h-4 w-4 rtl:rotate-180" />
+            </Link>
+          </Button>
+          <div className="space-y-1">
+            <h1 className="text-2xl font-bold tracking-tight text-foreground">{t("title")}</h1>
+            <p className="text-sm text-muted-foreground">{t("description")}</p>
+          </div>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
@@ -257,9 +265,9 @@ export function BillingSummaryClient() {
             {t("resetData")}
           </Button>
 
-          {/* Link to /dashboard/billing/requests */}
+          {/* Link to /dashboard/billing */}
           <Button asChild size="sm" className="h-9 text-xs font-semibold">
-            <Link href="/dashboard/billing/requests">
+            <Link href="/dashboard/billing">
               <Receipt className="size-3.5 me-1.5" />
               {t("viewRequests")}
             </Link>

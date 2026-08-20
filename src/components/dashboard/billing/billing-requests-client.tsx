@@ -33,6 +33,7 @@ import {
 import { BillingRequestItem, BillingRequestStatus } from "@/types/billing-request";
 import {
   ArrowUpDown,
+  BarChart3,
   CheckCircle2,
   Clock,
   CreditCard,
@@ -43,6 +44,7 @@ import {
   XCircle,
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
+import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { RequestDetailsModal } from "./request-details-modal";
@@ -225,15 +227,22 @@ export function BillingRequestsClient() {
           <h1 className="text-2xl font-bold tracking-tight text-foreground">{t("title")}</h1>
           <p className="text-sm text-muted-foreground">{t("description")}</p>
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={handleReset}
-          className="self-start sm:self-auto text-xs font-semibold"
-        >
-          <RotateCcw className="size-3.5 me-1.5" />
-          {locale === "ar" ? "إعادة ضبط البيانات" : "Reset Mock Data"}
-        </Button>
+        <div className="flex flex-wrap items-center gap-2">
+          <Button
+            variant="outline"
+            onClick={handleReset}
+            className="self-start sm:self-auto text-xs font-semibold"
+          >
+            <RotateCcw className="size-3.5 me-1.5" />
+            {locale === "ar" ? "إعادة ضبط البيانات" : "Reset Mock Data"}
+          </Button>
+          <Button asChild className="text-xs font-semibold">
+            <Link href="/dashboard/billing/report">
+              <BarChart3 className="size-3.5 me-1.5" />
+              {t("actions.viewFinancialReport")}
+            </Link>
+          </Button>
+        </div>
       </div>
 
       {/* ─────────────────────────────────────────────────────────────────────────────

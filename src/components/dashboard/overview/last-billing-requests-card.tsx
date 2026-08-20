@@ -47,7 +47,7 @@ export function LastBillingRequestsCard({
             }
             action={{
               label: t("manageBilling"),
-              href: "/dashboard/billing/requests",
+              href: "/dashboard/billing",
             }}
           />
 
