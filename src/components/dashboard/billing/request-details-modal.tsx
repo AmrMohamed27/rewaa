@@ -118,7 +118,7 @@ export function RequestDetailsModal({
                   <span className="text-muted-foreground text-xs">{t("phone")}</span>
                   <PhoneLink
                     phone={request.studentPhoneNumber}
-                    className="font-medium text-foreground hover:text-emerald-600 dark:hover:text-emerald-400"
+                    className="font-medium text-foreground hover:text-emerald-600"
                   >
                     {request.studentPhoneNumber}
                   </PhoneLink>
@@ -177,7 +177,7 @@ export function RequestDetailsModal({
                   <span className="text-muted-foreground text-xs">{t("phoneUsed")}</span>
                   <PhoneLink
                     phone={request.phoneUsedForTransaction}
-                    className="font-semibold text-foreground hover:text-emerald-600 dark:hover:text-emerald-400"
+                    className="font-semibold text-foreground hover:text-emerald-600"
                   >
                     {request.phoneUsedForTransaction}
                   </PhoneLink>

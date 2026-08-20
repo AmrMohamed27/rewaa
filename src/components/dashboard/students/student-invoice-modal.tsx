@@ -140,7 +140,7 @@ export function StudentInvoiceModal({
               <div className="flex justify-start">
                 <PhoneLink
                   phone={student.phoneNumber}
-                  className="text-muted-foreground hover:text-emerald-600 dark:hover:text-emerald-400"
+                  className="text-muted-foreground hover:text-emerald-600 "
                 >
                   {student.phoneNumber}
                 </PhoneLink>

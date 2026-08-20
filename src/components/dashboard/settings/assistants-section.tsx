@@ -156,10 +156,7 @@ export function AssistantsSection() {
                     dir="ltr"
                   >
                     {assistant.phone ? (
-                      <PhoneLink
-                        phone={assistant.phone}
-                        className="hover:text-emerald-600 dark:hover:text-emerald-400"
-                      >
+                      <PhoneLink phone={assistant.phone} className="hover:text-emerald-600">
                         {assistant.phone}
                       </PhoneLink>
                     ) : (

@@ -2242,6 +2242,68 @@
         "showing": "Showing {start} to {end} of {total, plural, =0 {no exams} one {1 exam} other {{total} exams}}"
       }
     },
+    "examResultPage": {
+      "backToExams": "Back to Completed Exams",
+      "statusPassed": "Passed Successfully",
+      "statusFailed": "Needs Retake",
+      "scoreBadge": "Score: {score} / {totalScore}",
+      "percentage": "{percent}%",
+      "attemptInfo": "Attempt {current} of {max}",
+      "completedOn": "Completed on {date}",
+      "hero": {
+        "passedTitle": "Congratulations! You passed the exam",
+        "passedSubtitle": "Great job! You achieved the required passing score. Review your questions and model answers below.",
+        "failedTitle": "Exam attempt completed",
+        "failedSubtitle": "You scored below the passing percentage. Review the correct answers and explanations below, then try again."
+      },
+      "kpi": {
+        "totalScore": "Final Score",
+        "passingGrade": "Passing Score",
+        "timeSpent": "Time Taken",
+        "durationSuffix": "{count} min",
+        "questionsAccuracy": "Questions Accuracy",
+        "correctCount": "{count, plural, =0 {No correct questions} one {1 correct question} other {{count} correct questions}}",
+        "wrongCount": "{count, plural, =0 {No wrong questions} one {1 wrong question} other {{count} wrong questions}}"
+      },
+      "filters": {
+        "all": "All Questions ({count})",
+        "correct": "Correct Only ({count})",
+        "incorrect": "Incorrect Only ({count})"
+      },
+      "questions": {
+        "title": "Questions & Detailed Answers",
+        "subtitle": "Compare your submitted answers with the official model answers and study explanations",
+        "questionNumber": "Question {number}",
+        "gradePoints": "{points, plural, =0 {0 pts} one {1 pt} other {{points} pts}}",
+        "earnedPoints": "{earned} / {total, plural, =0 {0 pts} one {1 pt} other {{total} pts}}",
+        "yourAnswer": "Your Answer",
+        "modelAnswer": "Model Answer",
+        "correctChoice": "Correct Option",
+        "studentSelected": "Your Selection",
+        "explanation": "Answer Explanation",
+        "hint": "Teacher Hint",
+        "trueOption": "True",
+        "falseOption": "False",
+        "noQuestionsFound": "No questions match the selected filter."
+      },
+      "sidebar": {
+        "metadataTitle": "Exam Information",
+        "subjectAndGrade": "Subject & Grade",
+        "teacher": "Teacher",
+        "category": "Exam Type",
+        "sourceCourse": "Source Course",
+        "independent": "General Platform Exam",
+        "venue": "Venue",
+        "triesAllowed": "Tries Allowed",
+        "duration": "Exam Duration",
+        "passingPercentage": "Passing Mark",
+        "sectionsBreakdownTitle": "Sections Performance",
+        "sectionQuestionsCount": "{count, plural, =0 {No questions} one {1 question} other {{count} questions}}",
+        "retakeButton": "Retake Exam",
+        "retakeUnavailable": "No remaining attempts",
+        "courseButton": "Go to Course"
+      }
+    },
     "exploreCoursesPage": {
       "title": "Explore Courses",
       "subtitle": "Discover all available courses and enroll in new learning paths",

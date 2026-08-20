@@ -457,7 +457,7 @@ export function BillingRequestsClient() {
                       >
                         <PhoneLink
                           phone={req.studentPhoneNumber}
-                          className="hover:text-emerald-600 dark:hover:text-emerald-400"
+                          className="hover:text-emerald-600"
                         >
                           {req.studentPhoneNumber}
                         </PhoneLink>

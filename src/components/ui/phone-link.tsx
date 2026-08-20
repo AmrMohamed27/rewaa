@@ -70,14 +70,12 @@ export function PhoneLink({
       rel="noopener noreferrer"
       onClick={(e) => e.stopPropagation()}
       className={cn(
-        "inline-flex items-center gap-1 hover:underline hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors cursor-pointer",
+        "inline-flex items-center gap-1 hover:underline hover:text-emerald-600 transition-colors cursor-pointer",
         className,
       )}
       {...props}
     >
-      {showIcon && (
-        <WhatsAppIcon className="size-3 text-emerald-600 dark:text-emerald-400 shrink-0" />
-      )}
+      {showIcon && <WhatsAppIcon className="size-3 text-emerald-600 shrink-0" />}
       {children || <span dir="ltr">{phone}</span>}
     </a>
   );

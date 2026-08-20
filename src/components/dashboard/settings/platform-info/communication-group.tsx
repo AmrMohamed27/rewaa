@@ -177,10 +177,7 @@ export function CommunicationGroup({ data }: CommunicationGroupProps) {
           ) : (
             <div className="h-9 px-3 py-1.5 rounded-md text-sm font-semibold flex items-center font-mono">
               {formState.whatsappPhone ? (
-                <PhoneLink
-                  phone={formState.whatsappPhone}
-                  className="hover:text-emerald-600 dark:hover:text-emerald-400"
-                >
+                <PhoneLink phone={formState.whatsappPhone} className="hover:text-emerald-600">
                   <span className="rtl:text-start" dir="ltr">
                     {formState.whatsappPhone}
                   </span>

@@ -480,7 +480,7 @@ export function ExamComplaintsClient({ examId }: ExamComplaintsClientProps) {
                       <td className="px-4 py-3 whitespace-nowrap text-xs text-muted-foreground font-mono">
                         <PhoneLink
                           phone={complaint.phoneNumber}
-                          className="flex items-center gap-1.5 text-muted-foreground hover:text-emerald-600 dark:hover:text-emerald-400"
+                          className="flex items-center gap-1.5 text-muted-foreground hover:text-emerald-600"
                         >
                           <Phone className="size-3 text-muted-foreground/70 shrink-0" />
                           <span dir="ltr">{complaint.phoneNumber}</span>
@@ -599,7 +599,7 @@ export function ExamComplaintsClient({ examId }: ExamComplaintsClientProps) {
                   </div>
                   <PhoneLink
                     phone={viewComplaint.phoneNumber}
-                    className="text-muted-foreground font-mono text-[11px] hover:text-emerald-600 dark:hover:text-emerald-400"
+                    className="text-muted-foreground font-mono text-[11px] hover:text-emerald-600"
                   >
                     {viewComplaint.phoneNumber}
                   </PhoneLink>

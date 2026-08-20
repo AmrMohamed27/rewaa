@@ -161,10 +161,7 @@ export function TeachersSection() {
                     dir="ltr"
                   >
                     {teacher.phone ? (
-                      <PhoneLink
-                        phone={teacher.phone}
-                        className="hover:text-emerald-600 dark:hover:text-emerald-400"
-                      >
+                      <PhoneLink phone={teacher.phone} className="hover:text-emerald-600">
                         {teacher.phone}
                       </PhoneLink>
                     ) : (

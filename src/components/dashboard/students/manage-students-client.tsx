@@ -612,7 +612,7 @@ export function ManageStudentsClient() {
                               <TooltipTrigger asChild>
                                 <PhoneLink
                                   phone={student.phoneNumber}
-                                  className="inline-flex items-center gap-1.5 text-xs text-foreground font-medium w-fit hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+                                  className="inline-flex items-center gap-1.5 text-xs text-foreground font-medium w-fit hover:text-emerald-600 transition-colors"
                                 >
                                   <span className="flex items-center justify-center size-4 rounded bg-primary/10 text-primary shrink-0">
                                     <Phone className="size-2.5" />
@@ -632,9 +632,9 @@ export function ManageStudentsClient() {
                                 <TooltipTrigger asChild>
                                   <PhoneLink
                                     phone={student.parentPhoneNumber}
-                                    className="inline-flex items-center gap-1.5 text-[11px] text-muted-foreground w-fit hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
+                                    className="inline-flex items-center gap-1.5 text-[11px] text-muted-foreground w-fit hover:text-amber-600 transition-colors"
                                   >
-                                    <span className="flex items-center justify-center size-4 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 shrink-0">
+                                    <span className="flex items-center justify-center size-4 rounded bg-amber-500/10 text-amber-600 shrink-0">
                                       <Shield className="size-2.5" />
                                     </span>
                                     <span dir="ltr" className="tracking-tight">

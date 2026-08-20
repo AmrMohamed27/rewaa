@@ -244,19 +244,19 @@ export function ExamStatsClient({ examId }: ExamStatsClientProps) {
     easy: {
       label: tDiff("easy"),
       dotColor: "bg-emerald-500",
-      textColor: "text-emerald-600 dark:text-emerald-400",
+      textColor: "text-emerald-600",
       bgColor: "bg-emerald-500/10 border-emerald-500/20",
     },
     medium: {
       label: tDiff("medium"),
       dotColor: "bg-amber-500",
-      textColor: "text-amber-600 dark:text-amber-400",
+      textColor: "text-amber-600",
       bgColor: "bg-amber-500/10 border-amber-500/20",
     },
     hard: {
       label: tDiff("hard"),
       dotColor: "bg-rose-500",
-      textColor: "text-rose-600 dark:text-rose-400",
+      textColor: "text-rose-600",
       bgColor: "bg-rose-500/10 border-rose-500/20",
     },
   };
@@ -760,10 +760,7 @@ export function ExamStatsClient({ examId }: ExamStatsClientProps) {
 
                         {/* 2. Phone Number */}
                         <td className="px-4 py-3 whitespace-nowrap text-xs text-muted-foreground font-mono">
-                          <PhoneLink
-                            phone={result.phoneNumber}
-                            className="hover:text-emerald-600 dark:hover:text-emerald-400"
-                          >
+                          <PhoneLink phone={result.phoneNumber} className="hover:text-emerald-600">
                             {result.phoneNumber}
                           </PhoneLink>
                         </td>

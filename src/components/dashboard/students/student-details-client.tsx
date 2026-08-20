@@ -298,7 +298,7 @@ export function StudentDetailsClient({ studentId }: StudentDetailsClientProps) {
               <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4 pt-1 text-xs text-muted-foreground">
                 <PhoneLink
                   phone={student.phoneNumber}
-                  className="flex items-center gap-1 text-muted-foreground hover:text-emerald-600 dark:hover:text-emerald-400"
+                  className="flex items-center gap-1 text-muted-foreground hover:text-emerald-600 "
                 >
                   <Phone className="size-3 text-muted-foreground" />
                   <span dir="ltr">{student.phoneNumber}</span>
@@ -306,7 +306,7 @@ export function StudentDetailsClient({ studentId }: StudentDetailsClientProps) {
                 {student.parentPhoneNumber && (
                   <PhoneLink
                     phone={student.parentPhoneNumber}
-                    className="flex items-center gap-1 text-muted-foreground hover:text-amber-600 dark:hover:text-amber-400"
+                    className="flex items-center gap-1 text-muted-foreground hover:text-amber-600 "
                   >
                     <Phone className="size-3 text-amber-500/80" />
                     <span dir="ltr">{student.parentPhoneNumber}</span>
