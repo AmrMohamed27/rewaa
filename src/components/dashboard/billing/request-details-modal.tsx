@@ -11,6 +11,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
+import { PhoneLink } from "@/components/ui/phone-link";
 import { BillingRequestItem } from "@/types/billing-request";
 import {
   AlertCircle,
@@ -115,9 +116,12 @@ export function RequestDetailsModal({
                 </div>
                 <div className="flex justify-between items-center border-b border-border/40 pb-2">
                   <span className="text-muted-foreground text-xs">{t("phone")}</span>
-                  <span className="font-medium text-foreground dir-ltr" dir="ltr">
+                  <PhoneLink
+                    phone={request.studentPhoneNumber}
+                    className="font-medium text-foreground hover:text-emerald-600 dark:hover:text-emerald-400"
+                  >
                     {request.studentPhoneNumber}
-                  </span>
+                  </PhoneLink>
                 </div>
                 {request.studentEmail && (
                   <div className="flex justify-between items-center">
@@ -171,9 +175,12 @@ export function RequestDetailsModal({
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-muted-foreground text-xs">{t("phoneUsed")}</span>
-                  <span className="font-semibold text-foreground dir-ltr" dir="ltr">
+                  <PhoneLink
+                    phone={request.phoneUsedForTransaction}
+                    className="font-semibold text-foreground hover:text-emerald-600 dark:hover:text-emerald-400"
+                  >
                     {request.phoneUsedForTransaction}
-                  </span>
+                  </PhoneLink>
                 </div>
               </div>
             </div>

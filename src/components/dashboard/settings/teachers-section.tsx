@@ -22,6 +22,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { PhoneLink } from "@/components/ui/phone-link";
 import { Teacher } from "@/types/settings";
 import {
   getStoredTeachers,
@@ -159,7 +160,16 @@ export function TeachersSection() {
                     className="text-xs text-muted-foreground font-mono rtl:text-end"
                     dir="ltr"
                   >
-                    {teacher.phone || "—"}
+                    {teacher.phone ? (
+                      <PhoneLink
+                        phone={teacher.phone}
+                        className="hover:text-emerald-600 dark:hover:text-emerald-400"
+                      >
+                        {teacher.phone}
+                      </PhoneLink>
+                    ) : (
+                      "—"
+                    )}
                   </TableCell>
 
                   {/* Subjects */}

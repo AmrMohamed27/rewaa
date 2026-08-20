@@ -1352,6 +1352,8 @@
       "fullNameAndId": "Student Name",
       "phoneNumber": "Phone Number",
       "parentPhoneNumber": "Parent Phone",
+      "studentPhoneTooltip": "Student's Phone Number",
+      "parentPhoneTooltip": "Parent's Phone Number",
       "state": "Governorate / Country",
       "coursesCount": "Enrolled Courses",
       "grade": "Grade",

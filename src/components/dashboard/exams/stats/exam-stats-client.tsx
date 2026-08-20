@@ -37,6 +37,7 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { PhoneLink } from "@/components/ui/phone-link";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -759,7 +760,12 @@ export function ExamStatsClient({ examId }: ExamStatsClientProps) {
 
                         {/* 2. Phone Number */}
                         <td className="px-4 py-3 whitespace-nowrap text-xs text-muted-foreground font-mono">
-                          <span dir="ltr">{result.phoneNumber}</span>
+                          <PhoneLink
+                            phone={result.phoneNumber}
+                            className="hover:text-emerald-600 dark:hover:text-emerald-400"
+                          >
+                            {result.phoneNumber}
+                          </PhoneLink>
                         </td>
 
                         {/* 3. Cumulative GPA */}

@@ -1,10 +1,6 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
-import * as React from "react";
-import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useLocale, useTranslations } from "next-intl";
 import {
   ArrowUpDown,
   BookOpen,
@@ -18,12 +14,17 @@ import {
   Plus,
   RotateCcw,
   Search,
+  Shield,
   Trash2,
-  UserCheck,
   Users,
   X,
 } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
+import Link from "next/link";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import * as React from "react";
 
+import { GradeSelect } from "@/components/ui/academic-selects";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -41,7 +42,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-import { GradeSelect } from "@/components/ui/academic-selects";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { PhoneLink } from "@/components/ui/phone-link";
 
 import {
   deleteStoredStudent,
@@ -542,18 +544,49 @@ export function ManageStudentsClient() {
 
                       {/* Phone Number */}
                       <td className="px-4 py-3.5">
-                        <div className="flex flex-col">
-                          <span className=" text-xs text-foreground flex items-center gap-1">
-                            <Phone className="size-3 text-muted-foreground shrink-0" />
-                            <span dir="ltr">{student.phoneNumber}</span>
-                          </span>
-                          {student.parentPhoneNumber && (
-                            <span className="text-[11px] text-muted-foreground  mt-0.5 flex items-center gap-1">
-                              <UserCheck className="size-3 text-muted-foreground/70 shrink-0" />
-                              <span dir="ltr">{student.parentPhoneNumber}</span>
-                            </span>
-                          )}
-                        </div>
+                        <TooltipProvider delayDuration={150}>
+                          <div className="flex flex-col gap-1">
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <PhoneLink
+                                  phone={student.phoneNumber}
+                                  className="inline-flex items-center gap-1.5 text-xs text-foreground font-medium w-fit hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+                                >
+                                  <span className="flex items-center justify-center size-4 rounded bg-primary/10 text-primary shrink-0">
+                                    <Phone className="size-2.5" />
+                                  </span>
+                                  <span dir="ltr" className="tracking-tight">
+                                    {student.phoneNumber}
+                                  </span>
+                                </PhoneLink>
+                              </TooltipTrigger>
+                              <TooltipContent side="top" className="text-xs">
+                                {t("columns.studentPhoneTooltip")}
+                              </TooltipContent>
+                            </Tooltip>
+
+                            {student.parentPhoneNumber && (
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <PhoneLink
+                                    phone={student.parentPhoneNumber}
+                                    className="inline-flex items-center gap-1.5 text-[11px] text-muted-foreground w-fit hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
+                                  >
+                                    <span className="flex items-center justify-center size-4 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 shrink-0">
+                                      <Shield className="size-2.5" />
+                                    </span>
+                                    <span dir="ltr" className="tracking-tight">
+                                      {student.parentPhoneNumber}
+                                    </span>
+                                  </PhoneLink>
+                                </TooltipTrigger>
+                                <TooltipContent side="bottom" className="text-xs">
+                                  {t("columns.parentPhoneTooltip")}
+                                </TooltipContent>
+                              </Tooltip>
+                            )}
+                          </div>
+                        </TooltipProvider>
                       </td>
 
                       {/* Governorate / Country */}

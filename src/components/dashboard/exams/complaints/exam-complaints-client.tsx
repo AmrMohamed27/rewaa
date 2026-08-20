@@ -42,6 +42,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
+import { PhoneLink } from "@/components/ui/phone-link";
 import { ContentPagination } from "../../common/content-pagination";
 
 import {
@@ -477,10 +478,13 @@ export function ExamComplaintsClient({ examId }: ExamComplaintsClientProps) {
 
                       {/* 3. Phone Number */}
                       <td className="px-4 py-3 whitespace-nowrap text-xs text-muted-foreground font-mono">
-                        <div className="flex items-center gap-1.5">
+                        <PhoneLink
+                          phone={complaint.phoneNumber}
+                          className="flex items-center gap-1.5 text-muted-foreground hover:text-emerald-600 dark:hover:text-emerald-400"
+                        >
                           <Phone className="size-3 text-muted-foreground/70 shrink-0" />
                           <span dir="ltr">{complaint.phoneNumber}</span>
-                        </div>
+                        </PhoneLink>
                       </td>
 
                       {/* 4. Date of Complaint */}
@@ -593,9 +597,12 @@ export function ExamComplaintsClient({ examId }: ExamComplaintsClientProps) {
                   <div className="font-semibold text-foreground text-xs">
                     {viewComplaint.studentName}
                   </div>
-                  <div className="text-muted-foreground font-mono text-[11px]" dir="ltr">
+                  <PhoneLink
+                    phone={viewComplaint.phoneNumber}
+                    className="text-muted-foreground font-mono text-[11px] hover:text-emerald-600 dark:hover:text-emerald-400"
+                  >
                     {viewComplaint.phoneNumber}
-                  </div>
+                  </PhoneLink>
                 </div>
               </div>
 

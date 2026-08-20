@@ -20,6 +20,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { PhoneLink } from "@/components/ui/phone-link";
 import {
   deleteAssistant,
   getStoredAssistants,
@@ -154,7 +155,16 @@ export function AssistantsSection() {
                     className="text-xs text-muted-foreground font-mono rtl:text-end"
                     dir="ltr"
                   >
-                    {assistant.phone || "—"}
+                    {assistant.phone ? (
+                      <PhoneLink
+                        phone={assistant.phone}
+                        className="hover:text-emerald-600 dark:hover:text-emerald-400"
+                      >
+                        {assistant.phone}
+                      </PhoneLink>
+                    ) : (
+                      "—"
+                    )}
                   </TableCell>
 
                   {/* Permissions Badges */}

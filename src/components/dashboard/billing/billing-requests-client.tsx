@@ -8,6 +8,7 @@ import { DashboardCard } from "@/components/dashboard/overview/dashboard-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PhoneLink } from "@/components/ui/phone-link";
 import {
   Select,
   SelectContent,
@@ -445,7 +446,12 @@ export function BillingRequestsClient() {
                         className="text-xs text-muted-foreground font-mono rtl:text-end"
                         dir="ltr"
                       >
-                        {req.studentPhoneNumber}
+                        <PhoneLink
+                          phone={req.studentPhoneNumber}
+                          className="hover:text-emerald-600 dark:hover:text-emerald-400"
+                        >
+                          {req.studentPhoneNumber}
+                        </PhoneLink>
                       </TableCell>
 
                       {/* Grade */}

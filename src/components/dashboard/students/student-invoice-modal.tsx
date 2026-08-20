@@ -10,6 +10,7 @@ import { StudentInvoicePDF } from "@/components/pdf/StudentInvoicePDF";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter, DialogTitle } from "@/components/ui/dialog";
+import { PhoneLink } from "@/components/ui/phone-link";
 import { Student, StudentTransaction } from "@/types/student";
 
 interface StudentInvoiceModalProps {
@@ -137,9 +138,12 @@ export function StudentInvoiceModal({
               </span>
               <p className="font-bold text-foreground text-sm">{fullName}</p>
               <div className="flex justify-start">
-                <p className="text-muted-foreground" dir="ltr">
+                <PhoneLink
+                  phone={student.phoneNumber}
+                  className="text-muted-foreground hover:text-emerald-600 dark:hover:text-emerald-400"
+                >
                   {student.phoneNumber}
-                </p>
+                </PhoneLink>
               </div>
               <p className="text-muted-foreground">
                 {student.country} - {student.state}

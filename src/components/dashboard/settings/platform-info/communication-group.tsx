@@ -19,6 +19,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PhoneLink } from "@/components/ui/phone-link";
 import { resetPlatformInfoGroup, savePlatformInfoCommunication } from "@/lib/settings-storage";
 import { PlatformCustomLink, PlatformInfoGroupCommunication } from "@/types/settings";
 import { AddLinkDialog } from "./add-link-dialog";
@@ -142,9 +143,20 @@ export function CommunicationGroup({ data }: CommunicationGroupProps) {
             />
           ) : (
             <div className="h-9 px-3 py-1.5 rounded-md text-sm font-semibold flex items-center font-mono">
-              <span dir="ltr" className="rtl:text-start">
-                {formState.supportPhone || "—"}
-              </span>
+              {formState.supportPhone ? (
+                <PhoneLink
+                  phone={formState.supportPhone}
+                  className="hover:text-primary dark:hover:text-primary"
+                >
+                  <span dir="ltr" className="rtl:text-start">
+                    {formState.supportPhone}
+                  </span>
+                </PhoneLink>
+              ) : (
+                <span dir="ltr" className="rtl:text-start">
+                  —
+                </span>
+              )}
             </div>
           )}
         </div>
@@ -164,9 +176,20 @@ export function CommunicationGroup({ data }: CommunicationGroupProps) {
             />
           ) : (
             <div className="h-9 px-3 py-1.5 rounded-md text-sm font-semibold flex items-center font-mono">
-              <span className="rtl:text-start" dir="ltr">
-                {formState.whatsappPhone || "—"}
-              </span>
+              {formState.whatsappPhone ? (
+                <PhoneLink
+                  phone={formState.whatsappPhone}
+                  className="hover:text-emerald-600 dark:hover:text-emerald-400"
+                >
+                  <span className="rtl:text-start" dir="ltr">
+                    {formState.whatsappPhone}
+                  </span>
+                </PhoneLink>
+              ) : (
+                <span className="rtl:text-start" dir="ltr">
+                  —
+                </span>
+              )}
             </div>
           )}
         </div>

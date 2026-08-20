@@ -41,6 +41,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
+import { PhoneLink } from "@/components/ui/phone-link";
 
 import { getStoredCourses } from "@/lib/courses-storage";
 import {
@@ -503,15 +504,21 @@ export function CourseStudentsClient({ courseId }: CourseStudentsClientProps) {
                       {/* Phone Number & Parent Phone */}
                       <td className="px-4 py-3.5">
                         <div className="flex flex-col">
-                          <span className="text-xs text-foreground flex items-center gap-1">
+                          <PhoneLink
+                            phone={student.phoneNumber}
+                            className="text-xs text-foreground flex items-center gap-1 hover:text-emerald-600 dark:hover:text-emerald-400"
+                          >
                             <Phone className="size-3 text-muted-foreground shrink-0" />
                             <span dir="ltr">{student.phoneNumber}</span>
-                          </span>
+                          </PhoneLink>
                           {student.parentPhoneNumber && (
-                            <span className="text-[11px] text-muted-foreground mt-0.5 flex items-center gap-1">
+                            <PhoneLink
+                              phone={student.parentPhoneNumber}
+                              className="text-[11px] text-muted-foreground mt-0.5 flex items-center gap-1 hover:text-emerald-600 dark:hover:text-emerald-400"
+                            >
                               <UserCheck className="size-3 text-muted-foreground/70 shrink-0" />
                               <span dir="ltr">{student.parentPhoneNumber}</span>
-                            </span>
+                            </PhoneLink>
                           )}
                         </div>
                       </td>

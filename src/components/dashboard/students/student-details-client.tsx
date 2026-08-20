@@ -45,6 +45,7 @@ import { RegistrationType, Student, StudentTransaction, TransactionType } from "
 import { BalanceTransactionDialog } from "./balance-transaction-dialog";
 import { StudentInvoiceModal } from "./student-invoice-modal";
 import { StudentReportModal } from "./student-report-modal";
+import { PhoneLink, getWhatsAppUrl } from "@/components/ui/phone-link";
 
 interface StudentDetailsClientProps {
   studentId: string;
@@ -287,10 +288,22 @@ export function StudentDetailsClient({ studentId }: StudentDetailsClientProps) {
               </p>
 
               <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4 pt-1 text-xs text-muted-foreground">
-                <span className="flex items-center gap-1" dir="ltr">
+                <PhoneLink
+                  phone={student.phoneNumber}
+                  className="flex items-center gap-1 text-muted-foreground hover:text-emerald-600 dark:hover:text-emerald-400"
+                >
                   <Phone className="size-3 text-muted-foreground" />
-                  {student.phoneNumber}
-                </span>
+                  <span dir="ltr">{student.phoneNumber}</span>
+                </PhoneLink>
+                {student.parentPhoneNumber && (
+                  <PhoneLink
+                    phone={student.parentPhoneNumber}
+                    className="flex items-center gap-1 text-muted-foreground hover:text-amber-600 dark:hover:text-amber-400"
+                  >
+                    <Phone className="size-3 text-amber-500/80" />
+                    <span dir="ltr">{student.parentPhoneNumber}</span>
+                  </PhoneLink>
+                )}
                 <span className="flex items-center gap-1">
                   <Mail className="size-3 text-muted-foreground" />
                   {student.email}
@@ -331,10 +344,16 @@ export function StudentDetailsClient({ studentId }: StudentDetailsClientProps) {
               <span>{tDetails("manageBalance")}</span>
             </Button>
 
-            {/* Send Message CTA (No-op for now) */}
-            <Button size="sm" variant="default" className="gap-2 font-semibold shadow-xs">
-              <MessageSquare className="size-3.5" />
-              <span>{tDetails("sendMessage")}</span>
+            {/* Send Message CTA (Links to WhatsApp) */}
+            <Button asChild size="sm" variant="default" className="gap-2 font-semibold shadow-xs">
+              <a
+                href={getWhatsAppUrl(student.phoneNumber)}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <MessageSquare className="size-3.5" />
+                <span>{tDetails("sendMessage")}</span>
+              </a>
             </Button>
           </div>
         </div>

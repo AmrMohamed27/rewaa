@@ -1352,6 +1352,8 @@
       "fullNameAndId": "اسم الطالب",
       "phoneNumber": "رقم الهاتف",
       "parentPhoneNumber": "رقم ولي الأمر",
+      "studentPhoneTooltip": "رقم هاتف الطالب",
+      "parentPhoneTooltip": "رقم هاتف ولي الأمر",
       "state": "المحافظة / الدولة",
       "coursesCount": "عدد الدورات",
       "grade": "الصف الدراسي",
