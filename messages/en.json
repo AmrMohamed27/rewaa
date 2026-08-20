@@ -323,10 +323,14 @@
       "lessonsShort": "{count, plural, =1 {1 Lesson} other {{count} Lessons}}",
       "free": "Free",
       "egp": "EGP",
+      "edit": "Edit",
+      "viewStudents": "View Students",
+      "addStudent": "Add Student",
+      "viewActivationCodes": "View Activation Codes",
       "viewDetails": "View Details",
       "viewStats": "View Details",
       "publishNow": "Publish Now",
-      "modify": "Modify",
+      "modify": "Edit",
       "delete": "Delete",
       "copyLink": "Copy Link",
       "linkCopied": "Link Copied"
@@ -651,6 +655,59 @@
           "confirm": "Delete Lesson",
           "cancel": "Cancel"
         }
+      }
+    },
+    "studentsPage": {
+      "title": "Enrolled Students",
+      "subtitle": "View and manage all students enrolled in this course",
+      "backToCourses": "Back to Courses",
+      "addStudent": "Add Student",
+      "resetFilters": "Reset Filters",
+      "stats": {
+        "total": "Total Students",
+        "totalDesc": "Students enrolled in course",
+        "male": "Male Students",
+        "maleDesc": "Male enrolled students",
+        "female": "Female Students",
+        "femaleDesc": "Female enrolled students",
+        "active": "Active Subscriptions",
+        "activeDesc": "Enrolled & active"
+      },
+      "filters": {
+        "searchPlaceholder": "Search by student name, phone, or email...",
+        "allGenders": "All Genders",
+        "male": "Male",
+        "female": "Female",
+        "allGrades": "All Grades",
+        "allLocations": "All Governorates",
+        "allRegTypes": "All Registration Types",
+        "sortBy": "Sort by",
+        "newest": "Newest Enrolled",
+        "oldest": "Oldest Enrolled",
+        "nameAsc": "Name (A-Z)",
+        "nameDesc": "Name (Z-A)"
+      },
+      "columns": {
+        "fullName": "Full Name",
+        "phoneNumbers": "Phone Numbers",
+        "gender": "Gender",
+        "location": "Governorate / Country",
+        "grade": "Grade",
+        "registrationType": "Registration Type",
+        "actions": "Actions"
+      },
+      "actions": {
+        "viewDetails": "View Details",
+        "edit": "Edit",
+        "delete": "Delete Student"
+      },
+      "empty": {
+        "title": "No students enrolled",
+        "description": "No students found matching your search or filters. Click 'Add Student' to enroll a student in this course."
+      },
+      "deleteDialog": {
+        "title": "Delete Student",
+        "description": "Are you sure you want to delete \"{name}\"? This will remove their course enrollment."
       }
     }
   },

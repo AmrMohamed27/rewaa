@@ -2,19 +2,26 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { ArrowLeft } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { StudentForm, StudentFormData } from "@/components/dashboard/students/student-form";
 import { addStoredStudent } from "@/lib/students-storage";
+import { incrementCourseParticipants } from "@/lib/courses-storage";
 
 export function NewStudentClient() {
   const locale = useLocale();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const courseId = searchParams.get("courseId");
 
   const tForm = useTranslations("studentsPage.form");
+
+  const redirectPath = courseId
+    ? `/${locale}/dashboard/courses/${courseId}/students`
+    : `/${locale}/dashboard/students`;
 
   const handleSubmit = (data: StudentFormData) => {
     addStoredStudent(locale, {
@@ -31,10 +38,15 @@ export function NewStudentClient() {
       state: data.state,
       grade: data.grade,
       registrationType: data.registrationType,
-      coursesCount: 0,
+      coursesCount: courseId ? 1 : 0,
+      enrolledCourseIds: courseId ? [courseId] : [],
     });
 
-    router.push(`/${locale}/dashboard/students`);
+    if (courseId) {
+      incrementCourseParticipants(locale, courseId);
+    }
+
+    router.push(redirectPath);
   };
 
   const handleSaveDraft = (data: StudentFormData) => {
@@ -52,14 +64,19 @@ export function NewStudentClient() {
       state: data.state || "Cairo",
       grade: data.grade || "grade1",
       registrationType: data.registrationType || "center",
-      coursesCount: 0,
+      coursesCount: courseId ? 1 : 0,
+      enrolledCourseIds: courseId ? [courseId] : [],
     });
 
-    router.push(`/${locale}/dashboard/students`);
+    if (courseId) {
+      incrementCourseParticipants(locale, courseId);
+    }
+
+    router.push(redirectPath);
   };
 
   const handleCancel = () => {
-    router.push(`/${locale}/dashboard/students`);
+    router.push(redirectPath);
   };
 
   return (
@@ -67,7 +84,7 @@ export function NewStudentClient() {
       {/* Header Row with Standardized Round Back Button */}
       <div className="flex items-center gap-3">
         <Button asChild variant="outline" size="icon" className="h-9 w-9 rounded-full shrink-0">
-          <Link href={`/${locale}/dashboard/students`}>
+          <Link href={redirectPath}>
             <ArrowLeft className="h-4 w-4 rtl:rotate-180" />
           </Link>
         </Button>

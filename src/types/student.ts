@@ -30,6 +30,7 @@ export interface Student {
   grade: string;
   registrationType: RegistrationType;
   coursesCount?: number;
+  enrolledCourseIds?: string[];
   balance?: number;
   createdAt?: string;
   updatedAt?: string;

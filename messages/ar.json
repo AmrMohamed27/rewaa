@@ -323,6 +323,10 @@
       "lessonsShort": "{count, plural, =0 {لا دروس} zero {لا دروس} one {درس واحد} two {درسين} few {{count} دروس} many {{count} درساً} other {{count} درس}}",
       "free": "مجاني",
       "egp": "ج.م",
+      "edit": "تعديل",
+      "viewStudents": "عرض الطلاب",
+      "addStudent": "إضافة طالب",
+      "viewActivationCodes": "عرض أكواد التفعيل",
       "viewDetails": "عرض التفاصيل",
       "viewStats": "عرض التفاصيل",
       "publishNow": "نشر الآن",
@@ -652,6 +656,59 @@
           "cancel": "إلغاء"
         }
       }
+    },
+    "studentsPage": {
+      "title": "الطلاب المشتركون",
+      "subtitle": "عرض وإدارة جميع الطلاب المسجلين في هذه الدورة",
+      "backToCourses": "العودة للدورات",
+      "addStudent": "إضافة طالب",
+      "resetFilters": "إعادة ضبط الفلاتر",
+      "stats": {
+        "total": "إجمالي الطلاب",
+        "totalDesc": "الطلاب المسجلون في الدورة",
+        "male": "الطلاب الذكور",
+        "maleDesc": "عدد الطلاب الذكور",
+        "female": "الطالبات الإناث",
+        "femaleDesc": "عدد الطالبات الإناث",
+        "active": "الاشتراكات النشطة",
+        "activeDesc": "اشتراكات مفعلة ونشطة"
+      },
+      "filters": {
+        "searchPlaceholder": "ابحث باسم الطالب أو رقم الهاتف أو البريد...",
+        "allGenders": "جميع الأنواع",
+        "male": "ذكر",
+        "female": "أنثى",
+        "allGrades": "جميع المراحل الدراسية",
+        "allLocations": "جميع المحافظات",
+        "allRegTypes": "جميع أنواع التسجيل",
+        "sortBy": "الترتيب حسب",
+        "newest": "الأحدث تسجيلاً",
+        "oldest": "الأقدم تسجيلاً",
+        "nameAsc": "الاسم (أ - ي)",
+        "nameDesc": "الاسم (ي - أ)"
+      },
+      "columns": {
+        "fullName": "الاسم الكامل",
+        "phoneNumbers": "أرقام الهاتف",
+        "gender": "النوع",
+        "location": "المحافظة / الدولة",
+        "grade": "المرحلة الدراسية",
+        "registrationType": "نوع التسجيل",
+        "actions": "الإجراءات"
+      },
+      "actions": {
+        "viewDetails": "عرض التفاصيل",
+        "edit": "تعديل",
+        "delete": "حذف الطالب"
+      },
+      "empty": {
+        "title": "لا يوجد طلاب مسجلين",
+        "description": "لم يتم العثور على أي طلاب يطابقون خيارات البحث أو الفلترة. اضغط على \"إضافة طالب\" لتسجيل طالب جديد في هذه الدورة."
+      },
+      "deleteDialog": {
+        "title": "حذف الطالب",
+        "description": "هل أنت متأكد من رغبتك في حذف \"{name}\"؟ سيؤدي ذلك لإلغاء تسجيله في الدورة."
+      }
     }
   },
   "exams": {
@@ -676,8 +733,8 @@
       "columns": {
         "title": "العنوان",
         "subjectGrade": "المادة والمرحلة",
-        "category": "النوع",
-        "typeVenue": "التصنيف والمكان",
+        "category": "الفئة",
+        "typeVenue": "النطاق",
         "questionsStudents": "الأسئلة والطلاب",
         "successRate": "معدل النجاح",
         "timesUsed": "عدد مرات الاستخدام",
@@ -1149,7 +1206,7 @@
     "registrationTypes": {
       "center": "سنتر",
       "online": "أونلاين",
-      "hybrid": "مدمج",
+      "hybrid": "الجميع",
       "external": "خارجي"
     },
     "sort": {
@@ -1376,7 +1433,7 @@
       "registrationTypes": {
         "center": "سنتر",
         "online": "أونلاين",
-        "hybrid": "مدمج",
+        "hybrid": "الجميع",
         "external": "خارجي"
       }
     }

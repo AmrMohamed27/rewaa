@@ -427,7 +427,7 @@ export function ExamDetailsClient({ examId }: ExamDetailsClientProps) {
                 <div className="flex justify-between py-1 border-b border-border/40">
                   <span className="text-muted-foreground">{tDetails("metadata.linkedCourse")}</span>
                   <Link
-                    href={`/${locale}/dashboard/courses/${exam.courseId}`}
+                    href={`/${locale}/dashboard/courses/${exam.courseId}/edit`}
                     className="font-semibold text-primary hover:underline flex items-center gap-1"
                   >
                     <ExternalLink className="size-3" />

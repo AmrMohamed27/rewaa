@@ -106,3 +106,17 @@ export function saveStoredCustomPeriod(periodName: string): void {
     console.error("Failed to save custom period to localStorage:", error);
   }
 }
+
+export function incrementCourseParticipants(locale: string, courseId: string): void {
+  const courses = getStoredCourses(locale);
+  const updated = courses.map((c) => {
+    if (c.id === courseId) {
+      return {
+        ...c,
+        numberOfParticipants: (c.numberOfParticipants || 0) + 1,
+      };
+    }
+    return c;
+  });
+  saveStoredCourses(locale, updated);
+}

@@ -169,7 +169,7 @@ export function ManageCoursesClient() {
   };
 
   const handleCopyLink = (courseId: string) => {
-    const link = `${window.location.origin}/${locale}/dashboard/courses/${courseId}`;
+    const link = `${window.location.origin}/${locale}/dashboard/courses/${courseId}/edit`;
     navigator.clipboard.writeText(link);
     setCopiedId(courseId);
     setTimeout(() => setCopiedId(null), 2000);

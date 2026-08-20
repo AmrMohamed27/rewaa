@@ -52,12 +52,12 @@ export function StudentRecentAnnouncement() {
     <DashboardCard className="relative overflow-hidden p-0 bg-card border border-border/80 shadow-xs">
       {/* End-aligned Image with fade effect from white/card background */}
       {recentAnnouncement.coverImage && (
-        <div className="absolute inset-y-0 end-0 w-full sm:w-1/2 md:w-5/12 pointer-events-none overflow-hidden select-none">
+        <div className="absolute inset-y-0 inset-e-0 w-full sm:w-1/2 md:w-5/12 pointer-events-none overflow-hidden select-none">
           <Image
             src={recentAnnouncement.coverImage}
             alt={recentAnnouncement.title || t("imageAlt")}
             fill
-            className="object-cover object-center opacity-30 dark:opacity-20 ltr:mask-[linear-gradient(to_right,transparent_0%,black_70%)] rtl:mask-[linear-gradient(to_left,transparent_0%,black_70%)]"
+            className="object-cover object-center opacity-30 ltr:mask-[linear-gradient(to_right,transparent_0%,black_70%)] rtl:mask-[linear-gradient(to_left,transparent_0%,black_70%)]"
             unoptimized
           />
           {/* Subtle gradient wash over the image */}

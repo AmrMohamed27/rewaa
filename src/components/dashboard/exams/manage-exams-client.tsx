@@ -429,12 +429,9 @@ export function ManageExamsClient() {
                           </div>
                         ) : (
                           <div className="flex flex-col gap-1">
-                            <span className="text-xs font-medium text-muted-foreground">
-                              {t("table.courseLinked")}
-                            </span>
                             {exam.courseId ? (
                               <Link
-                                href={`/${locale}/dashboard/courses/${exam.courseId}`}
+                                href={`/${locale}/dashboard/courses/${exam.courseId}/edit`}
                                 className="flex items-start gap-1 text-xs font-semibold text-primary hover:underline underline-offset-2 line-clamp-1"
                               >
                                 <ExternalLink className="h-3 w-3 shrink-0" />

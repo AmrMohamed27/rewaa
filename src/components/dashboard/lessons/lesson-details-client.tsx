@@ -315,7 +315,7 @@ export function LessonDetailsClient({ lessonId }: LessonDetailsClientProps) {
                 <div className="flex justify-between py-1 border-b border-border/40">
                   <span className="text-muted-foreground">{t("details.linkedCourse")}</span>
                   <Link
-                    href={`/${locale}/dashboard/courses/${lesson.courseId}`}
+                    href={`/${locale}/dashboard/courses/${lesson.courseId}/edit`}
                     className="font-semibold text-primary hover:underline flex items-center gap-1"
                   >
                     <ExternalLink className="size-3" />

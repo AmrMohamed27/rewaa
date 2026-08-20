@@ -11,9 +11,6 @@ import { Course } from "@/types/course";
 import {
   Barcode,
   BookOpen,
-  Check,
-  Copy,
-  Eye,
   Globe,
   Globe2,
   House,
@@ -21,6 +18,7 @@ import {
   Pencil,
   Trash2,
   User,
+  UserPlus,
   Users,
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
@@ -40,9 +38,9 @@ interface CourseCardProps {
 
 export function CourseCard({
   course,
-  copiedId = null,
+  copiedId: _copiedId = null,
   onPublishToggle,
-  onCopyLink,
+  onCopyLink: _onCopyLink,
   onDeleteRequest,
   mode = "dashboard",
   enrollHref,
@@ -199,8 +197,8 @@ export function CourseCard({
                 size="sm"
                 className="flex-1 font-bold text-sm border border-primary! text-primary hover:text-primary py-3.5! cursor-pointer"
               >
-                <Link href={`/${locale}/dashboard/courses/${course.id}`}>
-                  {t("card.viewStats")}
+                <Link href={`/${locale}/dashboard/courses/${course.id}/edit`}>
+                  {t("card.edit")}
                 </Link>
               </Button>
             ) : (
@@ -221,34 +219,16 @@ export function CourseCard({
                   <span className="sr-only">Menu</span>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align={isAr ? "start" : "end"}>
+              <DropdownMenuContent align={isAr ? "start" : "end"} className="min-w-40">
                 {course.isDraft ? (
                   <>
-                    <DropdownMenuItem asChild>
-                      <Link
-                        href={`/${locale}/dashboard/courses/${course.id}`}
-                        className="flex items-center gap-2"
-                      >
-                        <Eye className="h-4 w-4" />
-                        <span>{t("card.viewDetails")}</span>
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link
-                        href={`/${locale}/dashboard/courses/${course.id}/codes`}
-                        className="flex items-center gap-2"
-                      >
-                        <Barcode className="h-4 w-4" />
-                        <span>{t("activationCodes")}</span>
-                      </Link>
-                    </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link
                         href={`/${locale}/dashboard/courses/${course.id}/edit`}
                         className="flex items-center gap-2"
                       >
                         <Pencil className="h-4 w-4" />
-                        <span>{t("card.modify")}</span>
+                        <span>{t("card.edit")}</span>
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem
@@ -263,25 +243,30 @@ export function CourseCard({
                   <>
                     <DropdownMenuItem asChild>
                       <Link
+                        href={`/${locale}/dashboard/courses/${course.id}/students`}
+                        className="flex items-center gap-2"
+                      >
+                        <Users className="h-4 w-4" />
+                        <span>{t("card.viewStudents")}</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href={`/${locale}/dashboard/students/new?courseId=${course.id}`}
+                        className="flex items-center gap-2"
+                      >
+                        <UserPlus className="h-4 w-4" />
+                        <span>{t("card.addStudent")}</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link
                         href={`/${locale}/dashboard/courses/${course.id}/codes`}
                         className="flex items-center gap-2"
                       >
                         <Barcode className="h-4 w-4" />
-                        <span>{t("activationCodes")}</span>
+                        <span>{t("card.viewActivationCodes")}</span>
                       </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() => onCopyLink?.(course.id)}
-                      className="flex items-center gap-2"
-                    >
-                      {copiedId === course.id ? (
-                        <Check className="h-4 w-4 text-emerald-500" />
-                      ) : (
-                        <Copy className="h-4 w-4" />
-                      )}
-                      <span>
-                        {copiedId === course.id ? t("card.linkCopied") : t("card.copyLink")}
-                      </span>
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={() => onDeleteRequest?.(course)}

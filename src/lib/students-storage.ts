@@ -105,3 +105,49 @@ export function deleteStoredStudent(locale: string, id: string): boolean {
   }
   return false;
 }
+
+export function getCourseEnrolledStudents(locale: string, courseId: string): Student[] {
+  const students = getStoredStudents(locale);
+  return students.filter((student) => {
+    // If explicit enrolledCourseIds array exists, check it
+    if (student.enrolledCourseIds && Array.isArray(student.enrolledCourseIds)) {
+      return student.enrolledCourseIds.includes(courseId);
+    }
+    // Fallback heuristic for mock dataset: map some mock students to initial courses
+    // For course-001 (Physics): std-1, std-3, std-5, std-6
+    // For course-002 (Chemistry): std-1, std-2, std-6
+    // For course-003 (Math): std-1, std-3, std-7
+    // For course-004 (Biology): std-2, std-4, std-6
+    // For other courses or defaults:
+    if (courseId === "course-001") {
+      return ["std-1", "std-3", "std-5", "std-6"].includes(student.id);
+    } else if (courseId === "course-002") {
+      return ["std-1", "std-2", "std-6"].includes(student.id);
+    } else if (courseId === "course-003") {
+      return ["std-1", "std-3", "std-7"].includes(student.id);
+    } else if (courseId === "course-004") {
+      return ["std-2", "std-4", "std-6"].includes(student.id);
+    } else {
+      return (student.coursesCount ?? 0) > 0;
+    }
+  });
+}
+
+export function enrollStudentInCourse(locale: string, studentId: string, courseId: string): void {
+  const students = getStoredStudents(locale);
+  const updated = students.map((s) => {
+    if (s.id === studentId) {
+      const currentEnrolled = s.enrolledCourseIds || [];
+      if (!currentEnrolled.includes(courseId)) {
+        const nextEnrolled = [...currentEnrolled, courseId];
+        return {
+          ...s,
+          enrolledCourseIds: nextEnrolled,
+          coursesCount: Math.max(s.coursesCount || 0, nextEnrolled.length),
+        };
+      }
+    }
+    return s;
+  });
+  saveStoredStudents(locale, updated);
+}
