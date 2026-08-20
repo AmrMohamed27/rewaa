@@ -30,12 +30,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  GradeSelect,
-  SubjectSelect,
-  TeacherSelect,
-  ExamSelect,
-} from "@/components/ui/academic-selects";
+import { GradeSelect, SubjectSelect, TeacherSelect } from "@/components/ui/academic-selects";
 import { SelectWithAdd } from "@/components/ui/select-with-add";
 import {
   getStoredCustomQuestionKinds,
@@ -47,7 +42,6 @@ import { cn } from "@/lib/utils";
 import { getStoredTeachers } from "@/lib/settings-storage";
 import { Teacher } from "@/types/settings";
 import {
-  Exam,
   ExamSection,
   MCQOption,
   Question,
@@ -60,9 +54,6 @@ export interface QuestionFormContentProps {
   initialQuestion?: Question | null;
   sections?: ExamSection[];
   initialSectionId?: string;
-  exams?: Exam[];
-  selectedExamId?: string;
-  onSelectedExamIdChange?: (examId: string) => void;
   examGrade?: string;
   examSubject?: string;
   examTeacherName?: string;
@@ -71,7 +62,7 @@ export interface QuestionFormContentProps {
     question: Question,
     sectionId?: string,
     keepOpen?: boolean,
-    academicContext?: { examId?: string; grade?: string; subject?: string; teacherName?: string },
+    academicContext?: { grade?: string; subject?: string; teacherName?: string },
   ) => void;
   onCancel?: () => void;
   submitLabel?: string;
@@ -83,9 +74,6 @@ export function QuestionFormContent({
   initialQuestion,
   sections,
   initialSectionId,
-  exams,
-  selectedExamId,
-  onSelectedExamIdChange,
   examGrade,
   examSubject,
   examTeacherName,
@@ -392,22 +380,6 @@ export function QuestionFormContent({
           </div>
         ) : null}
 
-        {/* Optional Exam Selector if exams provided */}
-        {exams && onSelectedExamIdChange && (
-          <div className="pt-2 border-t border-border/40">
-            <ExamSelect
-              value={selectedExamId || "none"}
-              onValueChange={onSelectedExamIdChange}
-              label={tNew("selectExam")}
-              placeholder={tNew("selectExamPlaceholder")}
-              exams={exams}
-              showNoneOption
-              noneOptionLabel={tNew("noExam")}
-              showTeacherNameInOption
-            />
-          </div>
-        )}
-
         {/* Question Kind Classification & Difficulty Dropdowns */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <SelectWithAdd
@@ -640,7 +612,7 @@ export function QuestionFormContent({
                     size="icon-xs"
                     disabled={options.length <= 2}
                     onClick={() => handleDeleteOption(opt.id)}
-                    className="text-muted-foreground hover:text-destructive shrink-0"
+                    className="text-destructive hover:text-destructive hover:bg-destructive/10 shrink-0"
                   >
                     <Trash2 className="size-3.5" />
                   </Button>

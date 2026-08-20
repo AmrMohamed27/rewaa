@@ -1,32 +1,19 @@
-/* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
 import { ArrowLeft } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import * as React from "react";
 
 import { QuestionFormContent } from "@/components/dashboard/questions/question-form-content";
 import { Button } from "@/components/ui/button";
-import { getStoredExams } from "@/lib/exams-storage";
 import { addStoredQuestion } from "@/lib/questions-storage";
-import { Exam, Question } from "@/types/exam";
+import { Question } from "@/types/exam";
 
 export function NewQuestionClient() {
   const locale = useLocale();
   const router = useRouter();
   const t = useTranslations("questionsPage.newPage");
-
-  const [exams, setExams] = React.useState<Exam[]>([]);
-  const [selectedExamId, setSelectedExamId] = React.useState<string>("none");
-
-  React.useEffect(() => {
-    const loadedExams = getStoredExams(locale);
-    setExams(loadedExams);
-  }, [locale]);
-
-  const currentSelectedExam = exams.find((e) => e.id === selectedExamId);
 
   const handleSave = (
     newQuestion: Question,
@@ -35,10 +22,9 @@ export function NewQuestionClient() {
     academicContext?: { grade?: string; subject?: string; teacherName?: string },
   ) => {
     addStoredQuestion(locale, newQuestion, {
-      examId: selectedExamId,
-      grade: currentSelectedExam?.grade || academicContext?.grade,
-      subject: currentSelectedExam?.subject || academicContext?.subject,
-      teacherName: currentSelectedExam?.teacherName || academicContext?.teacherName,
+      grade: academicContext?.grade,
+      subject: academicContext?.subject,
+      teacherName: academicContext?.teacherName,
     });
 
     router.push(`/${locale}/dashboard/questions`);
@@ -67,13 +53,10 @@ export function NewQuestionClient() {
 
       {/* Question Form Content with editable grade, subject, and teacherName */}
       <QuestionFormContent
-        exams={exams}
-        selectedExamId={selectedExamId}
-        onSelectedExamIdChange={setSelectedExamId}
-        examGrade={currentSelectedExam?.grade || "grade1"}
-        examSubject={currentSelectedExam?.subject || "physics"}
-        examTeacherName={currentSelectedExam?.teacherName || ""}
-        allowEditableAcademicProps={selectedExamId === "none"}
+        examGrade="grade1"
+        examSubject="physics"
+        examTeacherName=""
+        allowEditableAcademicProps={true}
         onSave={handleSave}
         onCancel={handleCancel}
         submitLabel={t("saveQuestion")}
