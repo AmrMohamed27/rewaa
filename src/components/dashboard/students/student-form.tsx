@@ -16,6 +16,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { GradeSelect } from "@/components/ui/academic-selects";
+import { SelectWithAdd } from "@/components/ui/select-with-add";
+import {
+  getStoredCustomRegistrationTypes,
+  saveStoredCustomRegistrationType,
+} from "@/lib/custom-categories-storage";
 import { Gender, RegistrationType, Student } from "@/types/student";
 
 export interface StudentFormData {
@@ -74,6 +79,23 @@ export function StudentForm({
     grade: initialData?.grade || "grade3",
     registrationType: initialData?.registrationType || "center",
   });
+
+  const [customRegTypes, setCustomRegTypes] = React.useState<Array<{ id: string; name: string }>>(
+    [],
+  );
+
+  React.useEffect(() => {
+    const load = () => {
+      setCustomRegTypes(getStoredCustomRegistrationTypes());
+    };
+    load();
+    window.addEventListener("rewaa_custom_categories_updated", load);
+    window.addEventListener("rewaa_registration_types_updated", load);
+    return () => {
+      window.removeEventListener("rewaa_custom_categories_updated", load);
+      window.removeEventListener("rewaa_registration_types_updated", load);
+    };
+  }, []);
 
   const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
 
@@ -314,23 +336,35 @@ export function StudentForm({
           />
 
           {/* Registration Type */}
-          <div className="space-y-2">
-            <Label htmlFor="registrationType">{tForm("registrationTypeLabel")}</Label>
-            <Select
-              value={formData.registrationType}
-              onValueChange={(val) => handleChange("registrationType", val as RegistrationType)}
-            >
-              <SelectTrigger id="registrationType" className="bg-background">
-                <SelectValue placeholder={tForm("selectRegistrationType")} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="center">{tForm("registrationTypes.center")}</SelectItem>
-                <SelectItem value="online">{tForm("registrationTypes.online")}</SelectItem>
-                <SelectItem value="hybrid">{tForm("registrationTypes.hybrid")}</SelectItem>
-                <SelectItem value="external">{tForm("registrationTypes.external")}</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          <SelectWithAdd
+            id="registrationType"
+            value={formData.registrationType}
+            onValueChange={(val) => handleChange("registrationType", val as RegistrationType)}
+            label={tForm("registrationTypeLabel")}
+            placeholder={tForm("selectRegistrationType")}
+            options={[
+              { value: "center", label: tForm("registrationTypes.center") },
+              { value: "online", label: tForm("registrationTypes.online") },
+              { value: "hybrid", label: tForm("registrationTypes.hybrid") },
+              { value: "external", label: tForm("registrationTypes.external") },
+              ...customRegTypes
+                .filter(
+                  (c) =>
+                    !["center", "online", "hybrid", "external"].includes(c.id) &&
+                    !["center", "online", "hybrid", "external"].includes(c.name),
+                )
+                .map((c) => ({ value: c.id, label: c.name })),
+            ]}
+            allowAdd
+            onAddNewOption={(name) => {
+              saveStoredCustomRegistrationType(name);
+              setCustomRegTypes(getStoredCustomRegistrationTypes());
+            }}
+            addDialogTitle="إضافة نوع تسجيل جديد"
+            addInputLabel="نوع التسجيل"
+            addInputPlaceholder="مثال: منحة دراسية خاصة"
+            triggerClassName="bg-background"
+          />
         </div>
       </FormSectionCard>
 

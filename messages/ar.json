@@ -10,7 +10,17 @@
     "reset": "إعادة ضبط",
     "submitting": "جاري الإرسال...",
     "genericError": "حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.",
-    "brandName": "رواء"
+    "brandName": "رواء",
+    "quickAdd": {
+      "addOption": "إضافة خيار جديد",
+      "addOptionTitle": "إضافة خيار جديد",
+      "addOptionDesc": "أدخل اسم الخيار الجديد لإضافته وتحديده مباشرة.",
+      "nameLabel": "الاسم / العنوان",
+      "namePlaceholder": "أدخل الاسم هنا...",
+      "save": "إضافة وحفظ",
+      "cancel": "إلغاء",
+      "nameRequired": "يرجى كتابة الاسم أولاً"
+    }
   },
   "notFound": {
     "title": "404 - الصفحة غير موجودة",

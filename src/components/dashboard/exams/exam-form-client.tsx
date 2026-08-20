@@ -59,6 +59,12 @@ import {
   CourseSelect,
   LessonSelect,
 } from "@/components/ui/academic-selects";
+import { SelectWithAdd } from "@/components/ui/select-with-add";
+import {
+  getStoredCustomExamCategories,
+  saveStoredCustomExamCategory,
+  saveStoredCustomSection,
+} from "@/lib/custom-categories-storage";
 import { getStoredTeachers } from "@/lib/settings-storage";
 import { Teacher } from "@/types/settings";
 import { cn } from "@/lib/utils";
@@ -133,6 +139,46 @@ export function ExamFormClient({ mode, initialData }: ExamFormClientProps) {
   const [subject, setSubject] = React.useState(initialData?.subject || "");
   const [teacherName, setTeacherName] = React.useState(initialData?.teacherName || "");
   const [category, setCategory] = React.useState<ExamCategory>(initialData?.category || "test");
+  const [customExamCategories, setCustomExamCategories] = React.useState<
+    Array<{ id: string; name: string }>
+  >([]);
+
+  React.useEffect(() => {
+    const loadCategories = () => {
+      setCustomExamCategories(getStoredCustomExamCategories());
+    };
+    loadCategories();
+    window.addEventListener("rewaa_custom_categories_updated", loadCategories);
+    window.addEventListener("rewaa_exam_categories_updated", loadCategories);
+    return () => {
+      window.removeEventListener("rewaa_custom_categories_updated", loadCategories);
+      window.removeEventListener("rewaa_exam_categories_updated", loadCategories);
+    };
+  }, []);
+
+  const handleAddExamCategory = (name: string) => {
+    saveStoredCustomExamCategory(name);
+  };
+
+  const defaultExamCategoryOptions = [
+    { value: "final", label: t("category.final") },
+    { value: "midterm", label: t("category.midterm") },
+    { value: "test", label: t("category.test") },
+    { value: "yearWork", label: t("category.yearWork") },
+    { value: "comprehensive", label: t("category.comprehensive") },
+    { value: "unit", label: t("category.unit") },
+    { value: "quiz", label: t("category.quiz") },
+    { value: "placement", label: t("category.placement") },
+  ];
+
+  const allExamCategoryOptions = [
+    ...defaultExamCategoryOptions,
+    ...customExamCategories
+      .filter(
+        (c) => !defaultExamCategoryOptions.some((d) => d.value === c.id || d.label === c.name),
+      )
+      .map((c) => ({ value: c.id, label: c.name })),
+  ];
 
   // Advanced Settings
   const [showModelAnswers, setShowModelAnswers] = React.useState(
@@ -559,27 +605,18 @@ export function ExamFormClient({ mode, initialData }: ExamFormClientProps) {
                   />
 
                   {/* Exam Category */}
-                  <div className="space-y-2">
-                    <Label className="font-semibold">{tForm("fields.category")}</Label>
-                    <Select
-                      value={category}
-                      onValueChange={(val) => setCategory(val as ExamCategory)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder={tForm("fields.selectCategory")} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="final">{t("category.final")}</SelectItem>
-                        <SelectItem value="midterm">{t("category.midterm")}</SelectItem>
-                        <SelectItem value="test">{t("category.test")}</SelectItem>
-                        <SelectItem value="yearWork">{t("category.yearWork")}</SelectItem>
-                        <SelectItem value="comprehensive">{t("category.comprehensive")}</SelectItem>
-                        <SelectItem value="unit">{t("category.unit")}</SelectItem>
-                        <SelectItem value="quiz">{t("category.quiz")}</SelectItem>
-                        <SelectItem value="placement">{t("category.placement")}</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  <SelectWithAdd
+                    value={category}
+                    onValueChange={(val) => setCategory(val as ExamCategory)}
+                    label={tForm("fields.category")}
+                    placeholder={tForm("fields.selectCategory")}
+                    options={allExamCategoryOptions}
+                    allowAdd
+                    onAddNewOption={handleAddExamCategory}
+                    addDialogTitle="إضافة تصنيف امتحان جديد"
+                    addInputLabel="اسم تصنيف الامتحان"
+                    addInputPlaceholder="مثال: تقييم شهري دوري"
+                  />
                 </div>
               </FormSectionCard>
 
@@ -697,27 +734,26 @@ export function ExamFormClient({ mode, initialData }: ExamFormClientProps) {
                       />
 
                       {/* Linked Section */}
-                      <div className="space-y-2">
-                        <Label className="font-semibold">{tForm("fields.linkedSection")}</Label>
-                        <Select
-                          value={selectedSectionId}
-                          onValueChange={handleSectionChange}
-                          disabled={
-                            !selectedCourseId || (isContextLocked && Boolean(paramSectionId))
-                          }
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder={tForm("fields.selectSection")} />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {availableSections.map((sec) => (
-                              <SelectItem key={sec.id} value={sec.id}>
-                                {sec.title}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
+                      <SelectWithAdd
+                        value={selectedSectionId}
+                        onValueChange={handleSectionChange}
+                        disabled={!selectedCourseId || (isContextLocked && Boolean(paramSectionId))}
+                        label={tForm("fields.linkedSection")}
+                        placeholder={tForm("fields.selectSection")}
+                        options={availableSections.map((sec) => ({
+                          value: sec.id,
+                          label: sec.title,
+                        }))}
+                        allowAdd={Boolean(selectedCourseId) && !isContextLocked}
+                        onAddNewOption={(name) => {
+                          const newSec = saveStoredCustomSection(name, selectedCourseId);
+                          handleSectionChange(newSec.id);
+                        }}
+                        addDialogTitle="إضافة قسم جديد للكورس"
+                        addInputLabel="عنوان القسم"
+                        addInputPlaceholder="مثال: الباب الأول - المفاهيم الأساسية"
+                        className="space-y-2"
+                      />
 
                       {/* Linked Lesson */}
                       <LessonSelect

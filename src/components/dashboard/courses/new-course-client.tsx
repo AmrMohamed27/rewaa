@@ -22,6 +22,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { SelectWithAdd } from "@/components/ui/select-with-add";
 import {
   getStoredCourses,
   getStoredCustomPeriods,
@@ -543,38 +544,34 @@ export function NewCourseClient({ initialCourseId }: NewCourseClientProps = {}) 
                 />
 
                 {/* Period */}
-                <div className="flex flex-col gap-2">
-                  <label className="text-sm font-medium text-foreground">
-                    {t("fields.period")} <span className="text-destructive">*</span>
-                  </label>
-                  <div className="flex items-center gap-2">
-                    <Select value={period} onValueChange={(val) => setPeriod(val)}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder={t("fields.selectPeriod")} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="monthly">{t("periodOptions.monthly")}</SelectItem>
-                        <SelectItem value="yearly">{t("periodOptions.yearly")}</SelectItem>
-                        <SelectItem value="termBased">{t("periodOptions.termBased")}</SelectItem>
-                        {customPeriods.map((cp) => (
-                          <SelectItem key={cp.id} value={cp.id}>
-                            {cp.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <Button
-                      type="button"
-                      variant="default"
-                      size="icon"
-                      className="shrink-0 h-9 w-9"
-                      onClick={() => setIsAddPeriodOpen(true)}
-                      title={t("periodOptions.addPeriod") || "إضافة فترة جديدة"}
-                    >
-                      <Plus className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
+                <SelectWithAdd
+                  value={period}
+                  onValueChange={(val) => setPeriod(val)}
+                  label={
+                    <span>
+                      {t("fields.period")} <span className="text-destructive">*</span>
+                    </span>
+                  }
+                  placeholder={t("fields.selectPeriod")}
+                  options={[
+                    { value: "monthly", label: t("periodOptions.monthly") },
+                    { value: "yearly", label: t("periodOptions.yearly") },
+                    { value: "termBased", label: t("periodOptions.termBased") },
+                    ...customPeriods.map((cp) => ({ value: cp.id, label: cp.name })),
+                  ]}
+                  allowAdd
+                  onAddNewOption={(name) => {
+                    saveStoredCustomPeriod(name);
+                    setCustomPeriods((prev) =>
+                      prev.some((p) => p.id === name) ? prev : [...prev, { id: name, name }],
+                    );
+                  }}
+                  addDialogTitle={t("periodOptions.addPeriodDialogTitle")}
+                  addDialogDescription={t("periodOptions.addPeriodDialogDesc")}
+                  addInputLabel={t("periodOptions.periodNameLabel")}
+                  addInputPlaceholder={t("periodOptions.periodNamePlaceholder")}
+                  addButtonTooltip={t("periodOptions.addPeriod")}
+                />
               </FormSectionCard>
 
               {/* 3. PRICE INFORMATION */}

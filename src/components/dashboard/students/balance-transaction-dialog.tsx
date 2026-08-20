@@ -15,13 +15,11 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { SelectWithAdd } from "@/components/ui/select-with-add";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  getStoredCustomTransactionTypes,
+  saveStoredCustomTransactionType,
+} from "@/lib/custom-categories-storage";
 import { Textarea } from "@/components/ui/textarea";
 
 import { TransactionType } from "@/types/student";
@@ -45,6 +43,21 @@ export function BalanceTransactionDialog({
   const tDetails = useTranslations("studentsPage.details");
 
   const [transactionType, setTransactionType] = React.useState<TransactionType>("deposit");
+  const [customTxTypes, setCustomTxTypes] = React.useState<Array<{ id: string; name: string }>>([]);
+
+  React.useEffect(() => {
+    const load = () => {
+      setCustomTxTypes(getStoredCustomTransactionTypes());
+    };
+    load();
+    window.addEventListener("rewaa_custom_categories_updated", load);
+    window.addEventListener("rewaa_transaction_types_updated", load);
+    return () => {
+      window.removeEventListener("rewaa_custom_categories_updated", load);
+      window.removeEventListener("rewaa_transaction_types_updated", load);
+    };
+  }, []);
+
   const [amountInput, setAmountInput] = React.useState<string>("");
   const [notes, setNotes] = React.useState<string>("");
   const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
@@ -124,25 +137,35 @@ export function BalanceTransactionDialog({
           )}
 
           {/* Transaction Type Select */}
-          <div className="space-y-2">
-            <Label htmlFor="tx-type" className="text-xs font-semibold">
-              {tModal("transactionType")}
-            </Label>
-            <Select
-              value={transactionType}
-              onValueChange={(val) => setTransactionType(val as TransactionType)}
-            >
-              <SelectTrigger id="tx-type" className="bg-background">
-                <SelectValue placeholder={tModal("selectType")} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="deposit">{tModal("types.deposit")}</SelectItem>
-                <SelectItem value="withdraw">{tModal("types.withdraw")}</SelectItem>
-                <SelectItem value="refund">{tModal("types.refund")}</SelectItem>
-                <SelectItem value="adjustment">{tModal("types.adjustment")}</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          <SelectWithAdd
+            id="tx-type"
+            value={transactionType}
+            onValueChange={(val) => setTransactionType(val as TransactionType)}
+            label={tModal("transactionType")}
+            placeholder={tModal("selectType")}
+            options={[
+              { value: "deposit", label: tModal("types.deposit") },
+              { value: "withdraw", label: tModal("types.withdraw") },
+              { value: "refund", label: tModal("types.refund") },
+              { value: "adjustment", label: tModal("types.adjustment") },
+              ...customTxTypes
+                .filter(
+                  (c) =>
+                    !["deposit", "withdraw", "refund", "adjustment"].includes(c.id) &&
+                    !["deposit", "withdraw", "refund", "adjustment"].includes(c.name),
+                )
+                .map((c) => ({ value: c.id, label: c.name })),
+            ]}
+            allowAdd
+            onAddNewOption={(name) => {
+              saveStoredCustomTransactionType(name);
+              setCustomTxTypes(getStoredCustomTransactionTypes());
+            }}
+            addDialogTitle="إضافة نوع معاملة رصيد جديد"
+            addInputLabel="نوع المعاملة"
+            addInputPlaceholder="مثال: مكافأة تميز دراسي"
+            triggerClassName="bg-background"
+          />
 
           {/* Amount Input */}
           <div className="space-y-2">

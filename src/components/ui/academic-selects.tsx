@@ -25,7 +25,7 @@ import { Exam } from "@/types/exam";
 import { Teacher } from "@/types/settings";
 
 const triggerBaseStyles = cn(
-  "flex h-8 w-full items-center justify-between gap-1.5 rounded-lg border border-input bg-transparent py-2 px-2.5 text-sm whitespace-nowrap transition-colors outline-none select-none",
+  "flex h-8 w-full flex-1 min-w-0 items-center justify-between gap-1.5 rounded-lg border border-input bg-transparent py-2 px-2.5 text-sm whitespace-nowrap transition-colors outline-none select-none",
   "focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50",
   "disabled:cursor-not-allowed disabled:opacity-50",
   "aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20",
@@ -33,6 +33,16 @@ const triggerBaseStyles = cn(
   "dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40",
   "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
 );
+
+import { Plus } from "lucide-react";
+import { QuickAddDialog } from "@/components/ui/quick-add-dialog";
+import {
+  getStoredGrades,
+  getStoredSubjects,
+  saveGrade,
+  saveSubject,
+  saveTeacher,
+} from "@/lib/settings-storage";
 
 export interface ComboboxOption {
   value: string;
@@ -54,6 +64,14 @@ export interface ComboboxSelectProps {
   triggerClassName?: string;
   showIcon?: boolean;
   icon?: React.ReactNode;
+  // Quick-Add capability
+  allowAdd?: boolean;
+  addButtonTooltip?: string;
+  onAddNewOption?: (name: string) => void | Promise<void>;
+  addDialogTitle?: string;
+  addDialogDescription?: string;
+  addInputLabel?: string;
+  addInputPlaceholder?: string;
 }
 
 export function ComboboxSelect({
@@ -71,12 +89,30 @@ export function ComboboxSelect({
   triggerClassName,
   showIcon = false,
   icon,
+  allowAdd = false,
+  addButtonTooltip,
+  onAddNewOption,
+  addDialogTitle,
+  addDialogDescription,
+  addInputLabel,
+  addInputPlaceholder,
 }: ComboboxSelectProps) {
   const locale = useLocale();
   const isRTL = locale === "ar";
+  const t = useTranslations("common.quickAdd");
   const [open, setOpen] = React.useState(false);
+  const [isAddOpen, setIsAddOpen] = React.useState(false);
 
   const selectedOption = options.find((opt) => opt.value === value);
+
+  const handleAdd = async (newName: string) => {
+    if (onAddNewOption) {
+      await onAddNewOption(newName);
+    }
+    setTimeout(() => {
+      onValueChange(newName);
+    }, 50);
+  };
 
   return (
     <div className={cn("flex flex-col gap-2", className)}>
@@ -91,73 +127,101 @@ export function ComboboxSelect({
         </Label>
       )}
 
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            id={id}
-            variant="outline"
-            role="combobox"
-            aria-expanded={open}
-            disabled={disabled}
-            className={cn(
-              triggerBaseStyles,
-              !value && "text-muted-foreground",
-              isRTL ? "text-right" : "text-left",
-              triggerClassName,
-            )}
+      <div className="flex items-center gap-2 w-full min-w-0">
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              id={id}
+              variant="outline"
+              role="combobox"
+              aria-expanded={open}
+              disabled={disabled}
+              className={cn(
+                triggerBaseStyles,
+                !value && "text-muted-foreground",
+                isRTL ? "text-right" : "text-left",
+                triggerClassName,
+              )}
+              dir={isRTL ? "rtl" : "ltr"}
+            >
+              <span className="line-clamp-1 flex items-center gap-1.5 flex-1">
+                {selectedOption ? selectedOption.label : placeholder}
+              </span>
+              <ChevronDownIcon className="pointer-events-none size-4 shrink-0 text-muted-foreground" />
+            </Button>
+          </PopoverTrigger>
+
+          <PopoverContent
+            className="w-[--radix-popover-trigger-width] min-w-36 p-0"
+            align="start"
             dir={isRTL ? "rtl" : "ltr"}
           >
-            <span className="line-clamp-1 flex items-center gap-1.5 flex-1">
-              {selectedOption ? selectedOption.label : placeholder}
-            </span>
-            <ChevronDownIcon className="pointer-events-none size-4 shrink-0 text-muted-foreground" />
-          </Button>
-        </PopoverTrigger>
-
-        <PopoverContent
-          className="w-[--radix-popover-trigger-width] min-w-36 p-0"
-          align="start"
-          dir={isRTL ? "rtl" : "ltr"}
-        >
-          <Command dir={isRTL ? "rtl" : "ltr"}>
-            <CommandInput placeholder={searchPlaceholder} />
-            <CommandList>
-              <CommandEmpty>{emptyLabel}</CommandEmpty>
-              <CommandGroup>
-                {options.map((opt) => (
-                  <CommandItem
-                    key={opt.value}
-                    value={opt.label}
-                    onSelect={() => {
-                      onValueChange(opt.value === value ? "" : opt.value);
-                      setOpen(false);
-                    }}
-                    className={cn(
-                      "relative flex w-full cursor-default items-center gap-1.5 rounded-md py-2 text-sm outline-hidden select-none",
-                      isRTL ? "pl-8 pr-1.5 text-right" : "pr-8 pl-1.5 text-left",
-                    )}
-                  >
-                    <span className="flex-1 line-clamp-1">{opt.label}</span>
-                    <span
+            <Command dir={isRTL ? "rtl" : "ltr"}>
+              <CommandInput placeholder={searchPlaceholder} />
+              <CommandList>
+                <CommandEmpty>{emptyLabel}</CommandEmpty>
+                <CommandGroup>
+                  {options.map((opt) => (
+                    <CommandItem
+                      key={opt.value}
+                      value={opt.label}
+                      onSelect={() => {
+                        onValueChange(opt.value === value ? "" : opt.value);
+                        setOpen(false);
+                      }}
                       className={cn(
-                        "pointer-events-none absolute flex size-4 items-center justify-center",
-                        isRTL ? "left-2" : "right-2",
+                        "relative flex w-full cursor-default items-center gap-1.5 rounded-md py-2 text-sm outline-hidden select-none",
+                        isRTL ? "pl-8 pr-1.5 text-right" : "pr-8 pl-1.5 text-left",
                       )}
                     >
-                      <CheckIcon
+                      <span className="flex-1 line-clamp-1">{opt.label}</span>
+                      <span
                         className={cn(
-                          "pointer-events-none size-4",
-                          value === opt.value ? "opacity-100" : "opacity-0",
+                          "pointer-events-none absolute flex size-4 items-center justify-center",
+                          isRTL ? "left-2" : "right-2",
                         )}
-                      />
-                    </span>
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </CommandList>
-          </Command>
-        </PopoverContent>
-      </Popover>
+                      >
+                        <CheckIcon
+                          className={cn(
+                            "pointer-events-none size-4",
+                            value === opt.value ? "opacity-100" : "opacity-0",
+                          )}
+                        />
+                      </span>
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
+
+        {allowAdd && (
+          <Button
+            type="button"
+            variant="default"
+            size="icon"
+            className="shrink-0 h-8 w-8"
+            disabled={disabled}
+            onClick={() => setIsAddOpen(true)}
+            title={addButtonTooltip || t("addOption")}
+          >
+            <Plus className="h-4 w-4" />
+          </Button>
+        )}
+      </div>
+
+      {allowAdd && (
+        <QuickAddDialog
+          open={isAddOpen}
+          onOpenChange={setIsAddOpen}
+          title={addDialogTitle}
+          description={addDialogDescription}
+          inputLabel={addInputLabel}
+          inputPlaceholder={addInputPlaceholder}
+          onAdd={handleAdd}
+        />
+      )}
     </div>
   );
 }
@@ -175,6 +239,7 @@ export interface GradeSelectProps {
   triggerClassName?: string;
   showAllOption?: boolean;
   allOptionLabel?: string;
+  allowAdd?: boolean;
 }
 
 export function GradeSelect({
@@ -189,16 +254,43 @@ export function GradeSelect({
   triggerClassName,
   showAllOption = false,
   allOptionLabel,
+  allowAdd = true,
 }: GradeSelectProps) {
   const tGrades = useTranslations("courses.new.grades");
+  const [storedGradesList, setStoredGradesList] = React.useState<
+    Array<{ id: string; name: string }>
+  >([]);
 
-  const options: ComboboxOption[] = [
-    ...(showAllOption ? [{ value: "all", label: allOptionLabel || "كل المراحل" }] : []),
+  React.useEffect(() => {
+    const load = () => {
+      const g = getStoredGrades();
+      setStoredGradesList(g.map((item) => ({ id: item.id, name: item.name })));
+    };
+    load();
+    window.addEventListener("rewaa_grades_updated", load);
+    return () => window.removeEventListener("rewaa_grades_updated", load);
+  }, []);
+
+  const defaultGrades = [
     { value: "grade1", label: tGrades("grade1") },
     { value: "grade2", label: tGrades("grade2") },
     { value: "grade3", label: tGrades("grade3") },
     { value: "university", label: tGrades("university") },
   ];
+
+  const customGrades = storedGradesList
+    .filter((sg) => !defaultGrades.some((dg) => dg.value === sg.name || dg.label === sg.name))
+    .map((sg) => ({ value: sg.name, label: sg.name }));
+
+  const options: ComboboxOption[] = [
+    ...(showAllOption ? [{ value: "all", label: allOptionLabel || "كل المراحل" }] : []),
+    ...defaultGrades,
+    ...customGrades,
+  ];
+
+  const handleAddGrade = (name: string) => {
+    saveGrade({ name, year: 10 });
+  };
 
   return (
     <ComboboxSelect
@@ -213,6 +305,11 @@ export function GradeSelect({
       required={required}
       className={className}
       triggerClassName={triggerClassName}
+      allowAdd={allowAdd}
+      onAddNewOption={handleAddGrade}
+      addDialogTitle="إضافة مرحلة دراسية جديدة"
+      addInputLabel="اسم المرحلة الدراسية"
+      addInputPlaceholder="مثال: الصف الرابع الابتدائي"
     />
   );
 }
@@ -230,6 +327,7 @@ export interface SubjectSelectProps {
   triggerClassName?: string;
   showAllOption?: boolean;
   allOptionLabel?: string;
+  allowAdd?: boolean;
 }
 
 export function SubjectSelect({
@@ -244,11 +342,24 @@ export function SubjectSelect({
   triggerClassName,
   showAllOption = false,
   allOptionLabel,
+  allowAdd = true,
 }: SubjectSelectProps) {
   const tSubjects = useTranslations("courses.new.subjects");
+  const [storedSubjectsList, setStoredSubjectsList] = React.useState<
+    Array<{ id: string; name: string }>
+  >([]);
 
-  const options: ComboboxOption[] = [
-    ...(showAllOption ? [{ value: "all", label: allOptionLabel || "كل المواد" }] : []),
+  React.useEffect(() => {
+    const load = () => {
+      const s = getStoredSubjects();
+      setStoredSubjectsList(s.map((item) => ({ id: item.id, name: item.name })));
+    };
+    load();
+    window.addEventListener("rewaa_subjects_updated", load);
+    return () => window.removeEventListener("rewaa_subjects_updated", load);
+  }, []);
+
+  const defaultSubjects = [
     { value: "physics", label: tSubjects("physics") },
     { value: "chemistry", label: tSubjects("chemistry") },
     { value: "mathematics", label: tSubjects("mathematics") },
@@ -256,6 +367,20 @@ export function SubjectSelect({
     { value: "arabic", label: tSubjects("arabic") },
     { value: "english", label: tSubjects("english") },
   ];
+
+  const customSubjects = storedSubjectsList
+    .filter((sb) => !defaultSubjects.some((ds) => ds.value === sb.name || ds.label === sb.name))
+    .map((sb) => ({ value: sb.name, label: sb.name }));
+
+  const options: ComboboxOption[] = [
+    ...(showAllOption ? [{ value: "all", label: allOptionLabel || "كل المواد" }] : []),
+    ...defaultSubjects,
+    ...customSubjects,
+  ];
+
+  const handleAddSubject = (name: string) => {
+    saveSubject({ name });
+  };
 
   return (
     <ComboboxSelect
@@ -270,6 +395,11 @@ export function SubjectSelect({
       required={required}
       className={className}
       triggerClassName={triggerClassName}
+      allowAdd={allowAdd}
+      onAddNewOption={handleAddSubject}
+      addDialogTitle="إضافة مادة دراسية جديدة"
+      addInputLabel="اسم المادة الدراسية"
+      addInputPlaceholder="مثال: الجيولوجيا وعلوم البيئة"
     />
   );
 }
@@ -287,6 +417,7 @@ export interface TeacherSelectProps {
   triggerClassName?: string;
   showIcon?: boolean;
   teachers?: Teacher[];
+  allowAdd?: boolean;
 }
 
 export function TeacherSelect({
@@ -301,6 +432,7 @@ export function TeacherSelect({
   triggerClassName,
   showIcon = false,
   teachers,
+  allowAdd = true,
 }: TeacherSelectProps) {
   const [internalTeachers, setInternalTeachers] = React.useState<Teacher[]>([]);
 
@@ -318,6 +450,15 @@ export function TeacherSelect({
     label: tch.name,
   }));
 
+  const handleAddTeacher = (name: string) => {
+    saveTeacher({
+      name,
+      phone: "01000000000",
+      subjects: [],
+      grades: [],
+    });
+  };
+
   return (
     <ComboboxSelect
       id={id}
@@ -333,6 +474,11 @@ export function TeacherSelect({
       className={className}
       triggerClassName={triggerClassName}
       showIcon={showIcon}
+      allowAdd={allowAdd}
+      onAddNewOption={handleAddTeacher}
+      addDialogTitle="إضافة معلم جديد"
+      addInputLabel="اسم المعلم"
+      addInputPlaceholder="مثال: أ. محمد علي"
     />
   );
 }
@@ -353,6 +499,7 @@ export interface ExamSelectProps {
   noneOptionLabel?: string;
   emptyLabel?: string;
   showTeacherNameInOption?: boolean;
+  allowAdd?: boolean;
 }
 
 export function ExamSelect({
@@ -370,6 +517,7 @@ export function ExamSelect({
   noneOptionLabel = "بدون امتحان",
   emptyLabel = "لا يوجد امتحان بهذا الاسم.",
   showTeacherNameInOption = false,
+  allowAdd = false,
 }: ExamSelectProps) {
   const locale = useLocale();
   const [internalExams, setInternalExams] = React.useState<Exam[]>([]);
@@ -405,6 +553,7 @@ export function ExamSelect({
       required={required}
       className={className}
       triggerClassName={triggerClassName}
+      allowAdd={allowAdd}
     />
   );
 }
@@ -424,6 +573,7 @@ export interface CourseSelectProps {
   showAllOption?: boolean;
   allOptionLabel?: string;
   emptyLabel?: string;
+  allowAdd?: boolean;
 }
 
 export function CourseSelect({
@@ -440,6 +590,7 @@ export function CourseSelect({
   showAllOption = false,
   allOptionLabel = "كل الكورسات",
   emptyLabel = "لا يوجد كورس بهذا الاسم.",
+  allowAdd = false,
 }: CourseSelectProps) {
   const locale = useLocale();
   const [internalCourses, setInternalCourses] = React.useState<
@@ -476,6 +627,7 @@ export function CourseSelect({
       required={required}
       className={className}
       triggerClassName={triggerClassName}
+      allowAdd={allowAdd}
     />
   );
 }
@@ -495,6 +647,7 @@ export interface LessonSelectProps {
   showAllOption?: boolean;
   allOptionLabel?: string;
   emptyLabel?: string;
+  allowAdd?: boolean;
 }
 
 export function LessonSelect({
@@ -511,6 +664,7 @@ export function LessonSelect({
   showAllOption = false,
   allOptionLabel = "كل الدروس",
   emptyLabel = "لا يوجد درس بهذا الاسم.",
+  allowAdd = false,
 }: LessonSelectProps) {
   const locale = useLocale();
   const [internalLessons, setInternalLessons] = React.useState<
@@ -547,6 +701,7 @@ export function LessonSelect({
       required={required}
       className={className}
       triggerClassName={triggerClassName}
+      allowAdd={allowAdd}
     />
   );
 }
@@ -564,6 +719,8 @@ export interface MultiLessonSelectProps {
   triggerClassName?: string;
   lessons?: Array<{ id: string; title: string }>;
   emptyLabel?: string;
+  allowAdd?: boolean;
+  onAddNewOption?: (name: string) => void | Promise<void>;
 }
 
 export function MultiLessonSelect({
@@ -578,10 +735,14 @@ export function MultiLessonSelect({
   triggerClassName,
   lessons,
   emptyLabel = "لا يوجد درس بهذا الاسم.",
+  allowAdd = false,
+  onAddNewOption,
 }: MultiLessonSelectProps) {
   const locale = useLocale();
   const isRTL = locale === "ar";
+  const t = useTranslations("common.quickAdd");
   const [open, setOpen] = React.useState(false);
+  const [isAddOpen, setIsAddOpen] = React.useState(false);
   const [internalLessons, setInternalLessons] = React.useState<
     Array<{ id: string; title: string }>
   >([]);
@@ -602,6 +763,15 @@ export function MultiLessonSelect({
     }
   };
 
+  const handleAdd = async (newName: string) => {
+    if (onAddNewOption) {
+      await onAddNewOption(newName);
+    }
+    setTimeout(() => {
+      onValueChange([...value, newName]);
+    }, 50);
+  };
+
   const selectedLabels = activeLessons.filter((l) => value.includes(l.id)).map((l) => l.title);
 
   return (
@@ -616,85 +786,113 @@ export function MultiLessonSelect({
         </Label>
       )}
 
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            id={id}
-            variant="outline"
-            role="combobox"
-            aria-expanded={open}
-            disabled={disabled}
-            className={cn(
-              triggerBaseStyles,
-              "h-auto min-h-8 py-1.5 px-2.5",
-              value.length === 0 && "text-muted-foreground",
-              isRTL ? "text-right" : "text-left",
-              triggerClassName,
-            )}
+      <div className="flex items-center gap-2 w-full min-w-0">
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              id={id}
+              variant="outline"
+              role="combobox"
+              aria-expanded={open}
+              disabled={disabled}
+              className={cn(
+                triggerBaseStyles,
+                "h-auto min-h-8 py-1.5 px-2.5",
+                value.length === 0 && "text-muted-foreground",
+                isRTL ? "text-right" : "text-left",
+                triggerClassName,
+              )}
+              dir={isRTL ? "rtl" : "ltr"}
+            >
+              <div className="flex flex-wrap items-center gap-1 flex-1">
+                {selectedLabels.length > 0 ? (
+                  selectedLabels.map((lbl, idx) => (
+                    <span
+                      key={idx}
+                      className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-semibold bg-primary/10 text-primary"
+                    >
+                      {lbl}
+                    </span>
+                  ))
+                ) : (
+                  <span>{placeholder}</span>
+                )}
+              </div>
+              <ChevronDownIcon className="pointer-events-none size-4 shrink-0 text-muted-foreground" />
+            </Button>
+          </PopoverTrigger>
+
+          <PopoverContent
+            className="w-[--radix-popover-trigger-width] min-w-48 p-0"
+            align="start"
             dir={isRTL ? "rtl" : "ltr"}
           >
-            <div className="flex flex-wrap items-center gap-1 flex-1">
-              {selectedLabels.length > 0 ? (
-                selectedLabels.map((lbl, idx) => (
-                  <span
-                    key={idx}
-                    className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-semibold bg-primary/10 text-primary"
-                  >
-                    {lbl}
-                  </span>
-                ))
-              ) : (
-                <span>{placeholder}</span>
-              )}
-            </div>
-            <ChevronDownIcon className="pointer-events-none size-4 shrink-0 text-muted-foreground" />
-          </Button>
-        </PopoverTrigger>
-
-        <PopoverContent
-          className="w-[--radix-popover-trigger-width] min-w-48 p-0"
-          align="start"
-          dir={isRTL ? "rtl" : "ltr"}
-        >
-          <Command dir={isRTL ? "rtl" : "ltr"}>
-            <CommandInput placeholder="ابحث عن درس..." />
-            <CommandList>
-              <CommandEmpty>{emptyLabel}</CommandEmpty>
-              <CommandGroup>
-                {activeLessons.map((l) => {
-                  const isSelected = value.includes(l.id);
-                  return (
-                    <CommandItem
-                      key={l.id}
-                      value={l.title}
-                      onSelect={() => toggleOption(l.id)}
-                      className={cn(
-                        "relative flex w-full cursor-default items-center gap-1.5 rounded-md py-2 text-sm outline-hidden select-none",
-                        isRTL ? "pl-8 pr-1.5 text-right" : "pr-8 pl-1.5 text-left",
-                      )}
-                    >
-                      <span className="flex-1 line-clamp-1">{l.title}</span>
-                      <span
+            <Command dir={isRTL ? "rtl" : "ltr"}>
+              <CommandInput placeholder="ابحث عن درس..." />
+              <CommandList>
+                <CommandEmpty>{emptyLabel}</CommandEmpty>
+                <CommandGroup>
+                  {activeLessons.map((l) => {
+                    const isSelected = value.includes(l.id);
+                    return (
+                      <CommandItem
+                        key={l.id}
+                        value={l.title}
+                        onSelect={() => toggleOption(l.id)}
                         className={cn(
-                          "pointer-events-none absolute flex size-4 items-center justify-center",
-                          isRTL ? "left-2" : "right-2",
+                          "relative flex w-full cursor-default items-center gap-1.5 rounded-md py-2 text-sm outline-hidden select-none",
+                          isRTL ? "pl-8 pr-1.5 text-right" : "pr-8 pl-1.5 text-left",
                         )}
                       >
-                        <CheckIcon
+                        <span className="flex-1 line-clamp-1">{l.title}</span>
+                        <span
                           className={cn(
-                            "pointer-events-none size-4",
-                            isSelected ? "opacity-100" : "opacity-0",
+                            "pointer-events-none absolute flex size-4 items-center justify-center",
+                            isRTL ? "left-2" : "right-2",
                           )}
-                        />
-                      </span>
-                    </CommandItem>
-                  );
-                })}
-              </CommandGroup>
-            </CommandList>
-          </Command>
-        </PopoverContent>
-      </Popover>
+                        >
+                          <CheckIcon
+                            className={cn(
+                              "pointer-events-none size-4",
+                              isSelected ? "opacity-100" : "opacity-0",
+                            )}
+                          />
+                        </span>
+                      </CommandItem>
+                    );
+                  })}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
+
+        {allowAdd && (
+          <Button
+            type="button"
+            variant="default"
+            size="icon"
+            className="shrink-0 h-8 w-8"
+            disabled={disabled}
+            onClick={() => setIsAddOpen(true)}
+            title={t("addOption")}
+          >
+            <Plus className="h-4 w-4" />
+          </Button>
+        )}
+      </div>
+
+      {allowAdd && (
+        <QuickAddDialog
+          open={isAddOpen}
+          onOpenChange={setIsAddOpen}
+          title="إضافة درس جديد"
+          description="أدخل عنوان الدرس الجديد لإضافته وتحديده."
+          inputLabel="عنوان الدرس"
+          inputPlaceholder="مثال: مقدمة في الحركة الدائرية"
+          onAdd={handleAdd}
+        />
+      )}
     </div>
   );
 }

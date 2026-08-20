@@ -36,6 +36,13 @@ import {
   TeacherSelect,
   ExamSelect,
 } from "@/components/ui/academic-selects";
+import { SelectWithAdd } from "@/components/ui/select-with-add";
+import {
+  getStoredCustomQuestionKinds,
+  saveStoredCustomQuestionKind,
+  getStoredCustomSections,
+  saveStoredCustomSection,
+} from "@/lib/custom-categories-storage";
 import { cn } from "@/lib/utils";
 import { getStoredTeachers } from "@/lib/settings-storage";
 import { Teacher } from "@/types/settings";
@@ -130,9 +137,67 @@ export function QuestionFormContent({
   const [hasAnswerExplanation, setHasAnswerExplanation] = React.useState<boolean>(
     initialQuestion?.hasAnswerExplanation ?? false,
   );
-  const [answerExplanation, setAnswerExplanation] = React.useState(
+  const [answerExplanation, setAnswerExplanation] = React.useState<string>(
     initialQuestion?.answerExplanation || "",
   );
+  // Custom question kinds state
+  const [customQuestionKinds, setCustomQuestionKinds] = React.useState<
+    Array<{ id: string; name: string }>
+  >([]);
+  const [customSectionsList, setCustomSectionsList] = React.useState<
+    Array<{ id: string; name: string }>
+  >([]);
+
+  React.useEffect(() => {
+    const loadCustomData = () => {
+      setCustomQuestionKinds(getStoredCustomQuestionKinds());
+      setCustomSectionsList(getStoredCustomSections());
+    };
+    loadCustomData();
+    window.addEventListener("rewaa_custom_categories_updated", loadCustomData);
+    window.addEventListener("rewaa_question_kinds_updated", loadCustomData);
+    window.addEventListener("rewaa_custom_sections_updated", loadCustomData);
+    return () => {
+      window.removeEventListener("rewaa_custom_categories_updated", loadCustomData);
+      window.removeEventListener("rewaa_question_kinds_updated", loadCustomData);
+      window.removeEventListener("rewaa_custom_sections_updated", loadCustomData);
+    };
+  }, []);
+
+  const handleAddQuestionKind = (name: string) => {
+    saveStoredCustomQuestionKind(name);
+  };
+
+  const handleAddSection = (name: string) => {
+    saveStoredCustomSection(name);
+  };
+
+  // Build combined question kinds options
+  const defaultQuestionKindOptions = [
+    { value: "theoretical", label: t("kinds.theoretical") },
+    { value: "practical", label: t("kinds.practical") },
+    { value: "application-based", label: t("kinds.applicationBased") },
+    { value: "analytical", label: t("kinds.analytical") },
+    { value: "oral", label: t("kinds.oral") },
+    { value: "skill-based", label: t("kinds.skillBased") },
+  ];
+
+  const allQuestionKindOptions = [
+    ...defaultQuestionKindOptions,
+    ...customQuestionKinds
+      .filter(
+        (k) => !defaultQuestionKindOptions.some((d) => d.value === k.id || d.label === k.name),
+      )
+      .map((k) => ({ value: k.id, label: k.name })),
+  ];
+
+  // Build combined sections options
+  const combinedSections = [
+    ...(sections || []).map((s) => ({ value: s.id, label: s.title })),
+    ...customSectionsList
+      .filter((cs) => !(sections || []).some((s) => s.id === cs.id || s.title === cs.name))
+      .map((cs) => ({ value: cs.id, label: cs.name })),
+  ];
 
   // Requirements & Answers
   const [modelAnswer, setModelAnswer] = React.useState(initialQuestion?.modelAnswer || "");
@@ -310,23 +375,22 @@ export function QuestionFormContent({
         </div>
 
         {/* Target Section Selection if sections provided */}
-        {sections && sections.length > 0 && (
-          <div className="flex flex-col gap-2 pt-2 border-t border-border/40">
-            <Label className="text-sm font-semibold text-foreground">{t("targetSection")}</Label>
-            <Select value={sectionId} onValueChange={setSectionId}>
-              <SelectTrigger>
-                <SelectValue placeholder={t("selectSectionPlaceholder")} />
-              </SelectTrigger>
-              <SelectContent>
-                {sections.map((s) => (
-                  <SelectItem key={s.id} value={s.id}>
-                    {s.title}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+        {(sections && sections.length > 0) || combinedSections.length > 0 ? (
+          <div className="pt-2 border-t border-border/40">
+            <SelectWithAdd
+              value={sectionId}
+              onValueChange={setSectionId}
+              label={t("targetSection")}
+              placeholder={t("selectSectionPlaceholder")}
+              options={combinedSections}
+              allowAdd
+              onAddNewOption={handleAddSection}
+              addDialogTitle="إضافة قسم جديد"
+              addInputLabel="اسم القسم"
+              addInputPlaceholder="مثال: القسم الأول - الأسئلة التمهيدية"
+            />
           </div>
-        )}
+        ) : null}
 
         {/* Optional Exam Selector if exams provided */}
         {exams && onSelectedExamIdChange && (
@@ -346,22 +410,17 @@ export function QuestionFormContent({
 
         {/* Question Kind Classification & Difficulty Dropdowns */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="flex flex-col gap-2">
-            <Label className="text-sm font-medium text-foreground">{t("questionKind")}</Label>
-            <Select value={questionType} onValueChange={(v) => setQuestionType(v as QuestionKind)}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="theoretical">{t("kinds.theoretical")}</SelectItem>
-                <SelectItem value="practical">{t("kinds.practical")}</SelectItem>
-                <SelectItem value="application-based">{t("kinds.applicationBased")}</SelectItem>
-                <SelectItem value="analytical">{t("kinds.analytical")}</SelectItem>
-                <SelectItem value="oral">{t("kinds.oral")}</SelectItem>
-                <SelectItem value="skill-based">{t("kinds.skillBased")}</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          <SelectWithAdd
+            value={questionType}
+            onValueChange={(v) => setQuestionType(v as QuestionKind)}
+            label={t("questionKind")}
+            options={allQuestionKindOptions}
+            allowAdd
+            onAddNewOption={handleAddQuestionKind}
+            addDialogTitle="إضافة تصنيف / نوع سؤال جديد"
+            addInputLabel="نوع / تصنيف السؤال"
+            addInputPlaceholder="مثال: تطبيقي متقدم"
+          />
 
           <div className="flex flex-col gap-2">
             <Label className="text-sm font-medium text-foreground">{t("difficulty")}</Label>

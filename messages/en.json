@@ -10,7 +10,17 @@
     "reset": "Reset",
     "submitting": "Submitting...",
     "genericError": "An unexpected error occurred. Please try again.",
-    "brandName": "Rewaa"
+    "brandName": "Rewaa",
+    "quickAdd": {
+      "addOption": "Add New Option",
+      "addOptionTitle": "Add New Option",
+      "addOptionDesc": "Enter the name of the new option to add and select it immediately.",
+      "nameLabel": "Name / Title",
+      "namePlaceholder": "Enter name here...",
+      "save": "Add & Select",
+      "cancel": "Cancel",
+      "nameRequired": "Please enter a name first"
+    }
   },
   "notFound": {
     "title": "404 - Page Not Found",

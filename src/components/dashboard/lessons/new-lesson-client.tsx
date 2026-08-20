@@ -7,6 +7,8 @@ import {
   TeacherSelect,
   ExamSelect,
 } from "@/components/ui/academic-selects";
+import { SelectWithAdd } from "@/components/ui/select-with-add";
+import { saveStoredCustomSection } from "@/lib/custom-categories-storage";
 import { Button } from "@/components/ui/button";
 import { FormMarkdownEditor } from "@/components/ui/form-markdown-editor";
 import { FormSectionCard } from "@/components/ui/form-section-card";
@@ -521,27 +523,25 @@ export function NewLessonClient({ initialLessonId }: NewLessonClientProps = {}) 
               </div>
 
               {/* SECTION SELECT COMPONENT */}
-              {selectedCourseObj && selectedCourseObj.sections.length > 0 && (
-                <div className="flex flex-col gap-2">
-                  <label
-                    htmlFor="target-sec-select"
-                    className="text-sm font-medium text-foreground"
-                  >
-                    {t("selectSection")}
-                  </label>
-                  <Select value={selectedSectionId} onValueChange={setSelectedSectionId}>
-                    <SelectTrigger id="target-sec-select">
-                      <SelectValue placeholder={t("selectSectionPlaceholder")} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {selectedCourseObj.sections.map((s) => (
-                        <SelectItem key={s.id} value={s.id}>
-                          {s.title}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+              {selectedCourseObj && (
+                <SelectWithAdd
+                  value={selectedSectionId}
+                  onValueChange={setSelectedSectionId}
+                  label={t("selectSection")}
+                  placeholder={t("selectSectionPlaceholder")}
+                  options={selectedCourseObj.sections.map((s) => ({
+                    value: s.id,
+                    label: s.title,
+                  }))}
+                  allowAdd={Boolean(selectedCourseId)}
+                  onAddNewOption={(name) => {
+                    const newSec = saveStoredCustomSection(name, selectedCourseId);
+                    setSelectedSectionId(newSec.id);
+                  }}
+                  addDialogTitle="إضافة قسم جديد للكورس"
+                  addInputLabel="اسم القسم"
+                  addInputPlaceholder="مثال: الباب الأول - مقدمة المادة"
+                />
               )}
             </div>
           )}
