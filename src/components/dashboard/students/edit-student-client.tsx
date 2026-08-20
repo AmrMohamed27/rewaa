@@ -68,6 +68,7 @@ export function EditStudentClient({ studentId }: EditStudentClientProps) {
       parentPhoneNumber: data.parentPhoneNumber,
       gender: data.gender,
       email: data.email,
+      image: data.image,
       password: data.password || student.password,
       country: data.country,
       state: data.state,

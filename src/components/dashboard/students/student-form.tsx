@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/select";
 import { GradeSelect } from "@/components/ui/academic-selects";
 import { SelectWithAdd } from "@/components/ui/select-with-add";
+import { ImageUploadField } from "@/components/ui/image-upload-field";
 import {
   getStoredCustomRegistrationTypes,
   saveStoredCustomRegistrationType,
@@ -154,108 +155,122 @@ export function StudentForm({
         description={tForm("basicInfoSubtitle")}
         icon={User}
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* First Name */}
-          <div className="space-y-2">
-            <Label htmlFor="firstName">{tForm("firstNameLabel")}</Label>
-            <Input
-              id="firstName"
-              placeholder={tForm("firstNamePlaceholder")}
-              value={formData.firstName}
-              onChange={(e) => handleChange("firstName", e.target.value)}
-              required
-            />
-          </div>
+        <div className="space-y-4">
+          <ImageUploadField
+            id="student-image"
+            label={tForm("imageLabel")}
+            value={formData.image}
+            onChange={(dataUrl) => handleChange("image", dataUrl)}
+            onClear={() => handleChange("image", "")}
+            variant="avatar"
+            prompt={tForm("imagePrompt")}
+            changePrompt={tForm("imageChange")}
+            previewAlt="Student profile"
+          />
 
-          {/* Middle Name */}
-          <div className="space-y-2">
-            <Label htmlFor="middleName">{tForm("middleNameLabel")}</Label>
-            <Input
-              id="middleName"
-              placeholder={tForm("middleNamePlaceholder")}
-              value={formData.middleName}
-              onChange={(e) => handleChange("middleName", e.target.value)}
-            />
-          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* First Name */}
+            <div className="space-y-2">
+              <Label htmlFor="firstName">{tForm("firstNameLabel")}</Label>
+              <Input
+                id="firstName"
+                placeholder={tForm("firstNamePlaceholder")}
+                value={formData.firstName}
+                onChange={(e) => handleChange("firstName", e.target.value)}
+                required
+              />
+            </div>
 
-          {/* Last Name */}
-          <div className="space-y-2">
-            <Label htmlFor="lastName">{tForm("lastNameLabel")}</Label>
-            <Input
-              id="lastName"
-              placeholder={tForm("lastNamePlaceholder")}
-              value={formData.lastName}
-              onChange={(e) => handleChange("lastName", e.target.value)}
-              required
-            />
-          </div>
+            {/* Middle Name */}
+            <div className="space-y-2">
+              <Label htmlFor="middleName">{tForm("middleNameLabel")}</Label>
+              <Input
+                id="middleName"
+                placeholder={tForm("middleNamePlaceholder")}
+                value={formData.middleName}
+                onChange={(e) => handleChange("middleName", e.target.value)}
+              />
+            </div>
 
-          {/* Additional Name */}
-          <div className="space-y-2">
-            <Label htmlFor="additionalName">{tForm("additionalNameLabel")}</Label>
-            <Input
-              id="additionalName"
-              placeholder={tForm("additionalNamePlaceholder")}
-              value={formData.additionalName}
-              onChange={(e) => handleChange("additionalName", e.target.value)}
-            />
-          </div>
+            {/* Last Name */}
+            <div className="space-y-2">
+              <Label htmlFor="lastName">{tForm("lastNameLabel")}</Label>
+              <Input
+                id="lastName"
+                placeholder={tForm("lastNamePlaceholder")}
+                value={formData.lastName}
+                onChange={(e) => handleChange("lastName", e.target.value)}
+                required
+              />
+            </div>
 
-          {/* Student Phone Number */}
-          <div className="space-y-2">
-            <Label htmlFor="phoneNumber">{tForm("phoneNumberLabel")}</Label>
-            <Input
-              id="phoneNumber"
-              placeholder={tForm("phoneNumberPlaceholder")}
-              value={formData.phoneNumber}
-              onChange={(e) => handleChange("phoneNumber", e.target.value)}
-              required
-              dir="ltr"
-            />
-          </div>
+            {/* Additional Name */}
+            <div className="space-y-2">
+              <Label htmlFor="additionalName">{tForm("additionalNameLabel")}</Label>
+              <Input
+                id="additionalName"
+                placeholder={tForm("additionalNamePlaceholder")}
+                value={formData.additionalName}
+                onChange={(e) => handleChange("additionalName", e.target.value)}
+              />
+            </div>
 
-          {/* Parent Phone Number */}
-          <div className="space-y-2">
-            <Label htmlFor="parentPhoneNumber">{tForm("parentPhoneNumberLabel")}</Label>
-            <Input
-              id="parentPhoneNumber"
-              placeholder={tForm("parentPhoneNumberPlaceholder")}
-              value={formData.parentPhoneNumber}
-              onChange={(e) => handleChange("parentPhoneNumber", e.target.value)}
-              required
-              dir="ltr"
-            />
-          </div>
+            {/* Student Phone Number */}
+            <div className="space-y-2">
+              <Label htmlFor="phoneNumber">{tForm("phoneNumberLabel")}</Label>
+              <Input
+                id="phoneNumber"
+                placeholder={tForm("phoneNumberPlaceholder")}
+                value={formData.phoneNumber}
+                onChange={(e) => handleChange("phoneNumber", e.target.value)}
+                required
+                dir="ltr"
+              />
+            </div>
 
-          {/* Gender */}
-          <div className="space-y-2">
-            <Label htmlFor="gender">{tForm("genderLabel")}</Label>
-            <Select
-              value={formData.gender}
-              onValueChange={(val) => handleChange("gender", val as Gender)}
-            >
-              <SelectTrigger id="gender" className="bg-background">
-                <SelectValue placeholder={tForm("selectGender")} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="male">{tForm("genderMale")}</SelectItem>
-                <SelectItem value="female">{tForm("genderFemale")}</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+            {/* Parent Phone Number */}
+            <div className="space-y-2">
+              <Label htmlFor="parentPhoneNumber">{tForm("parentPhoneNumberLabel")}</Label>
+              <Input
+                id="parentPhoneNumber"
+                placeholder={tForm("parentPhoneNumberPlaceholder")}
+                value={formData.parentPhoneNumber}
+                onChange={(e) => handleChange("parentPhoneNumber", e.target.value)}
+                required
+                dir="ltr"
+              />
+            </div>
 
-          {/* Email Address */}
-          <div className="space-y-2">
-            <Label htmlFor="email">{tForm("emailLabel")}</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder={tForm("emailPlaceholder")}
-              value={formData.email}
-              onChange={(e) => handleChange("email", e.target.value)}
-              required
-              dir="ltr"
-            />
+            {/* Gender */}
+            <div className="space-y-2">
+              <Label htmlFor="gender">{tForm("genderLabel")}</Label>
+              <Select
+                value={formData.gender}
+                onValueChange={(val) => handleChange("gender", val as Gender)}
+              >
+                <SelectTrigger id="gender" className="bg-background">
+                  <SelectValue placeholder={tForm("selectGender")} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="male">{tForm("genderMale")}</SelectItem>
+                  <SelectItem value="female">{tForm("genderFemale")}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Email Address */}
+            <div className="space-y-2">
+              <Label htmlFor="email">{tForm("emailLabel")}</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder={tForm("emailPlaceholder")}
+                value={formData.email}
+                onChange={(e) => handleChange("email", e.target.value)}
+                required
+                dir="ltr"
+              />
+            </div>
           </div>
         </div>
       </FormSectionCard>
