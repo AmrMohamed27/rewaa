@@ -2182,6 +2182,66 @@
         "showing": "Showing {start} to {end} of {total, plural, =0 {no courses} one {1 course} other {{total} courses}}"
       }
     },
+    "examsPage": {
+      "title": "Exams & Tests",
+      "subtitle": "View your required assignments and past exam results",
+      "searchPlaceholder": "Search by exam title, course, subject, or teacher...",
+      "clearFilters": "Clear Filters",
+      "tabs": {
+        "required": "Required Exams",
+        "completed": "Completed Exams"
+      },
+      "totalRequired": "{count, plural, =0 {No required exams} one {1 required exam} other {{count} required exams}}",
+      "totalCompleted": "{count, plural, =0 {No completed exams} one {1 completed exam} other {{count} completed exams}}",
+      "sort": {
+        "newest": "Date: Newest First",
+        "oldest": "Date: Oldest First",
+        "titleAsc": "Title: A to Z",
+        "titleDesc": "Title: Z to A",
+        "durationDesc": "Duration: Longest First",
+        "durationAsc": "Duration: Shortest First",
+        "scoreDesc": "Score: Highest First",
+        "scoreAsc": "Score: Lowest First"
+      },
+      "table": {
+        "columns": {
+          "title": "Exam Title",
+          "subjectGrade": "Subject & Grade",
+          "sourceCourse": "Course / Source",
+          "category": "Category",
+          "questionsDuration": "Questions & Duration",
+          "passingGrade": "Passing Grade",
+          "score": "Score",
+          "status": "Status",
+          "completedDate": "Completion Date",
+          "actions": "Actions"
+        },
+        "independent": "General Platform Exam",
+        "questionsCount": "{count, plural, =0 {No questions} one {1 question} other {{count} questions}}",
+        "durationMinutes": "{count} min",
+        "passingPercent": "{percent}%",
+        "scoreDisplay": "{score} / {totalScore} ({percent}%)",
+        "triesCount": "Attempt {current} of {max}",
+        "statusPassed": "Passed",
+        "statusFailed": "Needs Retake",
+        "actions": {
+          "takeExam": "Take Exam",
+          "retakeExam": "Retake Exam",
+          "viewResult": "View Results"
+        }
+      },
+      "empty": {
+        "requiredTitle": "No pending exams",
+        "requiredDescription": "You have completed all assigned exams and tests for your enrolled courses.",
+        "completedTitle": "No completed exams yet",
+        "completedDescription": "You haven't completed any exams yet. Start taking your required exams to track your scores.",
+        "filteredTitle": "No exams found",
+        "filteredDescription": "We couldn't find any exams matching your search criteria. Try adjusting your filters or search terms."
+      },
+      "pagination": {
+        "showing": "Showing {start} to {end} of {total, plural, =0 {no exams} one {1 exam} other {{total} exams}}"
+      }
+    },
     "exploreCoursesPage": {
       "title": "Explore Courses",
       "subtitle": "Discover all available courses and enroll in new learning paths",

@@ -90,9 +90,9 @@ export const studentNavConfig: NavConfig = {
       icon: BookOpen,
     },
     {
-      label: "Teachers",
-      href: "/student-dashboard/teachers",
-      icon: Users,
+      label: "Exams",
+      href: "/student-dashboard/exams",
+      icon: FileQuestion,
     },
     {
       label: "Billing",
@@ -110,5 +110,5 @@ export const studentNavConfig: NavConfig = {
 export const studentNavbarLinks = [
   { label: "Home", href: "/student-dashboard" },
   { label: "Courses", href: "/student-dashboard/courses" },
-  { label: "Teachers", href: "/student-dashboard/teachers" },
+  { label: "Exams", href: "/student-dashboard/exams" },
 ];

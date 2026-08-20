@@ -7,6 +7,9 @@ import { CourseSection } from "@/types/course";
 const STORAGE_KEY_PREFIX = "rewaa_student_completed_lessons_";
 const PASSED_EXAMS_STORAGE_KEY = "rewaa_student_passed_exams";
 
+// Default initial passed/completed exams (Physics Unit Quiz: exam-005, Math Diagnostic Placement: exam-006)
+const DEFAULT_PASSED_EXAM_IDS = ["exam-005", "exam-006"];
+
 export function getCompletedLessons(courseId: string): string[] {
   if (typeof window === "undefined") return [];
   try {
@@ -55,7 +58,7 @@ export function calculateCourseProgress(totalLessons: number, completedCount: nu
 }
 
 export function getPassedExams(): string[] {
-  if (typeof window === "undefined") return [];
+  if (typeof window === "undefined") return DEFAULT_PASSED_EXAM_IDS;
   try {
     const raw = localStorage.getItem(PASSED_EXAMS_STORAGE_KEY);
     if (raw) {
@@ -65,7 +68,15 @@ export function getPassedExams(): string[] {
   } catch (error) {
     console.error("Failed to load passed exams:", error);
   }
-  return [];
+
+  // Seed default passed exams
+  try {
+    localStorage.setItem(PASSED_EXAMS_STORAGE_KEY, JSON.stringify(DEFAULT_PASSED_EXAM_IDS));
+  } catch (error) {
+    console.error("Failed to seed default passed exams:", error);
+  }
+
+  return DEFAULT_PASSED_EXAM_IDS;
 }
 
 export function isExamPassed(examId: string): boolean {
