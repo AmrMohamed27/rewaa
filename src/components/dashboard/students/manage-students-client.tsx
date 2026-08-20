@@ -537,14 +537,6 @@ export function ManageStudentsClient() {
                           >
                             <span>{fullName}</span>
                           </Link>
-                          <div className="flex flex-col items-start gap-0 mt-0.5">
-                            <span className="text-xs text-muted-foreground font-mono">
-                              ID: {student.id}
-                            </span>
-                            <span className="text-xs text-muted-foreground truncate max-w-45">
-                              {student.email}
-                            </span>
-                          </div>
                         </div>
                       </td>
 
