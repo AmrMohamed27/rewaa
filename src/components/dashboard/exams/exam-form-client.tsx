@@ -5,6 +5,7 @@ import {
   ArrowLeft,
   BookOpen,
   CheckCircle2,
+  Clock,
   Edit2,
   Eye,
   FileQuestion,
@@ -143,6 +144,10 @@ export function ExamFormClient({ mode, initialData }: ExamFormClientProps) {
   const [randomizeMCQChoices, setRandomizeMCQChoices] = React.useState(
     initialData?.randomizeMCQChoices ?? false,
   );
+  const [hasExpiration, setHasExpiration] = React.useState(initialData?.hasExpiration ?? false);
+  const [expirationDays, setExpirationDays] = React.useState<number | string>(
+    initialData?.expirationDays ?? "",
+  );
 
   // Classification & Linking
   const [isIndependent, setIsIndependent] = React.useState<boolean>(
@@ -251,6 +256,8 @@ export function ExamFormClient({ mode, initialData }: ExamFormClientProps) {
       showModelAnswers,
       randomizeQuestionsOrder,
       randomizeMCQChoices,
+      hasExpiration,
+      expirationDays: hasExpiration && expirationDays ? Number(expirationDays) : undefined,
 
       examSections,
       numberOfStudents: initialData?.numberOfStudents || 0,
@@ -607,6 +614,36 @@ export function ExamFormClient({ mode, initialData }: ExamFormClientProps) {
                     checked={randomizeMCQChoices}
                     onCheckedChange={setRandomizeMCQChoices}
                   />
+                  <FormToggleSetting
+                    id="has-expiration-toggle"
+                    title={tForm("fields.hasExpiration")}
+                    subtitle={tForm("fields.hasExpirationDesc")}
+                    icon={Clock}
+                    checked={hasExpiration}
+                    onCheckedChange={setHasExpiration}
+                  />
+
+                  {hasExpiration && (
+                    <div className="flex flex-col gap-2 animate-in fade-in slide-in-from-top-1 max-w-sm pt-1">
+                      <Label
+                        htmlFor="exam-expiration-days"
+                        className="font-semibold text-foreground"
+                      >
+                        {tForm("fields.expirationDays")} <span className="text-destructive">*</span>
+                      </Label>
+                      <Input
+                        id="exam-expiration-days"
+                        type="number"
+                        min="1"
+                        value={expirationDays}
+                        onChange={(e) =>
+                          setExpirationDays(e.target.value ? Number(e.target.value) : "")
+                        }
+                        placeholder={tForm("fields.expirationDaysPlaceholder")}
+                        required={hasExpiration}
+                      />
+                    </div>
+                  )}
                 </div>
               </FormSectionCard>
 

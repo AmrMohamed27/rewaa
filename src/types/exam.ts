@@ -81,6 +81,8 @@ export interface Exam {
   showModelAnswers: boolean;
   randomizeQuestionsOrder: boolean;
   randomizeMCQChoices: boolean;
+  hasExpiration?: boolean;
+  expirationDays?: number;
 
   // ── Content ───────────────────────────────────────────────────────────────
   examSections: ExamSection[];

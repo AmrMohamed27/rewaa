@@ -481,6 +481,15 @@ export function ExamDetailsClient({ examId }: ExamDetailsClientProps) {
                   {exam.randomizeMCQChoices ? tDetails("metadata.yes") : tDetails("metadata.no")}
                 </span>
               </div>
+
+              <div className="flex justify-between py-1 border-b border-border/40">
+                <span className="text-muted-foreground">{tDetails("metadata.hasExpiration")}</span>
+                <span className="font-semibold text-foreground">
+                  {exam.hasExpiration && exam.expirationDays
+                    ? tDetails("metadata.expirationDaysValue", { days: exam.expirationDays })
+                    : tDetails("metadata.noExpiration")}
+                </span>
+              </div>
             </div>
           </DashboardCard>
         </div>
