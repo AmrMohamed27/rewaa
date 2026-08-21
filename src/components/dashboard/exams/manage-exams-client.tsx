@@ -32,6 +32,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import { getStoredExams, resetStoredExams, saveStoredExams } from "@/lib/exams-storage";
@@ -41,6 +48,7 @@ import { ContentPagination } from "../common/content-pagination";
 import { DeleteExamDialog } from "./delete-exam-dialog";
 
 export type ExamFilterTab = "all" | "published" | "draft";
+export type ExamTypeFilter = "all" | "independent" | "course-dependent";
 export type ExamSortOption = "date-newest" | "date-oldest" | "title-asc" | "title-desc";
 
 // ─── Success-rate colour ──────────────────────────────────────────────────────
@@ -72,6 +80,7 @@ export function ManageExamsClient() {
   // URL state synchronization
   const searchQuery = searchParams.get("search") || "";
   const activeTab = (searchParams.get("tab") as ExamFilterTab) || "all";
+  const typeFilter = (searchParams.get("type") as ExamTypeFilter) || "all";
   const sortBy = (searchParams.get("sort") as ExamSortOption) || "date-newest";
   const currentPage = parseInt(searchParams.get("page") || "1", 10) || 1;
   const itemsPerPage = 10;
@@ -84,6 +93,7 @@ export function ManageExamsClient() {
           value === null ||
           value === "" ||
           (key === "tab" && value === "all") ||
+          (key === "type" && value === "all") ||
           (key === "sort" && value === "date-newest") ||
           (key === "page" && value === 1)
         ) {
@@ -127,6 +137,11 @@ export function ManageExamsClient() {
       if (activeTab === "published" && !isPublished) return false;
       if (activeTab === "draft" && !isDraftOrScheduled) return false;
 
+      // Type Filter (independent vs course-dependent)
+      const isIndep = exam.examType === "independent" || (!exam.examType && !exam.courseId);
+      if (typeFilter === "independent" && !isIndep) return false;
+      if (typeFilter === "course-dependent" && isIndep) return false;
+
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
         return (
@@ -139,7 +154,7 @@ export function ManageExamsClient() {
       }
       return true;
     });
-  }, [exams, activeTab, searchQuery]);
+  }, [exams, activeTab, typeFilter, searchQuery]);
 
   // ─── Sort ───────────────────────────────────────────────────────────────────
   const sortedExams = React.useMemo(() => {
@@ -188,8 +203,12 @@ export function ManageExamsClient() {
     setExams(reset);
   };
 
+  const handleTypeChange = (val: string) => {
+    updateUrlParams({ type: val === "all" ? null : val, page: 1 });
+  };
+
   const handleResetFilters = () =>
-    updateUrlParams({ search: null, tab: null, sort: null, page: 1 });
+    updateUrlParams({ search: null, tab: null, type: null, sort: null, page: 1 });
 
   // ─── Format helpers ─────────────────────────────────────────────────────────
   const formatGrade = (g?: string) => {
@@ -304,6 +323,21 @@ export function ManageExamsClient() {
         sortBy={sortBy}
         sortOptions={sortOptions}
         clearFiltersLabel={t("clearFilters")}
+        isFilterActiveCustom={typeFilter !== "all"}
+        extraFilters={
+          <div className="w-full sm:w-44 self-start sm:self-auto">
+            <Select value={typeFilter} onValueChange={handleTypeChange}>
+              <SelectTrigger className="h-9 text-xs bg-background">
+                <SelectValue placeholder={t("filterType.all")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{t("filterType.all")}</SelectItem>
+                <SelectItem value="independent">{t("filterType.independent")}</SelectItem>
+                <SelectItem value="course-dependent">{t("filterType.courseDependent")}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        }
         onSearchChange={handleSearchChange}
         onTabChange={handleTabChange}
         onSortChange={handleSortChange}

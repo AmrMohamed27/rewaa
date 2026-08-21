@@ -7,8 +7,6 @@ import {
   TeacherSelect,
   ExamSelect,
 } from "@/components/ui/academic-selects";
-import { SelectWithAdd } from "@/components/ui/select-with-add";
-import { saveStoredCustomSection } from "@/lib/custom-categories-storage";
 import { Button } from "@/components/ui/button";
 import { FormMarkdownEditor } from "@/components/ui/form-markdown-editor";
 import { FormSectionCard } from "@/components/ui/form-section-card";
@@ -22,16 +20,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { getStoredCourses } from "@/lib/courses-storage";
 import { getStoredLessons, saveStoredLessons } from "@/lib/lessons-storage";
 import { getStoredTeachers } from "@/lib/settings-storage";
 import { cn } from "@/lib/utils";
 import {
-  Course,
   CourseVenue,
   Lesson,
   LessonAttachment,
-  LessonCategory,
   LessonPublishStatus,
   LessonType,
 } from "@/types/course";
@@ -47,7 +42,6 @@ import {
   GraduationCap,
   ImageIcon,
   Layers,
-  Link2,
   MapPin,
   Trash2,
   Upload,
@@ -77,8 +71,6 @@ export function NewLessonClient({ initialLessonId }: NewLessonClientProps = {}) 
   const locale = useLocale();
   const router = useRouter();
 
-  // Load available courses for selection when category is course-dependent
-  const [courses, setCourses] = useState<Course[]>([]);
   const [availableTeachers, setAvailableTeachers] = useState<Teacher[]>([]);
 
   useEffect(() => {
@@ -97,16 +89,10 @@ export function NewLessonClient({ initialLessonId }: NewLessonClientProps = {}) 
   const [lectureVideoLink, setLectureVideoLink] = useState("");
   const [coverImage, setCoverImage] = useState<string>("");
 
-  // Category and Course Selection
-  const [lessonCategory, setLessonCategory] = useState<LessonCategory>("independent");
-  const [selectedCourseId, setSelectedCourseId] = useState<string>("");
-  const [selectedSectionId, setSelectedSectionId] = useState<string>("");
-
   // Academic info
   const [grade, setGrade] = useState("grade1");
   const [subject, setSubject] = useState("physics");
   const [teacherName, setTeacherName] = useState("");
-  const [venue, setVenue] = useState<CourseVenue>("all");
 
   // Attachments and Exams
   const [hasPdfAttachments, setHasPdfAttachments] = useState(false);
@@ -120,18 +106,17 @@ export function NewLessonClient({ initialLessonId }: NewLessonClientProps = {}) 
   const [linkedExamId, setLinkedExamId] = useState("");
   const [isRequiredPassExam, setIsRequiredPassExam] = useState(false);
 
-  // Publish status
+  // Independent toggle & conditional Venue / Publish status
+  const [isIndependent, setIsIndependent] = useState<boolean>(true);
+  const [venue, setVenue] = useState<CourseVenue>("all");
   const [publishStatus, setPublishStatus] = useState<LessonPublishStatus>("published");
   const [scheduledPublishDate, setScheduledPublishDate] = useState("");
   const [scheduledEndDate, setScheduledEndDate] = useState("");
 
   const [isLoaded, setIsLoaded] = useState(false);
 
-  // Fetch courses and existing lesson data on mount
+  // Fetch existing lesson data on mount
   useEffect(() => {
-    const loadedCourses = getStoredCourses(locale);
-    setCourses(loadedCourses);
-
     if (initialLessonId) {
       const storedLessons = getStoredLessons(locale);
       const existing = storedLessons.find((l) => l.id === initialLessonId);
@@ -142,11 +127,8 @@ export function NewLessonClient({ initialLessonId }: NewLessonClientProps = {}) 
         setLectureVideoLink(existing.lectureVideoLink || "");
         setCoverImage(existing.coverImage || "");
 
-        const cat =
-          existing.lessonCategory || (existing.courseId ? "course-dependent" : "independent");
-        setLessonCategory(cat);
-        if (existing.courseId) setSelectedCourseId(existing.courseId);
-        if (existing.sectionId) setSelectedSectionId(existing.sectionId);
+        const isIndep = existing.lessonCategory !== "course-dependent" && !existing.courseId;
+        setIsIndependent(isIndep);
 
         setGrade(existing.grade || "grade1");
         setSubject(existing.subject || "physics");
@@ -176,23 +158,6 @@ export function NewLessonClient({ initialLessonId }: NewLessonClientProps = {}) 
     }
     setIsLoaded(true);
   }, [initialLessonId, locale]);
-
-  // When a course is selected, auto-fill grade, subject, teacher, venue from course
-  const handleCourseSelect = (courseId: string) => {
-    setSelectedCourseId(courseId);
-    const targetCourse = courses.find((c) => c.id === courseId);
-    if (targetCourse) {
-      if (targetCourse.grade) setGrade(targetCourse.grade);
-      if (targetCourse.subject) setSubject(targetCourse.subject);
-      if (targetCourse.teacherName) setTeacherName(targetCourse.teacherName);
-      if (targetCourse.venue) setVenue(targetCourse.venue);
-      if (targetCourse.sections && targetCourse.sections.length > 0) {
-        setSelectedSectionId(targetCourse.sections[0].id);
-      }
-    }
-  };
-
-  const selectedCourseObj = courses.find((c) => c.id === selectedCourseId);
 
   // File upload handlers
   const handleAddPdfFile = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -238,7 +203,6 @@ export function NewLessonClient({ initialLessonId }: NewLessonClientProps = {}) 
 
     if (!title.trim()) return;
 
-    // PDF Validation
     if (hasPdfAttachments && pdfFiles.length === 0) {
       setPdfError(tDialog("pdfRequiredError"));
       return;
@@ -257,30 +221,12 @@ export function NewLessonClient({ initialLessonId }: NewLessonClientProps = {}) 
       lectureVideoLink: type === "videoAndText" ? lectureVideoLink.trim() : undefined,
       coverImage: coverImage.trim() || undefined,
 
-      lessonCategory,
-      courseId: lessonCategory === "course-dependent" ? selectedCourseId : undefined,
-      courseTitle:
-        lessonCategory === "course-dependent" && selectedCourseObj
-          ? selectedCourseObj.title
-          : undefined,
-      sectionId: lessonCategory === "course-dependent" ? selectedSectionId : undefined,
+      lessonCategory: isIndependent ? "independent" : "course-dependent",
 
-      grade:
-        lessonCategory === "course-dependent" && selectedCourseObj
-          ? selectedCourseObj.grade || grade
-          : grade,
-      subject:
-        lessonCategory === "course-dependent" && selectedCourseObj
-          ? selectedCourseObj.subject || subject
-          : subject,
-      teacherName:
-        lessonCategory === "course-dependent" && selectedCourseObj
-          ? selectedCourseObj.teacherName || teacherName.trim()
-          : teacherName.trim(),
-      venue:
-        lessonCategory === "course-dependent" && selectedCourseObj
-          ? selectedCourseObj.venue || venue
-          : venue,
+      grade,
+      subject,
+      teacherName: teacherName.trim(),
+      venue: isIndependent ? venue : undefined,
 
       hasPdfAttachments,
       pdfFiles: hasPdfAttachments ? pdfFiles : [],
@@ -291,9 +237,11 @@ export function NewLessonClient({ initialLessonId }: NewLessonClientProps = {}) 
       linkedExamTitle: isLinkedToExam && selectedExamObj ? selectedExamObj.title : undefined,
       isRequiredPassExam: isLinkedToExam ? isRequiredPassExam : false,
 
-      publishStatus,
-      scheduledPublishDate: publishStatus === "scheduled" ? scheduledPublishDate : undefined,
-      scheduledEndDate: publishStatus === "scheduled" ? scheduledEndDate : undefined,
+      publishStatus: isIndependent ? publishStatus : "published",
+      scheduledPublishDate:
+        isIndependent && publishStatus === "scheduled" ? scheduledPublishDate : undefined,
+      scheduledEndDate:
+        isIndependent && publishStatus === "scheduled" ? scheduledEndDate : undefined,
     };
 
     let updatedLessons: Lesson[];
@@ -307,24 +255,24 @@ export function NewLessonClient({ initialLessonId }: NewLessonClientProps = {}) 
     router.push(`/${locale}/dashboard/lessons`);
   };
 
-  if (!isLoaded) return null;
+  if (!isLoaded) {
+    return null;
+  }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 pb-12">
-      {/* Header Row */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <Button asChild variant="outline" size="icon" className="h-9 w-9 rounded-full shrink-0">
-            <Link href={`/${locale}/dashboard/lessons`}>
-              <ArrowLeft className="h-4 w-4 rtl:rotate-180" />
-            </Link>
-          </Button>
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-              {initialLessonId ? t("editTitle") : t("title")}
-            </h1>
-            <p className="text-sm text-muted-foreground mt-1">{t("subtitle")}</p>
-          </div>
+    <div className="space-y-6 pb-12 max-w-4xl mx-auto">
+      {/* Header Row with Standard Round Back Button */}
+      <div className="flex items-center gap-3">
+        <Button asChild variant="outline" size="icon" className="h-9 w-9 rounded-full shrink-0">
+          <Link href={`/${locale}/dashboard/lessons`}>
+            <ArrowLeft className="h-4 w-4 rtl:rotate-180" />
+          </Link>
+        </Button>
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+            {initialLessonId ? t("editTitle") : t("title")}
+          </h1>
+          <p className="text-sm text-muted-foreground mt-0.5">{t("subtitle")}</p>
         </div>
       </div>
 
@@ -334,6 +282,7 @@ export function NewLessonClient({ initialLessonId }: NewLessonClientProps = {}) 
           title={tDialog("groups.type")}
           description={tDialog("groupDescriptions.type")}
           icon={Video}
+          contentClassName="space-y-4"
         >
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <button
@@ -449,170 +398,45 @@ export function NewLessonClient({ initialLessonId }: NewLessonClientProps = {}) 
           />
         </FormSectionCard>
 
-        {/* 4. LESSON CATEGORY & COURSE LINKING */}
+        {/* 4. ACADEMIC INFORMATION */}
         <FormSectionCard
-          title={tDialog("lessonCategory")}
-          description={tDialog("groupDescriptions.category")}
-          icon={Link2}
-          contentClassName="space-y-4"
+          title={tDialog("groups.academic")}
+          description={tDialog("groupDescriptions.academic")}
+          icon={GraduationCap}
+          contentClassName="grid grid-cols-1 sm:grid-cols-3 gap-4"
         >
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <button
-              type="button"
-              onClick={() => setLessonCategory("independent")}
-              className={cn(
-                "p-3.5 rounded-xl border text-start transition-all cursor-pointer flex flex-col gap-1",
-                lessonCategory === "independent"
-                  ? "border-primary bg-primary/10 ring-2 ring-primary/20 font-bold"
-                  : "border-border bg-card hover:bg-muted/40",
-              )}
-            >
-              <span className="text-sm font-semibold text-foreground">
-                {tDialog("categoryOptions.independent")}
-              </span>
-              <span className="text-xs text-muted-foreground">
-                {tDialog("categoryDescriptions.independent")}
-              </span>
-            </button>
+          <GradeSelect
+            id="academic-grade"
+            value={grade}
+            onValueChange={setGrade}
+            label={tDialog("gradeLevel")}
+          />
 
-            <button
-              type="button"
-              onClick={() => setLessonCategory("course-dependent")}
-              className={cn(
-                "p-3.5 rounded-xl border text-start transition-all cursor-pointer flex flex-col gap-1",
-                lessonCategory === "course-dependent"
-                  ? "border-primary bg-primary/10 ring-2 ring-primary/20 font-bold"
-                  : "border-border bg-card hover:bg-muted/40",
-              )}
-            >
-              <span className="text-sm font-semibold text-foreground">
-                {tDialog("categoryOptions.courseDependent")}
-              </span>
-              <span className="text-xs text-muted-foreground">
-                {tDialog("categoryDescriptions.courseDependent")}
-              </span>
-            </button>
-          </div>
+          <SubjectSelect
+            id="academic-subject"
+            value={subject}
+            onValueChange={setSubject}
+            label={tDialog("subject")}
+          />
 
-          {/* COURSE SELECT COMPONENT (When category is course-dependent) */}
-          {lessonCategory === "course-dependent" && (
-            <div className="p-4 rounded-xl border bg-primary/5 border-primary/20 space-y-4 animate-in fade-in slide-in-from-top-1">
-              <div className="flex flex-col gap-2">
-                <label
-                  htmlFor="target-course-select"
-                  className="text-sm font-semibold text-foreground"
-                >
-                  {t("selectCourse")} <span className="text-destructive">*</span>
-                </label>
-                <Select
-                  value={selectedCourseId}
-                  onValueChange={handleCourseSelect}
-                  required={lessonCategory === "course-dependent"}
-                >
-                  <SelectTrigger id="target-course-select">
-                    <SelectValue placeholder={t("selectCoursePlaceholder")} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {courses.map((c) => (
-                      <SelectItem key={c.id} value={c.id}>
-                        {c.title}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* SECTION SELECT COMPONENT */}
-              {selectedCourseObj && (
-                <SelectWithAdd
-                  value={selectedSectionId}
-                  onValueChange={setSelectedSectionId}
-                  label={t("selectSection")}
-                  placeholder={t("selectSectionPlaceholder")}
-                  options={selectedCourseObj.sections.map((s) => ({
-                    value: s.id,
-                    label: s.title,
-                  }))}
-                  allowAdd={Boolean(selectedCourseId)}
-                  onAddNewOption={(name) => {
-                    const newSec = saveStoredCustomSection(name, selectedCourseId);
-                    setSelectedSectionId(newSec.id);
-                  }}
-                  addDialogTitle="إضافة قسم جديد للكورس"
-                  addInputLabel="اسم القسم"
-                  addInputPlaceholder="مثال: الباب الأول - مقدمة المادة"
-                />
-              )}
-            </div>
-          )}
+          <TeacherSelect
+            id="academic-teacher-select"
+            value={teacherName}
+            onValueChange={(val) => setTeacherName(val)}
+            label={tDialog("teacherName")}
+            placeholder={tDialog("selectTeacher")}
+            showIcon
+            teachers={availableTeachers}
+          />
         </FormSectionCard>
 
-        {/* 5. ACADEMIC INFORMATION (Only shown for independent lessons, inherited automatically when linked to a course) */}
-        {lessonCategory !== "course-dependent" && (
-          <FormSectionCard
-            title={tDialog("groups.academic")}
-            description={tDialog("groupDescriptions.academic")}
-            icon={GraduationCap}
-            contentClassName="grid grid-cols-1 sm:grid-cols-2 gap-4"
-          >
-            {/* Grade */}
-            <GradeSelect
-              id="academic-grade"
-              value={grade}
-              onValueChange={setGrade}
-              label={tDialog("gradeLevel")}
-            />
-
-            {/* Subject */}
-            <SubjectSelect
-              id="academic-subject"
-              value={subject}
-              onValueChange={setSubject}
-              label={tDialog("subject")}
-            />
-
-            {/* Teacher Select */}
-            <TeacherSelect
-              id="academic-teacher-select"
-              value={teacherName}
-              onValueChange={(val) => setTeacherName(val)}
-              label={tDialog("teacherName")}
-              placeholder={tDialog("selectTeacher")}
-              showIcon
-              teachers={availableTeachers}
-            />
-
-            {/* Venue */}
-            <div className="flex flex-col gap-2">
-              <label
-                htmlFor="academic-venue"
-                className="text-sm font-medium text-foreground flex items-center gap-1.5"
-              >
-                <MapPin className="size-4 text-muted-foreground" />
-                {tDialog("venue")}
-              </label>
-              <Select value={venue} onValueChange={(v) => setVenue(v as CourseVenue)}>
-                <SelectTrigger id="academic-venue">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="online">{tCourses("venue.online")}</SelectItem>
-                  <SelectItem value="center">{tCourses("venue.center")}</SelectItem>
-                  <SelectItem value="all">{tCourses("venue.all")}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </FormSectionCard>
-        )}
-
-        {/* 6. ATTACHMENTS & EXAMS */}
+        {/* 5. ATTACHMENTS & EXAMS */}
         <FormSectionCard
           title={tDialog("groups.attachmentsAndExams")}
           description={tDialog("groupDescriptions.attachmentsAndExams")}
           icon={FileCheck}
           contentClassName="space-y-4"
         >
-          {/* Toggle PDF */}
           <FormToggleSetting
             id="standalone-pdf-toggle"
             title={tDialog("hasPdfAttachments")}
@@ -631,7 +455,6 @@ export function NewLessonClient({ initialLessonId }: NewLessonClientProps = {}) 
                     <span>{pdfError}</span>
                   </div>
                 )}
-
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-semibold text-foreground">
                     {tDialog("pdfFilesCount", { count: pdfFiles.length })}
@@ -647,7 +470,6 @@ export function NewLessonClient({ initialLessonId }: NewLessonClientProps = {}) 
                     />
                   </label>
                 </div>
-
                 {pdfFiles.length > 0 ? (
                   <div className="space-y-2">
                     {pdfFiles.map((pdf) => (
@@ -680,7 +502,6 @@ export function NewLessonClient({ initialLessonId }: NewLessonClientProps = {}) 
             )}
           </FormToggleSetting>
 
-          {/* Toggle Images */}
           <FormToggleSetting
             id="standalone-img-toggle"
             title={tDialog("hasImageAttachments")}
@@ -705,7 +526,6 @@ export function NewLessonClient({ initialLessonId }: NewLessonClientProps = {}) 
                     />
                   </label>
                 </div>
-
                 {imageFiles.length > 0 ? (
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                     {imageFiles.map((img) => (
@@ -739,7 +559,6 @@ export function NewLessonClient({ initialLessonId }: NewLessonClientProps = {}) 
             )}
           </FormToggleSetting>
 
-          {/* Toggle Link to Exam */}
           <FormToggleSetting
             id="standalone-exam-toggle"
             title={tDialog("isLinkedToExam")}
@@ -758,7 +577,6 @@ export function NewLessonClient({ initialLessonId }: NewLessonClientProps = {}) 
                   required={isLinkedToExam}
                   exams={MOCK_BACKEND_EXAMS}
                 />
-
                 <FormToggleSetting
                   id="standalone-pass-exam-toggle"
                   title={tDialog("isRequiredPassExam")}
@@ -772,70 +590,111 @@ export function NewLessonClient({ initialLessonId }: NewLessonClientProps = {}) 
           </FormToggleSetting>
         </FormSectionCard>
 
-        {/* 7. PUBLISH STATUS */}
+        {/* 6. INDEPENDENT LESSON TOGGLE (WITH VENUE & PUBLISH STATUS) */}
         <FormSectionCard
-          title={tDialog("groups.organization")}
-          description={tDialog("groupDescriptions.organization")}
+          title={tDialog("categoryOptions.independent")}
+          description={tDialog("categoryDescriptions.independent")}
           icon={Layers}
-          contentClassName="space-y-4"
+          contentClassName="space-y-6"
         >
-          <div className="flex flex-col gap-2">
-            <label
-              htmlFor="standalone-publish-status"
-              className="text-sm font-medium text-foreground"
-            >
-              {tDialog("publishStatus")}
-            </label>
-            <Select
-              value={publishStatus}
-              onValueChange={(val) => setPublishStatus(val as LessonPublishStatus)}
-            >
-              <SelectTrigger id="standalone-publish-status">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="published">{tDialog("statusOptions.published")}</SelectItem>
-                <SelectItem value="draft">{tDialog("statusOptions.draft")}</SelectItem>
-                <SelectItem value="scheduled">{tDialog("statusOptions.scheduled")}</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          <FormToggleSetting
+            id="standalone-is-independent-toggle"
+            title={tDialog("categoryOptions.independent")}
+            subtitle={tDialog("categoryDescriptions.independent")}
+            checked={isIndependent}
+            onCheckedChange={setIsIndependent}
+          >
+            {isIndependent && (
+              <div className="space-y-6 pt-2 animate-in fade-in slide-in-from-top-1">
+                {/* Venue */}
+                <div className="flex flex-col gap-2 max-w-sm">
+                  <label
+                    htmlFor="academic-venue"
+                    className="text-sm font-medium text-foreground flex items-center gap-1.5"
+                  >
+                    <MapPin className="size-4 text-muted-foreground" />
+                    {tDialog("venue")}
+                  </label>
+                  <Select value={venue} onValueChange={(v) => setVenue(v as CourseVenue)}>
+                    <SelectTrigger id="academic-venue">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="online">{tCourses("venue.online")}</SelectItem>
+                      <SelectItem value="center">{tCourses("venue.center")}</SelectItem>
+                      <SelectItem value="all">{tCourses("venue.all")}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
 
-          {publishStatus === "scheduled" && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-in fade-in slide-in-from-top-1 pt-2">
-              <div className="flex flex-col gap-2">
-                <label
-                  htmlFor="standalone-scheduled-date"
-                  className="text-sm font-medium text-foreground flex items-center gap-1.5"
-                >
-                  <Calendar className="size-4 text-primary" />
-                  {tDialog("scheduledPublishDate")} <span className="text-destructive">*</span>
-                </label>
-                <Input
-                  id="standalone-scheduled-date"
-                  type="datetime-local"
-                  value={scheduledPublishDate}
-                  onChange={(e) => setScheduledPublishDate(e.target.value)}
-                  required={publishStatus === "scheduled"}
-                />
+                {/* Publish Status */}
+                <div className="space-y-4 pt-2 border-t border-border/40">
+                  <div className="flex flex-col gap-2 max-w-sm">
+                    <label
+                      htmlFor="standalone-publish-status"
+                      className="text-sm font-medium text-foreground"
+                    >
+                      {tDialog("publishStatus")}
+                    </label>
+                    <Select
+                      value={publishStatus}
+                      onValueChange={(val) => setPublishStatus(val as LessonPublishStatus)}
+                    >
+                      <SelectTrigger id="standalone-publish-status">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="published">
+                          {tDialog("statusOptions.published")}
+                        </SelectItem>
+                        <SelectItem value="draft">{tDialog("statusOptions.draft")}</SelectItem>
+                        <SelectItem value="scheduled">
+                          {tDialog("statusOptions.scheduled")}
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {publishStatus === "scheduled" && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-in fade-in slide-in-from-top-1 pt-2">
+                      <div className="flex flex-col gap-2">
+                        <label
+                          htmlFor="standalone-scheduled-date"
+                          className="text-sm font-medium text-foreground flex items-center gap-1.5"
+                        >
+                          <Calendar className="size-4 text-primary" />
+                          {tDialog("scheduledPublishDate")}{" "}
+                          <span className="text-destructive">*</span>
+                        </label>
+                        <Input
+                          id="standalone-scheduled-date"
+                          type="datetime-local"
+                          value={scheduledPublishDate}
+                          onChange={(e) => setScheduledPublishDate(e.target.value)}
+                          required={publishStatus === "scheduled"}
+                        />
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        <label
+                          htmlFor="standalone-scheduled-end-date"
+                          className="text-sm font-medium text-foreground flex items-center gap-1.5"
+                        >
+                          <Calendar className="size-4 text-primary" />
+                          {tDialog("scheduledEndDate")}
+                        </label>
+                        <Input
+                          id="standalone-scheduled-end-date"
+                          type="datetime-local"
+                          value={scheduledEndDate}
+                          onChange={(e) => setScheduledEndDate(e.target.value)}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
-              <div className="flex flex-col gap-2">
-                <label
-                  htmlFor="standalone-scheduled-end-date"
-                  className="text-sm font-medium text-foreground flex items-center gap-1.5"
-                >
-                  <Calendar className="size-4 text-primary" />
-                  {tDialog("scheduledEndDate")}
-                </label>
-                <Input
-                  id="standalone-scheduled-end-date"
-                  type="datetime-local"
-                  value={scheduledEndDate}
-                  onChange={(e) => setScheduledEndDate(e.target.value)}
-                />
-              </div>
-            </div>
-          )}
+            )}
+          </FormToggleSetting>
         </FormSectionCard>
 
         {/* Submit Actions */}

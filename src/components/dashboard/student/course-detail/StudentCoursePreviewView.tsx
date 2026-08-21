@@ -123,13 +123,22 @@ export function StudentCoursePreviewView({
       : course.currency;
     return `${price.toLocaleString(isRtl ? "ar-EG" : "en-US")} ${currencyStr}`;
   };
+  // Sanitize course sections & lessons (exclude draft sections & lessons)
+  const sanitizedSections = React.useMemo(() => {
+    return (course.sections || [])
+      .filter((s) => !s.isDraft && s.status !== "draft")
+      .map((s) => ({
+        ...s,
+        lessons: (s.lessons || []).filter((l) => l.publishStatus !== "draft"),
+      }));
+  }, [course.sections]);
 
   // Aggregated Course Contents Stats
   const flatLessons = React.useMemo(() => {
-    return course.sections.flatMap((s) => s.lessons);
-  }, [course.sections]);
+    return sanitizedSections.flatMap((s) => s.lessons);
+  }, [sanitizedSections]);
 
-  // All attached files across all lessons in the course
+  // All attached files across all published lessons in the course
   const allAttachments: LessonAttachment[] = React.useMemo(() => {
     return flatLessons.flatMap((l) => [
       ...(l.pdfFiles || []),
@@ -138,17 +147,31 @@ export function StudentCoursePreviewView({
     ]);
   }, [flatLessons]);
 
-  // Exam stats
+  // Helper to check if linked exam is published
+  const isExamPublished = React.useCallback(
+    (examId?: string) => {
+      if (!examId) return false;
+      const found = exams.find((e) => e.id === examId);
+      return found ? found.publishStatus === "published" : false;
+    },
+    [exams],
+  );
+
+  // Exam stats (only published linked exams)
   const linkedExamIds = React.useMemo(() => {
     const ids = new Set<string>();
-    course.sections.forEach((sec) => {
-      if (sec.isLinkedToExam && sec.linkedExamId) ids.add(sec.linkedExamId);
+    sanitizedSections.forEach((sec) => {
+      if (sec.isLinkedToExam && sec.linkedExamId && isExamPublished(sec.linkedExamId)) {
+        ids.add(sec.linkedExamId);
+      }
     });
     flatLessons.forEach((l) => {
-      if (l.isLinkedToExam && l.linkedExamId) ids.add(l.linkedExamId);
+      if (l.isLinkedToExam && l.linkedExamId && isExamPublished(l.linkedExamId)) {
+        ids.add(l.linkedExamId);
+      }
     });
     return Array.from(ids);
-  }, [course.sections, flatLessons]);
+  }, [sanitizedSections, flatLessons, isExamPublished]);
 
   const totalExamsCount = linkedExamIds.length;
 
@@ -156,7 +179,7 @@ export function StudentCoursePreviewView({
     let count = 0;
     linkedExamIds.forEach((examId) => {
       const exam = exams.find((e) => e.id === examId);
-      if (exam) {
+      if (exam && exam.publishStatus === "published") {
         const qCount = exam.examSections.reduce((acc, es) => acc + es.questions.length, 0);
         count += qCount;
       }
@@ -343,7 +366,7 @@ export function StudentCoursePreviewView({
                       <p className="leading-relaxed">{t("sectionsTab.previewNotice")}</p>
                     </div>
 
-                    {course.sections.length === 0 ? (
+                    {sanitizedSections.length === 0 ? (
                       <div className="py-12 text-center text-sm text-muted-foreground border border-dashed rounded-xl">
                         {tCourses("details.noSections")}
                       </div>
@@ -354,125 +377,133 @@ export function StudentCoursePreviewView({
                         defaultValue="preview-section-0"
                         className="w-full space-y-3"
                       >
-                        {course.sections.map((section, sIdx) => (
-                          <AccordionItem
-                            key={section.id}
-                            value={`preview-section-${sIdx}`}
-                            className="border border-border/70 rounded-xl px-4 py-1 bg-muted/20 data-[state=open]:bg-muted/40 transition-colors"
-                          >
-                            <AccordionTrigger className="hover:no-underline py-3">
-                              <div className="flex flex-col sm:flex-row sm:items-center justify-between w-full text-start gap-2 pe-3">
-                                <div>
-                                  <h3 className="text-sm sm:text-base font-bold text-foreground">
-                                    {section.title}
-                                  </h3>
-                                  <p className="text-xs text-muted-foreground mt-0.5">
-                                    {t("sectionsTab.lessonsCount", {
-                                      count: section.lessons.length,
-                                    })}
-                                  </p>
-                                </div>
+                        {sanitizedSections.map((section, sIdx) => {
+                          const hasPublishedExam =
+                            section.isLinkedToExam &&
+                            !!section.linkedExamId &&
+                            isExamPublished(section.linkedExamId);
 
-                                <div className="flex items-center gap-2">
-                                  {section.isLinkedToExam && (
-                                    <Badge
-                                      variant="outline"
-                                      className="text-[10px] bg-primary/10 text-primary border-primary/20"
-                                    >
-                                      {t("sectionsTab.examBadge")}
-                                    </Badge>
-                                  )}
-                                  {section.isRequiredPassExamForNextSection && (
-                                    <Badge
-                                      variant="outline"
-                                      className="text-[10px] bg-amber-500/10 text-amber-600 border-amber-500/20"
-                                    >
-                                      {t("sectionsTab.requiredExamBadge")}
-                                    </Badge>
-                                  )}
-                                </div>
-                              </div>
-                            </AccordionTrigger>
+                          return (
+                            <AccordionItem
+                              key={section.id}
+                              value={`preview-section-${sIdx}`}
+                              className="border border-border/70 rounded-xl px-4 py-1 bg-muted/20 data-[state=open]:bg-muted/40 transition-colors"
+                            >
+                              <AccordionTrigger className="hover:no-underline py-3">
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between w-full text-start gap-2 pe-3">
+                                  <div>
+                                    <h3 className="text-sm sm:text-base font-bold text-foreground">
+                                      {section.title}
+                                    </h3>
+                                    <p className="text-xs text-muted-foreground mt-0.5">
+                                      {t("sectionsTab.lessonsCount", {
+                                        count: section.lessons.length,
+                                      })}
+                                    </p>
+                                  </div>
 
-                            <AccordionContent className="pt-2 pb-4 space-y-2.5 border-t border-border/40 mt-2">
-                              {section.lessons.map((lesson, lIdx) => (
-                                <div
-                                  key={lesson.id || `l-${lIdx}`}
-                                  className="flex items-center justify-between p-3 rounded-xl bg-background border border-border/50 gap-3"
-                                >
-                                  <div className="flex items-center gap-3 min-w-0 flex-1">
-                                    <div className="p-2 rounded-lg bg-muted text-muted-foreground shrink-0">
-                                      {lesson.type === "text" ? (
-                                        <FileText className="size-4 text-emerald-500" />
-                                      ) : (
-                                        <Video className="size-4 text-primary" />
+                                  <div className="flex items-center gap-2">
+                                    {hasPublishedExam && (
+                                      <Badge
+                                        variant="outline"
+                                        className="text-[10px] bg-primary/10 text-primary border-primary/20"
+                                      >
+                                        {t("sectionsTab.examBadge")}
+                                      </Badge>
+                                    )}
+                                    {section.isRequiredPassExamForNextSection &&
+                                      hasPublishedExam && (
+                                        <Badge
+                                          variant="outline"
+                                          className="text-[10px] bg-amber-500/10 text-amber-600 border-amber-500/20"
+                                        >
+                                          {t("sectionsTab.requiredExamBadge")}
+                                        </Badge>
                                       )}
-                                    </div>
-                                    <div className="min-w-0 flex-1">
-                                      <div className="text-xs sm:text-sm font-semibold text-foreground truncate">
-                                        {lesson.title}
-                                      </div>
-                                      <div className="text-[11px] text-muted-foreground flex items-center gap-2 mt-0.5">
-                                        <span>
-                                          {lesson.type === "text"
-                                            ? t("sectionsTab.textLesson")
-                                            : t("sectionsTab.videoLesson")}
-                                        </span>
-                                        {((lesson.pdfFiles?.length || 0) > 0 ||
-                                          (lesson.attachments?.length || 0) > 0) && (
-                                          <>
-                                            <span>•</span>
-                                            <span className="flex items-center gap-1">
-                                              <Paperclip className="size-3" />
-                                              <span>
-                                                {(lesson.pdfFiles?.length || 0) +
-                                                  (lesson.attachments?.length || 0)}
-                                              </span>
-                                            </span>
-                                          </>
+                                  </div>
+                                </div>
+                              </AccordionTrigger>
+
+                              <AccordionContent className="pt-2 pb-4 space-y-2.5 border-t border-border/40 mt-2">
+                                {section.lessons.map((lesson, lIdx) => (
+                                  <div
+                                    key={lesson.id || `l-${lIdx}`}
+                                    className="flex items-center justify-between p-3 rounded-xl bg-background border border-border/50 gap-3"
+                                  >
+                                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                                      <div className="p-2 rounded-lg bg-muted text-muted-foreground shrink-0">
+                                        {lesson.type === "text" ? (
+                                          <FileText className="size-4 text-emerald-500" />
+                                        ) : (
+                                          <Video className="size-4 text-primary" />
                                         )}
                                       </div>
-                                    </div>
-                                  </div>
-
-                                  {/* Locked Status indicator (No link) */}
-                                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium shrink-0 bg-muted/60 px-2.5 py-1 rounded-lg border border-border/40">
-                                    <Lock className="size-3 text-muted-foreground" />
-                                    <span className="hidden sm:inline">
-                                      {t("sectionsTab.lockedLesson")}
-                                    </span>
-                                  </div>
-                                </div>
-                              ))}
-
-                              {/* Section Linked Exam (if present) */}
-                              {section.isLinkedToExam && (
-                                <div className="flex items-center justify-between p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 gap-3">
-                                  <div className="flex items-center gap-3 min-w-0 flex-1">
-                                    <div className="p-2 rounded-lg bg-amber-500/20 text-amber-700 shrink-0">
-                                      <FileSpreadsheet className="size-4" />
-                                    </div>
-                                    <div className="min-w-0 flex-1">
-                                      <div className="text-xs sm:text-sm font-bold text-amber-900 truncate">
-                                        {section.linkedExamTitle || t("sectionsTab.examBadge")}
-                                      </div>
-                                      <div className="text-[11px] text-amber-700/80">
-                                        {t("sectionsTab.requiredExamBadge")}
+                                      <div className="min-w-0 flex-1">
+                                        <div className="text-xs sm:text-sm font-semibold text-foreground truncate">
+                                          {lesson.title}
+                                        </div>
+                                        <div className="text-[11px] text-muted-foreground flex items-center gap-2 mt-0.5">
+                                          <span>
+                                            {lesson.type === "text"
+                                              ? t("sectionsTab.textLesson")
+                                              : t("sectionsTab.videoLesson")}
+                                          </span>
+                                          {((lesson.pdfFiles?.length || 0) > 0 ||
+                                            (lesson.attachments?.length || 0) > 0) && (
+                                            <>
+                                              <span>•</span>
+                                              <span className="flex items-center gap-1">
+                                                <Paperclip className="size-3" />
+                                                <span>
+                                                  {(lesson.pdfFiles?.length || 0) +
+                                                    (lesson.attachments?.length || 0)}
+                                                </span>
+                                              </span>
+                                            </>
+                                          )}
+                                        </div>
                                       </div>
                                     </div>
-                                  </div>
 
-                                  <div className="flex items-center gap-1.5 text-xs text-amber-800 font-medium shrink-0">
-                                    <Lock className="size-3" />
-                                    <span className="hidden sm:inline">
-                                      {t("sectionsTab.lockedLesson")}
-                                    </span>
+                                    {/* Locked Status indicator (No link) */}
+                                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium shrink-0 bg-muted/60 px-2.5 py-1 rounded-lg border border-border/40">
+                                      <Lock className="size-3 text-muted-foreground" />
+                                      <span className="hidden sm:inline">
+                                        {t("sectionsTab.lockedLesson")}
+                                      </span>
+                                    </div>
                                   </div>
-                                </div>
-                              )}
-                            </AccordionContent>
-                          </AccordionItem>
-                        ))}
+                                ))}
+
+                                {/* Section Linked Exam (if published) */}
+                                {hasPublishedExam && (
+                                  <div className="flex items-center justify-between p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 gap-3">
+                                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                                      <div className="p-2 rounded-lg bg-amber-500/20 text-amber-700 shrink-0">
+                                        <FileSpreadsheet className="size-4" />
+                                      </div>
+                                      <div className="min-w-0 flex-1">
+                                        <div className="text-xs sm:text-sm font-bold text-amber-900 truncate">
+                                          {section.linkedExamTitle || t("sectionsTab.examBadge")}
+                                        </div>
+                                        <div className="text-[11px] text-amber-700/80">
+                                          {t("sectionsTab.requiredExamBadge")}
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    <div className="flex items-center gap-1.5 text-xs text-amber-800 font-medium shrink-0">
+                                      <Lock className="size-3" />
+                                      <span className="hidden sm:inline">
+                                        {t("sectionsTab.lockedLesson")}
+                                      </span>
+                                    </div>
+                                  </div>
+                                )}
+                              </AccordionContent>
+                            </AccordionItem>
+                          );
+                        })}
                       </Accordion>
                     )}
                   </TabsContent>

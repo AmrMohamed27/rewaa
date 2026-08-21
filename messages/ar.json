@@ -685,7 +685,7 @@
       },
       "filters": {
         "searchPlaceholder": "ابحث باسم الطالب أو رقم الهاتف أو البريد...",
-        "allGenders": "جميع الأنواع",
+        "allGenders": "الجميع",
         "male": "ذكر",
         "female": "أنثى",
         "allGrades": "جميع المراحل الدراسية",
@@ -732,6 +732,11 @@
       "all": "جميع الامتحانات",
       "published": "المنشورة",
       "draft": "المسودات والمجدولة"
+    },
+    "filterType": {
+      "all": "الجميع",
+      "independent": "امتحانات مستقلة",
+      "courseDependent": "مرتبطة بدورة"
     },
     "sort": {
       "newest": "الأحدث أولاً",
@@ -1228,6 +1233,11 @@
       "all": "جميع الدروس",
       "published": "الدروس المنشورة",
       "draft": "المسودات والمجدولة"
+    },
+    "filterType": {
+      "all": "الجميع",
+      "independent": "دروس مستقلة",
+      "courseDependent": "مرتبطة بدورة"
     },
     "sort": {
       "newest": "الأحدث أولاً",

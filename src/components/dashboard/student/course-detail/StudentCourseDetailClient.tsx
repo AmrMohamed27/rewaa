@@ -105,50 +105,55 @@ export function StudentCourseDetailClient({ courseId }: StudentCourseDetailClien
     };
   }, [locale, courseId]);
 
-  // Current Course
-  const courseList =
-    storedCourses.length > 0
-      ? storedCourses
-      : mockCoursesData[locale as "ar" | "en"] || mockCoursesData.ar;
+  // Current Course - must be published
+  const courseList = React.useMemo(() => {
+    const raw =
+      storedCourses.length > 0
+        ? storedCourses
+        : mockCoursesData[locale as "ar" | "en"] || mockCoursesData.ar;
+    return raw.filter((c) => !c.isDraft);
+  }, [storedCourses, locale]);
 
-  const currentCourse = courseList.find((c) => c.id === courseId) ||
-    courseList[0] || {
-      id: courseId,
-      title: "Course",
-      description: "",
-      coverImage: "/courses/physics.jpg",
-      grade: "grade3",
-      subject: "physics",
-      teacherName: "",
-      sections: [],
-      period: "monthly",
-      date: new Date().toISOString(),
-      numberOfLessons: 0,
-      price: 0,
-      isFree: true,
-      currency: "EGP",
-      hasOffer: false,
-      hasTimeLimit: false,
-      isSplitToSections: false,
-      venue: "online" as const,
-      numberOfParticipants: 0,
-      isDraft: false,
+  const rawCourse = React.useMemo(() => {
+    return courseList.find((c) => c.id === courseId) || null;
+  }, [courseList, courseId]);
+
+  // Sanitize course to ensure all sections & lessons are published (non-draft)
+  const currentCourse = React.useMemo((): Course | null => {
+    if (!rawCourse || rawCourse.isDraft) return null;
+
+    const publishedSections = (rawCourse.sections || [])
+      .filter((section) => !section.isDraft && section.status !== "draft")
+      .map((section) => ({
+        ...section,
+        lessons: (section.lessons || []).filter((lesson) => lesson.publishStatus !== "draft"),
+      }));
+
+    const totalPublishedLessons = publishedSections.reduce((acc, s) => acc + s.lessons.length, 0);
+
+    return {
+      ...rawCourse,
+      numberOfLessons: totalPublishedLessons,
+      sections: publishedSections,
     };
+  }, [rawCourse]);
 
   // Find instructor image & info
   const matchedTeacher = React.useMemo(() => {
+    if (!currentCourse) return undefined;
     return teachers.find(
       (tch) =>
         tch.name.trim().toLowerCase() === currentCourse.teacherName?.trim().toLowerCase() ||
         (currentCourse.teacherName && tch.name.includes(currentCourse.teacherName)) ||
         (currentCourse.teacherName && currentCourse.teacherName.includes(tch.name)),
     );
-  }, [teachers, currentCourse.teacherName]);
+  }, [teachers, currentCourse]);
 
   // Check enrollment
   const isEnrolled = React.useMemo(() => {
+    if (!currentCourse) return false;
     return enrolledIds.includes(currentCourse.id) || isCourseEnrolled(currentCourse.id);
-  }, [enrolledIds, currentCourse.id]);
+  }, [enrolledIds, currentCourse]);
 
   // Handle Enrollment Action
   const handleEnroll = (targetCourseId: string) => {
@@ -162,8 +167,9 @@ export function StudentCourseDetailClient({ courseId }: StudentCourseDetailClien
 
   // Flat lessons list for next/prev navigation
   const flatLessons: Lesson[] = React.useMemo(() => {
+    if (!currentCourse) return [];
     return currentCourse.sections.flatMap((s) => s.lessons);
-  }, [currentCourse.sections]);
+  }, [currentCourse]);
 
   const selectedLesson = React.useMemo(() => {
     if (!selectedLessonId) return null;
@@ -176,7 +182,7 @@ export function StudentCourseDetailClient({ courseId }: StudentCourseDetailClien
 
   // Check if the next lesson belongs to a locked section
   const isNextLessonLocked = React.useMemo(() => {
-    if (!hasNextLesson) return false;
+    if (!hasNextLesson || !currentCourse) return false;
     const nextLesson = flatLessons[currentLessonIndex + 1];
     if (!nextLesson) return false;
     const targetSecIdx = currentCourse.sections.findIndex((s) =>
@@ -185,7 +191,7 @@ export function StudentCourseDetailClient({ courseId }: StudentCourseDetailClien
     if (targetSecIdx <= 0) return false;
     const lockStatus = getSectionLockStatus(targetSecIdx, currentCourse.sections, passedExamIds);
     return lockStatus.isLocked;
-  }, [hasNextLesson, flatLessons, currentLessonIndex, currentCourse.sections, passedExamIds]);
+  }, [hasNextLesson, flatLessons, currentLessonIndex, currentCourse, passedExamIds]);
 
   // Handle lesson navigation with lock check
   const handleSelectLesson = (lessonId: string | null) => {
@@ -194,6 +200,8 @@ export function StudentCourseDetailClient({ courseId }: StudentCourseDetailClien
       window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
+
+    if (!currentCourse) return;
 
     // Determine target section
     const targetSecIdx = currentCourse.sections.findIndex((s) =>
@@ -262,6 +270,21 @@ export function StudentCourseDetailClient({ courseId }: StudentCourseDetailClien
           <Skeleton className="aspect-video w-full rounded-2xl" />
           <Skeleton className="h-32 w-full rounded-2xl" />
         </div>
+      </div>
+    );
+  }
+
+  if (!currentCourse) {
+    return (
+      <div className="flex flex-col items-center justify-center p-12 text-center bg-card rounded-2xl border border-dashed border-border/80 space-y-4 my-8">
+        <h2 className="text-xl font-bold text-foreground">
+          {locale === "ar" ? "الدورة غير متوفرة" : "Course not found"}
+        </h2>
+        <p className="text-sm text-muted-foreground max-w-md">
+          {locale === "ar"
+            ? "عذراً، هذه الدورة غير متوفرة أو لم يتم نشرها بعد."
+            : "Sorry, this course is not available or hasn't been published yet."}
+        </p>
       </div>
     );
   }

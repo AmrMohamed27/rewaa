@@ -70,14 +70,12 @@ export function StudentExamResultClient({ examId }: StudentExamResultClientProps
   const [filterType, setFilterType] = React.useState<QuestionFilterType>("all");
   const [activeMode, setActiveMode] = React.useState<"intro" | "taking" | "review" | null>(null);
   const [customAnswers, setCustomAnswers] = React.useState<Record<string, string> | null>(null);
-  // Load Exam and Passed state
+  // Load Exam and Passed state - only published exams
   React.useEffect(() => {
     const loadData = () => {
       const stored = getStoredExams(locale);
-      const found = stored.find((e) => e.id === examId);
-      if (found) {
-        setExam(found);
-      }
+      const found = stored.find((e) => e.id === examId && e.publishStatus === "published");
+      setExam(found || null);
       setPassedExamIds(getPassedExams());
       setIsLoading(false);
     };

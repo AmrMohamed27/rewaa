@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/command";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { getStoredCourses } from "@/lib/courses-storage";
 import { mockCoursesData } from "@/lib/mockCoursesData";
 
 export function CourseSearchInput({ className }: { className?: string }) {
@@ -38,7 +39,21 @@ export function CourseSearchInput({ className }: { className?: string }) {
     return () => document.removeEventListener("keydown", down);
   }, []);
 
-  const courses = mockCoursesData[locale] || mockCoursesData.ar;
+  const [courses, setCourses] = React.useState(() => {
+    const fallback = mockCoursesData[locale] || mockCoursesData.ar;
+    return fallback.filter((c) => !c.isDraft);
+  });
+
+  React.useEffect(() => {
+    const loadCourses = () => {
+      const stored = getStoredCourses(locale);
+      const list = stored.length > 0 ? stored : mockCoursesData[locale] || mockCoursesData.ar;
+      setCourses(list.filter((c) => !c.isDraft));
+    };
+    loadCourses();
+    window.addEventListener("rewaa_courses_updated", loadCourses);
+    return () => window.removeEventListener("rewaa_courses_updated", loadCourses);
+  }, [locale]);
 
   const handleSelectCourse = (courseId: string) => {
     setOpen(false);

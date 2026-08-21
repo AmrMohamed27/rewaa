@@ -8,6 +8,13 @@ import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { BookOpen, Plus, RotateCcw } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Lesson, LessonPublishStatus } from "@/types/course";
 import { getStoredLessons, saveStoredLessons, resetStoredLessons } from "@/lib/lessons-storage";
@@ -17,6 +24,7 @@ import { LessonCard } from "./lesson-card";
 import { DeleteLessonDialog } from "./delete-lesson-dialog";
 
 export type LessonFilterTab = "all" | "published" | "draft";
+export type LessonTypeFilter = "all" | "independent" | "course-dependent";
 export type LessonSortOption = "date-newest" | "date-oldest" | "title-asc" | "title-desc";
 
 export function ManageLessonsClient() {
@@ -30,6 +38,7 @@ export function ManageLessonsClient() {
   // URL state synchronization
   const searchQuery = searchParams.get("search") || "";
   const activeTab = (searchParams.get("tab") as LessonFilterTab) || "all";
+  const typeFilter = (searchParams.get("type") as LessonTypeFilter) || "all";
   const sortBy = (searchParams.get("sort") as LessonSortOption) || "date-newest";
   const currentPage = parseInt(searchParams.get("page") || "1", 10) || 1;
   const itemsPerPage = 8;
@@ -43,6 +52,7 @@ export function ManageLessonsClient() {
           value === null ||
           value === "" ||
           (key === "tab" && value === "all") ||
+          (key === "type" && value === "all") ||
           (key === "sort" && value === "date-newest") ||
           (key === "page" && value === 1)
         ) {
@@ -91,6 +101,12 @@ export function ManageLessonsClient() {
       if (activeTab === "published" && !isPublished) return false;
       if (activeTab === "draft" && isPublished) return false;
 
+      // Type Filter (independent vs course-dependent)
+      const isIndep =
+        lesson.lessonCategory === "independent" || (!lesson.lessonCategory && !lesson.courseId);
+      if (typeFilter === "independent" && !isIndep) return false;
+      if (typeFilter === "course-dependent" && isIndep) return false;
+
       if (searchQuery.trim()) {
         const query = searchQuery.toLowerCase();
         const matchesTitle = lesson.title.toLowerCase().includes(query);
@@ -111,7 +127,7 @@ export function ManageLessonsClient() {
 
       return true;
     });
-  }, [lessons, activeTab, searchQuery]);
+  }, [lessons, activeTab, typeFilter, searchQuery]);
 
   // Sort Logic
   const sortedLessons = React.useMemo(() => {
@@ -187,8 +203,12 @@ export function ManageLessonsClient() {
     setTimeout(() => setCopiedId(null), 2000);
   };
 
+  const handleTypeChange = (val: string) => {
+    updateUrlParams({ type: val === "all" ? null : val, page: 1 });
+  };
+
   const handleResetFilters = () => {
-    updateUrlParams({ search: null, tab: null, sort: null, page: 1 });
+    updateUrlParams({ search: null, tab: null, type: null, sort: null, page: 1 });
   };
 
   // Filter tabs and sort options
@@ -259,6 +279,21 @@ export function ManageLessonsClient() {
         sortBy={sortBy}
         sortOptions={sortOptions}
         clearFiltersLabel={t("clearFilters")}
+        isFilterActiveCustom={typeFilter !== "all"}
+        extraFilters={
+          <div className="w-full sm:w-44 self-start sm:self-auto">
+            <Select value={typeFilter} onValueChange={handleTypeChange}>
+              <SelectTrigger className="h-9 text-xs bg-background">
+                <SelectValue placeholder={t("filterType.all")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{t("filterType.all")}</SelectItem>
+                <SelectItem value="independent">{t("filterType.independent")}</SelectItem>
+                <SelectItem value="course-dependent">{t("filterType.courseDependent")}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        }
         onSearchChange={handleSearchChange}
         onTabChange={handleTabChange}
         onSortChange={handleSortChange}

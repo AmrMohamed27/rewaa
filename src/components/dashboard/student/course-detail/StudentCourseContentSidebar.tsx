@@ -68,9 +68,25 @@ export function StudentCourseContentSidebar({
     window.addEventListener("rewaa_exams_updated", handleExamsUpdate);
     return () => window.removeEventListener("rewaa_exams_updated", handleExamsUpdate);
   }, [locale]);
+  // Sanitize course to ensure draft sections and draft lessons are excluded
+  const sanitizedSections = React.useMemo(() => {
+    return (course.sections || [])
+      .filter((s) => !s.isDraft && s.status !== "draft")
+      .map((s) => ({
+        ...s,
+        lessons: (s.lessons || []).filter((l) => l.publishStatus !== "draft"),
+      }));
+  }, [course.sections]);
 
-  const totalSections = course.sections.length;
-  const totalLessons = course.sections.reduce((acc, s) => acc + s.lessons.length, 0);
+  const totalSections = sanitizedSections.length;
+  const totalLessons = sanitizedSections.reduce((acc, s) => acc + s.lessons.length, 0);
+
+  // Helper to check if linked exam is published
+  const isExamPublished = (examId?: string) => {
+    if (!examId) return false;
+    const found = exams.find((e) => e.id === examId);
+    return found ? found.publishStatus === "published" : false;
+  };
 
   // Helper to resolve exam name
   const getExamTitle = (examId?: string, fallbackTitle?: string) => {
@@ -82,11 +98,11 @@ export function StudentCourseContentSidebar({
   // Auto-expand section containing the selected lesson
   const defaultSectionValue = React.useMemo(() => {
     if (!selectedLessonId) return "section-0";
-    const foundIndex = course.sections.findIndex((sec) =>
+    const foundIndex = sanitizedSections.findIndex((sec) =>
       sec.lessons.some((l) => l.id === selectedLessonId),
     );
     return foundIndex !== -1 ? `section-${foundIndex}` : "section-0";
-  }, [course.sections, selectedLessonId]);
+  }, [sanitizedSections, selectedLessonId]);
 
   return (
     <TooltipProvider delayDuration={200}>
@@ -123,7 +139,7 @@ export function StudentCourseContentSidebar({
 
         {/* Sections & Items Collapsible List */}
         <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3">
-          {course.sections.length === 0 ? (
+          {sanitizedSections.length === 0 ? (
             <div className="py-8 px-4 text-center text-xs text-muted-foreground border border-dashed rounded-xl">
               {t("empty.noSections")}
             </div>
@@ -133,7 +149,7 @@ export function StudentCourseContentSidebar({
               defaultValue={[defaultSectionValue]}
               className="w-full space-y-2.5"
             >
-              {course.sections.map((section: CourseSection, sIdx: number) => {
+              {sanitizedSections.map((section: CourseSection, sIdx: number) => {
                 const sectionLessonsCount = section.lessons.length;
                 const sectionCompletedCount = section.lessons.filter((l) =>
                   completedLessons.includes(l.id),
@@ -146,12 +162,13 @@ export function StudentCourseContentSidebar({
                 let requiredExamIdForUnlock: string | undefined;
 
                 for (let prevIdx = 0; prevIdx < sIdx; prevIdx++) {
-                  const prevSec = course.sections[prevIdx];
+                  const prevSec = sanitizedSections[prevIdx];
                   if (
                     prevSec &&
                     prevSec.isLinkedToExam &&
                     prevSec.isRequiredPassExamForNextSection &&
-                    prevSec.linkedExamId
+                    prevSec.linkedExamId &&
+                    isExamPublished(prevSec.linkedExamId)
                   ) {
                     if (!passedExamIds.includes(prevSec.linkedExamId)) {
                       isSectionLocked = true;
@@ -161,8 +178,11 @@ export function StudentCourseContentSidebar({
                   }
                 }
 
-                // Check if current section has an exam and if it is passed
-                const hasExam = section.isLinkedToExam && !!section.linkedExamId;
+                // Check if current section has a published exam and if it is passed
+                const hasExam =
+                  section.isLinkedToExam &&
+                  !!section.linkedExamId &&
+                  isExamPublished(section.linkedExamId);
                 const isCurrentExamPassed =
                   hasExam && passedExamIds.includes(section.linkedExamId!);
 
@@ -382,62 +402,64 @@ export function StudentCourseContentSidebar({
                         )}
 
                       {/* Linked Exam in Section - shows exam title & required badge */}
-                      {section.isLinkedToExam && section.linkedExamId && (
-                        <div className="pt-1">
-                          {(() => {
-                            const examTitle = getExamTitle(
-                              section.linkedExamId,
-                              section.linkedExamTitle,
-                            );
-                            return (
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <Link
-                                    href={`/student-dashboard/exams/${section.linkedExamId}`}
-                                    className={cn(
-                                      "flex items-center justify-between p-2.5 rounded-lg border text-xs font-semibold transition-colors min-w-0",
-                                      isCurrentExamPassed
-                                        ? "bg-emerald-500/10 hover:bg-emerald-500/20 border-emerald-500/30 text-emerald-800"
-                                        : "bg-amber-500/10 hover:bg-amber-500/20 border-amber-500/30 text-amber-800",
-                                    )}
-                                  >
-                                    <div className="flex items-center gap-2 truncate min-w-0 flex-1">
-                                      <FileSpreadsheet
-                                        className={cn(
-                                          "size-4 shrink-0",
-                                          isCurrentExamPassed
-                                            ? "text-emerald-600"
-                                            : "text-amber-600",
-                                        )}
-                                      />
-                                      <span className="truncate">{examTitle}</span>
-                                    </div>
-                                    <div className="flex items-center gap-1.5 shrink-0 ms-1">
-                                      {isCurrentExamPassed ? (
-                                        <Badge className="bg-emerald-600 text-white text-[10px] px-1.5 py-0 h-4">
-                                          {t("locked.examPassed")}
-                                        </Badge>
-                                      ) : section.isRequiredPassExamForNextSection ? (
-                                        <Badge
-                                          variant="outline"
-                                          className="text-[10px] bg-amber-500/15 border-amber-500/30 text-amber-700 px-1.5 py-0 h-4"
-                                        >
-                                          {t("locked.examRequired")}
-                                        </Badge>
-                                      ) : (
-                                        <FileCheck className="size-3.5 shrink-0 opacity-80" />
+                      {section.isLinkedToExam &&
+                        section.linkedExamId &&
+                        isExamPublished(section.linkedExamId) && (
+                          <div className="pt-1">
+                            {(() => {
+                              const examTitle = getExamTitle(
+                                section.linkedExamId,
+                                section.linkedExamTitle,
+                              );
+                              return (
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Link
+                                      href={`/student-dashboard/exams/${section.linkedExamId}`}
+                                      className={cn(
+                                        "flex items-center justify-between p-2.5 rounded-lg border text-xs font-semibold transition-colors min-w-0",
+                                        isCurrentExamPassed
+                                          ? "bg-emerald-500/10 hover:bg-emerald-500/20 border-emerald-500/30 text-emerald-800"
+                                          : "bg-amber-500/10 hover:bg-amber-500/20 border-amber-500/30 text-amber-800",
                                       )}
-                                    </div>
-                                  </Link>
-                                </TooltipTrigger>
-                                <TooltipContent side="top" className="max-w-xs text-xs">
-                                  {examTitle}
-                                </TooltipContent>
-                              </Tooltip>
-                            );
-                          })()}
-                        </div>
-                      )}
+                                    >
+                                      <div className="flex items-center gap-2 truncate min-w-0 flex-1">
+                                        <FileSpreadsheet
+                                          className={cn(
+                                            "size-4 shrink-0",
+                                            isCurrentExamPassed
+                                              ? "text-emerald-600"
+                                              : "text-amber-600",
+                                          )}
+                                        />
+                                        <span className="truncate">{examTitle}</span>
+                                      </div>
+                                      <div className="flex items-center gap-1.5 shrink-0 ms-1">
+                                        {isCurrentExamPassed ? (
+                                          <Badge className="bg-emerald-600 text-white text-[10px] px-1.5 py-0 h-4">
+                                            {t("locked.examPassed")}
+                                          </Badge>
+                                        ) : section.isRequiredPassExamForNextSection ? (
+                                          <Badge
+                                            variant="outline"
+                                            className="text-[10px] bg-amber-500/15 border-amber-500/30 text-amber-700 px-1.5 py-0 h-4"
+                                          >
+                                            {t("locked.examRequired")}
+                                          </Badge>
+                                        ) : (
+                                          <FileCheck className="size-3.5 shrink-0 opacity-80" />
+                                        )}
+                                      </div>
+                                    </Link>
+                                  </TooltipTrigger>
+                                  <TooltipContent side="top" className="max-w-xs text-xs">
+                                    {examTitle}
+                                  </TooltipContent>
+                                </Tooltip>
+                              );
+                            })()}
+                          </div>
+                        )}
                     </AccordionContent>
                   </AccordionItem>
                 );

@@ -733,6 +733,11 @@
       "published": "Published",
       "draft": "Drafts & Scheduled"
     },
+    "filterType": {
+      "all": "All Types",
+      "independent": "Independent Exams",
+      "courseDependent": "Course-Linked"
+    },
     "sort": {
       "newest": "Newest First",
       "oldest": "Oldest First",
@@ -1228,6 +1233,11 @@
       "all": "All Lessons",
       "published": "Published",
       "draft": "Drafts & Scheduled"
+    },
+    "filterType": {
+      "all": "All Types",
+      "independent": "Independent Lessons",
+      "courseDependent": "Course-Linked"
     },
     "sort": {
       "newest": "Newest First",

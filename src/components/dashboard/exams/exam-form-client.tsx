@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
 import {
@@ -21,7 +20,7 @@ import {
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import * as React from "react";
 
 import { ArrangeSectionsDialog } from "@/components/dashboard/common/arrange-sections-dialog";
@@ -50,25 +49,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { getStoredCourses } from "@/lib/courses-storage";
 import { getStoredExams, saveStoredExams } from "@/lib/exams-storage";
-import {
-  GradeSelect,
-  SubjectSelect,
-  TeacherSelect,
-  CourseSelect,
-  LessonSelect,
-} from "@/components/ui/academic-selects";
+import { GradeSelect, SubjectSelect, TeacherSelect } from "@/components/ui/academic-selects";
 import { SelectWithAdd } from "@/components/ui/select-with-add";
 import {
   getStoredCustomExamCategories,
   saveStoredCustomExamCategory,
-  saveStoredCustomSection,
 } from "@/lib/custom-categories-storage";
 import { getStoredTeachers } from "@/lib/settings-storage";
 import { Teacher } from "@/types/settings";
 import { cn } from "@/lib/utils";
-import { Course } from "@/types/course";
 import {
   Exam,
   ExamCategory,
@@ -87,7 +77,6 @@ interface ExamFormClientProps {
 export function ExamFormClient({ mode, initialData }: ExamFormClientProps) {
   const locale = useLocale();
   const router = useRouter();
-  const searchParams = useSearchParams();
   const t = useTranslations("exams");
   const tForm = useTranslations("exams.form");
   const tStep2 = useTranslations("exams.step2");
@@ -96,20 +85,7 @@ export function ExamFormClient({ mode, initialData }: ExamFormClientProps) {
   // Step state (1: Settings, 2: Sections & Questions)
   const [currentStep, setCurrentStep] = React.useState<1 | 2>(1);
 
-  // Read URL query params for auto-filling when coming from course/lesson context
-  const paramCourseId = searchParams.get("courseId");
-  const paramSectionId = searchParams.get("sectionId");
-  const paramLessonId = searchParams.get("lessonId");
-
-  const isContextLocked = Boolean(paramCourseId);
-
-  // Available courses for linking dropdowns
-  const [availableCourses, setAvailableCourses] = React.useState<Course[]>([]);
   const [availableTeachers, setAvailableTeachers] = React.useState<Teacher[]>([]);
-
-  React.useEffect(() => {
-    setAvailableCourses(getStoredCourses(locale));
-  }, [locale]);
 
   React.useEffect(() => {
     const loadTeachers = () => {
@@ -195,20 +171,13 @@ export function ExamFormClient({ mode, initialData }: ExamFormClientProps) {
     initialData?.expirationDays ?? "",
   );
 
-  // Classification & Linking
+  // Classification & Venue / Publish Status
   const [isIndependent, setIsIndependent] = React.useState<boolean>(
-    initialData ? initialData.examType === "independent" : isContextLocked ? false : true,
+    initialData ? initialData.examType === "independent" : true,
   );
   const [venue, setVenue] = React.useState<ExamVenue>(initialData?.venue || "online");
-
-  const [selectedCourseId, setSelectedCourseId] = React.useState<string>(
-    initialData?.courseId || paramCourseId || "",
-  );
-  const [selectedSectionId, setSelectedSectionId] = React.useState<string>(
-    initialData?.sectionId || paramSectionId || "",
-  );
-  const [selectedLessonId, setSelectedLessonId] = React.useState<string>(
-    initialData?.lessonId || paramLessonId || "",
+  const [publishStatus, setPublishStatus] = React.useState<ExamPublishStatus>(
+    initialData?.publishStatus || "published",
   );
 
   // Form State - Step 2 (Exam Sections & Questions)
@@ -237,46 +206,12 @@ export function ExamFormClient({ mode, initialData }: ExamFormClientProps) {
 
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
-  // Derived sections & lessons for selected course
-  const selectedCourse = React.useMemo(
-    () => availableCourses.find((c) => c.id === selectedCourseId),
-    [availableCourses, selectedCourseId],
-  );
-
-  const availableSections = React.useMemo(() => selectedCourse?.sections || [], [selectedCourse]);
-
-  const selectedSection = React.useMemo(
-    () => availableSections.find((s) => s.id === selectedSectionId),
-    [availableSections, selectedSectionId],
-  );
-
-  const availableLessons = React.useMemo(() => selectedSection?.lessons || [], [selectedSection]);
-
-  // Auto-fill academic info from selected course when creating a new exam
-  React.useEffect(() => {
-    if (mode === "create" && selectedCourse && !isIndependent) {
-      if (selectedCourse.grade) setGrade(selectedCourse.grade);
-      if (selectedCourse.subject) setSubject(selectedCourse.subject);
-      if (selectedCourse.teacherName) setTeacherName(selectedCourse.teacherName);
-    }
-  }, [mode, selectedCourse, isIndependent]);
-
-  // Handle course change reset
-  const handleCourseChange = (cId: string) => {
-    setSelectedCourseId(cId);
-    setSelectedSectionId("");
-    setSelectedLessonId("");
-  };
-
-  const handleSectionChange = (sId: string) => {
-    setSelectedSectionId(sId);
-    setSelectedLessonId("");
-  };
-
   // Helper to build exam object
-  const buildExamObject = (status: ExamPublishStatus): Exam => {
+  const buildExamObject = (status?: ExamPublishStatus): Exam => {
     const examType: ExamType = isIndependent ? "independent" : "course-dependent";
     const totalQuestionsCount = examSections.reduce((acc, sec) => acc + sec.questions.length, 0);
+
+    const finalStatus = status || (isIndependent ? publishStatus : "published");
 
     return {
       id: initialData?.id || `exam-${Date.now()}`,
@@ -288,10 +223,6 @@ export function ExamFormClient({ mode, initialData }: ExamFormClientProps) {
       category,
       examType,
       venue: isIndependent ? venue : undefined,
-      courseId: !isIndependent ? selectedCourseId || undefined : undefined,
-      courseTitle: !isIndependent ? selectedCourse?.title || undefined : undefined,
-      sectionId: !isIndependent ? selectedSectionId || undefined : undefined,
-      lessonId: !isIndependent ? selectedLessonId || undefined : undefined,
 
       triesAllowed: Number(triesAllowed) || 1,
       durationMinutes: Number(durationMinutes) || 30,
@@ -310,7 +241,7 @@ export function ExamFormClient({ mode, initialData }: ExamFormClientProps) {
       successRate: initialData?.successRate || 0,
       timesUsed: initialData?.timesUsed || 0,
 
-      publishStatus: status,
+      publishStatus: finalStatus,
       createdAt: initialData?.createdAt || new Date().toISOString(),
     };
   };
@@ -582,7 +513,6 @@ export function ExamFormClient({ mode, initialData }: ExamFormClientProps) {
                     onValueChange={setGrade}
                     label={tForm("fields.grade")}
                     placeholder={tForm("fields.selectGrade")}
-                    disabled={!isIndependent && isContextLocked}
                   />
 
                   {/* Subject */}
@@ -591,7 +521,6 @@ export function ExamFormClient({ mode, initialData }: ExamFormClientProps) {
                     onValueChange={setSubject}
                     label={tForm("fields.subject")}
                     placeholder={tForm("fields.selectSubject")}
-                    disabled={!isIndependent && isContextLocked}
                   />
 
                   {/* Teacher Select */}
@@ -600,7 +529,6 @@ export function ExamFormClient({ mode, initialData }: ExamFormClientProps) {
                     onValueChange={(val) => setTeacherName(val)}
                     label={tForm("fields.teacherName")}
                     placeholder={tForm("fields.selectTeacher")}
-                    disabled={!isIndependent && isContextLocked}
                     teachers={availableTeachers}
                   />
 
@@ -684,10 +612,10 @@ export function ExamFormClient({ mode, initialData }: ExamFormClientProps) {
                 </div>
               </FormSectionCard>
 
-              {/* Section 4: Classification & Linkage */}
+              {/* Section 4: Independent Exam Toggle (with Venue & Publish Status) */}
               <FormSectionCard
-                title={tForm("sections.classification")}
-                description={tForm("sections.classificationDesc")}
+                title={tForm("fields.isIndependent")}
+                description={tForm("fields.isIndependentDesc")}
                 icon={FileQuestion}
               >
                 <div className="space-y-6">
@@ -697,76 +625,55 @@ export function ExamFormClient({ mode, initialData }: ExamFormClientProps) {
                     subtitle={tForm("fields.isIndependentDesc")}
                     icon={FileQuestion}
                     checked={isIndependent}
-                    onCheckedChange={(val) => {
-                      if (isContextLocked) return;
-                      setIsIndependent(val);
-                    }}
-                    disabled={isContextLocked}
-                  />
+                    onCheckedChange={setIsIndependent}
+                  >
+                    {isIndependent && (
+                      <div className="space-y-6 pt-2 animate-in fade-in slide-in-from-top-1">
+                        {/* Venue selection for independent exam */}
+                        <div className="space-y-2 max-w-sm">
+                          <Label htmlFor="exam-standalone-venue" className="font-semibold">
+                            {tForm("fields.venue")}
+                          </Label>
+                          <Select value={venue} onValueChange={(v) => setVenue(v as ExamVenue)}>
+                            <SelectTrigger id="exam-standalone-venue">
+                              <SelectValue placeholder={tForm("fields.selectVenue")} />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="online">{tCourses("venue.online")}</SelectItem>
+                              <SelectItem value="center">{tCourses("venue.center")}</SelectItem>
+                              <SelectItem value="all">{tCourses("venue.all")}</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
 
-                  {isIndependent ? (
-                    /* Venue selection for independent exam */
-                    <div className="space-y-2 max-w-sm pt-2">
-                      <Label className="font-semibold">{tForm("fields.venue")}</Label>
-                      <Select value={venue} onValueChange={(v) => setVenue(v as ExamVenue)}>
-                        <SelectTrigger>
-                          <SelectValue placeholder={tForm("fields.selectVenue")} />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="online">{tCourses("venue.online")}</SelectItem>
-                          <SelectItem value="center">{tCourses("venue.center")}</SelectItem>
-                          <SelectItem value="all">{tCourses("venue.all")}</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  ) : (
-                    /* Linked Course, Section, and Lesson dropdowns */
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2 border-t border-border/40">
-                      {/* Linked Course */}
-                      <CourseSelect
-                        value={selectedCourseId}
-                        onValueChange={handleCourseChange}
-                        label={tForm("fields.linkedCourse")}
-                        placeholder={tForm("fields.selectCourse")}
-                        disabled={isContextLocked}
-                        courses={availableCourses}
-                        className="space-y-2"
-                      />
-
-                      {/* Linked Section */}
-                      <SelectWithAdd
-                        value={selectedSectionId}
-                        onValueChange={handleSectionChange}
-                        disabled={!selectedCourseId || (isContextLocked && Boolean(paramSectionId))}
-                        label={tForm("fields.linkedSection")}
-                        placeholder={tForm("fields.selectSection")}
-                        options={availableSections.map((sec) => ({
-                          value: sec.id,
-                          label: sec.title,
-                        }))}
-                        allowAdd={Boolean(selectedCourseId) && !isContextLocked}
-                        onAddNewOption={(name) => {
-                          const newSec = saveStoredCustomSection(name, selectedCourseId);
-                          handleSectionChange(newSec.id);
-                        }}
-                        addDialogTitle="إضافة قسم جديد للكورس"
-                        addInputLabel="عنوان القسم"
-                        addInputPlaceholder="مثال: الباب الأول - المفاهيم الأساسية"
-                        className="space-y-2"
-                      />
-
-                      {/* Linked Lesson */}
-                      <LessonSelect
-                        value={selectedLessonId}
-                        onValueChange={setSelectedLessonId}
-                        label={tForm("fields.linkedLesson")}
-                        placeholder={tForm("fields.selectLesson")}
-                        disabled={!selectedSectionId || (isContextLocked && Boolean(paramLessonId))}
-                        lessons={availableLessons}
-                        className="space-y-2"
-                      />
-                    </div>
-                  )}
+                        {/* Publish status */}
+                        <div className="space-y-2 max-w-sm pt-2 border-t border-border/40">
+                          <Label htmlFor="exam-standalone-publish-status" className="font-semibold">
+                            {locale === "ar" ? "حالة النشر" : "Publish Status"}
+                          </Label>
+                          <Select
+                            value={publishStatus}
+                            onValueChange={(v) => setPublishStatus(v as ExamPublishStatus)}
+                          >
+                            <SelectTrigger id="exam-standalone-publish-status">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="published">
+                                {locale === "ar" ? "منشور" : "Published"}
+                              </SelectItem>
+                              <SelectItem value="draft">
+                                {locale === "ar" ? "مسودة" : "Draft"}
+                              </SelectItem>
+                              <SelectItem value="scheduled">
+                                {locale === "ar" ? "مجدول" : "Scheduled"}
+                              </SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                    )}
+                  </FormToggleSetting>
                 </div>
               </FormSectionCard>
 

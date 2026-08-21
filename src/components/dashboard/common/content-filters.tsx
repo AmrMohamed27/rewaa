@@ -33,6 +33,8 @@ export interface ContentFiltersProps<TTab extends string = string, TSort extends
   clearFiltersLabel: string;
   defaultTab?: TTab;
   defaultSort?: TSort;
+  extraFilters?: React.ReactNode;
+  isFilterActiveCustom?: boolean;
   onSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onTabChange: (tab: TTab) => void;
   onSortChange: (sort: TSort) => void;
@@ -49,6 +51,8 @@ export function ContentFilters<TTab extends string = string, TSort extends strin
   clearFiltersLabel,
   defaultTab = "all" as TTab,
   defaultSort = "date-newest" as TSort,
+  extraFilters,
+  isFilterActiveCustom = false,
   onSearchChange,
   onTabChange,
   onSortChange,
@@ -58,7 +62,10 @@ export function ContentFilters<TTab extends string = string, TSort extends strin
   const isAr = locale === "ar";
 
   const isFilterActive =
-    searchQuery.trim() !== "" || activeTab !== defaultTab || sortBy !== defaultSort;
+    searchQuery.trim() !== "" ||
+    activeTab !== defaultTab ||
+    sortBy !== defaultSort ||
+    isFilterActiveCustom;
 
   const currentSortObj = sortOptions.find((o) => o.value === sortBy) || sortOptions[0];
 
@@ -94,6 +101,9 @@ export function ContentFilters<TTab extends string = string, TSort extends strin
             </button>
           ))}
         </div>
+
+        {/* Extra Filters (e.g. Type / Category Selects) */}
+        {extraFilters}
       </div>
 
       {/* Controls: Sort Menu & Clear Filters */}

@@ -11,7 +11,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { FormMarkdownEditor } from "@/components/ui/form-markdown-editor";
-import { FormRadioGroup } from "@/components/ui/form-radio-group";
 import { FormToggleSetting } from "@/components/ui/form-toggle-setting";
 import { ImageUploadField } from "@/components/ui/image-upload-field";
 import { Input } from "@/components/ui/input";
@@ -29,25 +28,15 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { getStoredExams, saveStoredExams } from "@/lib/exams-storage";
 import { getStoredLessons } from "@/lib/lessons-storage";
 import { cn } from "@/lib/utils";
-import {
-  CourseSection,
-  CourseVenue,
-  Lesson,
-  LessonAttachment,
-  LessonCategory,
-  LessonPublishStatus,
-  LessonType,
-} from "@/types/course";
+import { CourseSection, CourseVenue, Lesson, LessonAttachment, LessonType } from "@/types/course";
 import { Exam } from "@/types/exam";
 import {
   AlertCircle,
   BookOpen,
-  Calendar,
   FileCheck,
   FileQuestion,
   FileText,
   ImageIcon,
-  MapPin,
   Plus,
   Sparkles,
   Trash2,
@@ -58,20 +47,18 @@ import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
-interface ParentCourseContext {
-  grade: string;
-  subject: string;
-  teacherName: string;
-  venue: CourseVenue;
-}
-
 interface LessonDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   sections: CourseSection[];
   initialLesson?: Lesson | null;
   initialSectionId?: string;
-  parentCourseContext: ParentCourseContext;
+  parentCourseContext: {
+    grade: string;
+    subject: string;
+    teacherName: string;
+    venue: CourseVenue;
+  };
   hideLessonCategory?: boolean;
   onSave: (sectionId: string, lesson: Lesson) => void;
   onSaveMany?: (sectionId: string, lessons: Lesson[]) => void;
@@ -85,7 +72,7 @@ export function LessonDialog({
   initialLesson,
   initialSectionId,
   parentCourseContext,
-  hideLessonCategory = true,
+  hideLessonCategory: _hideLessonCategory = true,
   onSave,
   onSaveMany,
 }: LessonDialogProps) {
@@ -116,27 +103,15 @@ export function LessonDialog({
   const [linkedExamId, setLinkedExamId] = useState("");
   const [isRequiredPassExam, setIsRequiredPassExam] = useState(false);
 
-  // Organization and publish status
-  const [lessonCategory, setLessonCategory] = useState<LessonCategory>("course-dependent");
-  const [publishStatus, setPublishStatus] = useState<LessonPublishStatus>("published");
-  const [scheduledPublishDate, setScheduledPublishDate] = useState("");
-  const [scheduledEndDate, setScheduledEndDate] = useState("");
-
   // Bank Form State
   const [bankSectionId, setBankSectionId] = useState("");
   const [selectedBankLessonIds, setSelectedBankLessonIds] = useState<string[]>([]);
-  const [bankStatus, setBankStatus] = useState<LessonPublishStatus>("published");
-  const [bankScheduledPublishDate, setBankScheduledPublishDate] = useState("");
-  const [bankScheduledEndDate, setBankScheduledEndDate] = useState("");
 
   // Embedded Exam Modal State
   const [isExamModalOpen, setIsExamModalOpen] = useState(false);
   const [isCreatingExam, setIsCreatingExam] = useState(false);
   const [examTitleInput, setExamTitleInput] = useState("");
   const [examSelectedId, setExamSelectedId] = useState("");
-  const [examStatus, setExamStatus] = useState<LessonPublishStatus>("published");
-  const [examScheduledDate, setExamScheduledDate] = useState("");
-  const [examScheduledEndDate, setExamScheduledEndDate] = useState("");
   const [examIsReqPass, setExamIsReqPass] = useState(false);
   const [examTargetLessonId, setExamTargetLessonId] = useState<string | null>(null);
 
@@ -173,10 +148,8 @@ export function LessonDialog({
         numberOfStudents: 0,
         successRate: 0,
         timesUsed: 0,
-        publishStatus: examStatus || "published",
+        publishStatus: "published",
         createdAt: new Date().toISOString(),
-        scheduledAt: examStatus === "scheduled" ? examScheduledDate : undefined,
-        scheduledEndDate: examStatus === "scheduled" ? examScheduledEndDate : undefined,
       };
 
       const updatedExams = [createdExam, ...availableExams];
@@ -245,51 +218,29 @@ export function LessonDialog({
         setLinkedExamId(initialLesson.linkedExamId || "");
         setIsRequiredPassExam(Boolean(initialLesson.isRequiredPassExam));
 
-        setLessonCategory(initialLesson.lessonCategory || "course-dependent");
-        setPublishStatus(initialLesson.publishStatus || "published");
-        setScheduledPublishDate(initialLesson.scheduledPublishDate || "");
-        setScheduledEndDate(initialLesson.scheduledEndDate || "");
+        setTargetSectionId(initialSectionId || sections[0]?.id || "");
       } else {
-        // Reset defaults for new lesson
+        // Reset to default
         setType("videoAndText");
         setTitle("");
         setDescription("");
         setLectureVideoLink("");
         setCoverImage("");
-
         setHasPdfAttachments(false);
         setPdfFiles([]);
         setPdfError(null);
-
         setHasImageAttachments(false);
         setImageFiles([]);
-
         setIsLinkedToExam(false);
         setLinkedExamId("");
         setIsRequiredPassExam(false);
 
-        setLessonCategory("course-dependent");
-        setPublishStatus("published");
-        setScheduledPublishDate("");
-        setScheduledEndDate("");
-      }
-
-      // Bank state reset
-      setSelectedBankLessonIds([]);
-      setBankStatus("published");
-      setBankScheduledPublishDate("");
-      setBankScheduledEndDate("");
-
-      // Default section ID
-      if (initialSectionId) {
-        setTargetSectionId(initialSectionId);
-        setBankSectionId(initialSectionId);
-      } else if (sections.length > 0) {
-        setTargetSectionId(sections[0].id);
-        setBankSectionId(sections[0].id);
+        setTargetSectionId(initialSectionId || sections[0]?.id || "");
+        setBankSectionId(initialSectionId || sections[0]?.id || "");
+        setSelectedBankLessonIds([]);
       }
     }
-  }, [open, initialLesson, initialSectionId, sections, parentCourseContext]);
+  }, [open, initialLesson, initialSectionId, sections]);
 
   // Handle PDF upload simulation
   const handleAddPdfFile = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -344,9 +295,9 @@ export function LessonDialog({
           return {
             ...found,
             id: `les-${Math.floor(1000 + Math.random() * 9000)}`,
-            publishStatus: bankStatus,
-            scheduledPublishDate: bankStatus === "scheduled" ? bankScheduledPublishDate : undefined,
-            scheduledEndDate: bankStatus === "scheduled" ? bankScheduledEndDate : undefined,
+            lessonCategory: "course-dependent",
+            venue: parentCourseContext.venue || found.venue || "all",
+            publishStatus: found.publishStatus || "published",
           } as Lesson;
         })
         .filter(Boolean) as Lesson[];
@@ -371,7 +322,6 @@ export function LessonDialog({
     }
 
     const selectedExamObj = availableExams.find((e) => e.id === linkedExamId);
-
     const updatedLesson: Lesson = {
       id: initialLesson?.id || `les-${Math.floor(1000 + Math.random() * 9000)}`,
       type,
@@ -396,11 +346,10 @@ export function LessonDialog({
       linkedExamTitle: isLinkedToExam && selectedExamObj ? selectedExamObj.title : undefined,
       isRequiredPassExam: isLinkedToExam ? isRequiredPassExam : false,
 
-      // Organization & publish status
+      // Organization & publish status inherited from course
       venue: parentCourseContext.venue || initialLesson?.venue || "all",
-      lessonCategory,
-      publishStatus,
-      scheduledPublishDate: publishStatus === "scheduled" ? scheduledPublishDate : undefined,
+      lessonCategory: "course-dependent",
+      publishStatus: initialLesson?.publishStatus || "published",
     };
 
     onSave(targetSectionId, updatedLesson);
@@ -470,60 +419,6 @@ export function LessonDialog({
                   lessons={bankLessons.map((l) => ({ id: l.id, title: l.title }))}
                   required
                 />
-              </div>
-
-              {/* Status Select */}
-              <div className="flex flex-col gap-4 p-4 rounded-xl border bg-muted/20">
-                <label className="text-sm font-semibold text-foreground">
-                  {locale === "ar" ? "حالة النشر" : "Publish Status"}
-                </label>
-                <FormRadioGroup
-                  name="bank-publish-status"
-                  value={bankStatus}
-                  onValueChange={(val) => setBankStatus(val as LessonPublishStatus)}
-                  gridClassName="grid-cols-1 sm:grid-cols-3"
-                  options={[
-                    { id: "published", label: t("statusOptions.published") },
-                    { id: "draft", label: t("statusOptions.draft") },
-                    { id: "scheduled", label: t("statusOptions.scheduled") },
-                  ]}
-                />
-
-                {bankStatus === "scheduled" && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-in fade-in slide-in-from-top-1 pt-2">
-                    <div className="flex flex-col gap-2">
-                      <label
-                        htmlFor="bank-scheduled-date"
-                        className="text-sm font-medium text-foreground flex items-center gap-1.5"
-                      >
-                        <Calendar className="size-4 text-primary" />
-                        {t("scheduledPublishDate")} <span className="text-destructive">*</span>
-                      </label>
-                      <Input
-                        id="bank-scheduled-date"
-                        type="datetime-local"
-                        value={bankScheduledPublishDate}
-                        onChange={(e) => setBankScheduledPublishDate(e.target.value)}
-                        required={bankStatus === "scheduled"}
-                      />
-                    </div>
-                    <div className="flex flex-col gap-2">
-                      <label
-                        htmlFor="bank-scheduled-end-date"
-                        className="text-sm font-medium text-foreground flex items-center gap-1.5"
-                      >
-                        <Calendar className="size-4 text-primary" />
-                        {t("scheduledEndDate")}
-                      </label>
-                      <Input
-                        id="bank-scheduled-end-date"
-                        type="datetime-local"
-                        value={bankScheduledEndDate}
-                        onChange={(e) => setBankScheduledEndDate(e.target.value)}
-                      />
-                    </div>
-                  </div>
-                )}
               </div>
 
               {/* Chosen Lessons List View with Plus Button for Exam */}
@@ -903,81 +798,6 @@ export function LessonDialog({
                   )}
                 </FormToggleSetting>
               </div>
-
-              {/* GROUP 6: ORGANIZATION AND PUBLISH STATUS */}
-              <div className="space-y-5 p-4 rounded-xl border bg-muted/20">
-                <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
-                  <MapPin className="size-4 text-primary" />
-                  {t("groups.organization")}
-                </h3>
-
-                {/* Publish Status Radio Group */}
-                <FormRadioGroup
-                  name="les-publish-status"
-                  title={t("publishStatus")}
-                  value={publishStatus}
-                  onValueChange={(val) => setPublishStatus(val as LessonPublishStatus)}
-                  gridClassName="grid-cols-1 sm:grid-cols-3"
-                  options={[
-                    { id: "published", label: t("statusOptions.published") },
-                    { id: "draft", label: t("statusOptions.draft") },
-                    { id: "scheduled", label: t("statusOptions.scheduled") },
-                  ]}
-                />
-
-                {/* Lesson Category Radio Group */}
-                {!hideLessonCategory && (
-                  <FormRadioGroup
-                    name="les-category"
-                    title={t("lessonCategory")}
-                    subtitle={t("categoryDisabledNote")}
-                    value={lessonCategory}
-                    onValueChange={(val) => setLessonCategory(val as LessonCategory)}
-                    gridClassName="grid-cols-1 sm:grid-cols-2"
-                    options={[
-                      { id: "course-dependent", label: t("categoryOptions.courseDependent") },
-                      { id: "independent", label: t("categoryOptions.independent") },
-                    ]}
-                  />
-                )}
-
-                {/* Scheduled Dates (Only if status is scheduled) */}
-                {publishStatus === "scheduled" && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-in fade-in slide-in-from-top-1 pt-2">
-                    <div className="flex flex-col gap-2">
-                      <label
-                        htmlFor="les-scheduled-date"
-                        className="text-sm font-medium text-foreground flex items-center gap-1.5"
-                      >
-                        <Calendar className="size-4 text-primary" />
-                        {t("scheduledPublishDate")} <span className="text-destructive">*</span>
-                      </label>
-                      <Input
-                        id="les-scheduled-date"
-                        type="datetime-local"
-                        value={scheduledPublishDate}
-                        onChange={(e) => setScheduledPublishDate(e.target.value)}
-                        required={publishStatus === "scheduled" && activeTab === "create"}
-                      />
-                    </div>
-                    <div className="flex flex-col gap-2">
-                      <label
-                        htmlFor="les-scheduled-end-date"
-                        className="text-sm font-medium text-foreground flex items-center gap-1.5"
-                      >
-                        <Calendar className="size-4 text-primary" />
-                        {t("scheduledEndDate")}
-                      </label>
-                      <Input
-                        id="les-scheduled-end-date"
-                        type="datetime-local"
-                        value={scheduledEndDate}
-                        onChange={(e) => setScheduledEndDate(e.target.value)}
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
             </div>
           )}
 
@@ -999,9 +819,6 @@ export function LessonDialog({
             setIsCreatingExam(false);
             setExamTitleInput("");
             setExamSelectedId("");
-            setExamStatus("published");
-            setExamScheduledDate("");
-            setExamScheduledEndDate("");
             setExamIsReqPass(false);
             setExamTargetLessonId(null);
           }
@@ -1078,66 +895,6 @@ export function LessonDialog({
                   onChange={(e) => setExamTitleInput(e.target.value)}
                   placeholder={tCourses("new.step2.addExamDialog.examTitlePlaceholder")}
                 />
-              </div>
-            )}
-
-            {/* Publish Status */}
-            <div className="flex flex-col gap-2">
-              <label className="text-sm font-medium text-foreground">
-                {locale === "ar" ? "حالة النشر" : "Publish Status"}
-              </label>
-              <Select
-                value={examStatus}
-                onValueChange={(val) => setExamStatus(val as LessonPublishStatus)}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="published">
-                    {locale === "ar" ? "منشور" : "Published"}
-                  </SelectItem>
-                  <SelectItem value="draft">{locale === "ar" ? "مسودة" : "Draft"}</SelectItem>
-                  <SelectItem value="scheduled">
-                    {locale === "ar" ? "مجدول" : "Scheduled"}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Schedule Dates */}
-            {examStatus === "scheduled" && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-in fade-in slide-in-from-top-1">
-                <div className="flex flex-col gap-2">
-                  <label
-                    htmlFor="embed-exam-sch-date"
-                    className="text-sm font-medium text-foreground flex items-center gap-1"
-                  >
-                    {locale === "ar" ? "تاريخ النشر المجدول" : "Scheduled Publish Date"}{" "}
-                    <span className="text-destructive">*</span>
-                  </label>
-                  <Input
-                    id="embed-exam-sch-date"
-                    type="date"
-                    value={examScheduledDate}
-                    onChange={(e) => setExamScheduledDate(e.target.value)}
-                    required
-                  />
-                </div>
-                <div className="flex flex-col gap-2">
-                  <label
-                    htmlFor="embed-exam-sch-end-date"
-                    className="text-sm font-medium text-foreground"
-                  >
-                    {locale === "ar" ? "تاريخ الانتهاء المجدول" : "Scheduled End Date"}
-                  </label>
-                  <Input
-                    id="embed-exam-sch-end-date"
-                    type="date"
-                    value={examScheduledEndDate}
-                    onChange={(e) => setExamScheduledEndDate(e.target.value)}
-                  />
-                </div>
               </div>
             )}
 

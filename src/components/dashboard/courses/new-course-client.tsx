@@ -976,9 +976,6 @@ function Step2CurriculumView({
   const [newExamTargetSecId, setNewExamTargetSecId] = useState("");
   const [newExamSelectedId, setNewExamSelectedId] = useState("");
   const [newExamTitle, setNewExamTitle] = useState("");
-  const [newExamStatus, setNewExamStatus] = useState<LessonPublishStatus>("published");
-  const [newExamScheduledDate, setNewExamScheduledDate] = useState("");
-  const [newExamScheduledEndDate, setNewExamScheduledEndDate] = useState("");
   const [newExamIsReqPass, setNewExamIsReqPass] = useState(false);
 
   // Sync sections to localStorage course object
@@ -1123,10 +1120,8 @@ function Step2CurriculumView({
         numberOfStudents: 0,
         successRate: 0,
         timesUsed: 0,
-        publishStatus: newExamStatus || "published",
+        publishStatus: "published",
         createdAt: new Date().toISOString(),
-        scheduledAt: newExamStatus === "scheduled" ? newExamScheduledDate : undefined,
-        scheduledEndDate: newExamStatus === "scheduled" ? newExamScheduledEndDate : undefined,
       };
 
       const updatedExams = [createdExam, ...availableExams];
@@ -1160,8 +1155,6 @@ function Step2CurriculumView({
     setNewExamTitle("");
     setNewExamSelectedId("");
     setNewExamTargetSecId("");
-    setNewExamStatus("published");
-    setNewExamScheduledDate("");
     setNewExamIsReqPass(false);
     setActiveDialog(null);
   };
@@ -1516,8 +1509,6 @@ function Step2CurriculumView({
             setNewExamTitle("");
             setNewExamSelectedId("");
             setNewExamTargetSecId("");
-            setNewExamStatus("published");
-            setNewExamScheduledDate("");
             setNewExamIsReqPass(false);
           }
           setActiveDialog(open ? "exam" : null);
@@ -1616,67 +1607,7 @@ function Step2CurriculumView({
               </div>
             )}
 
-            {/* 3. Publish Status */}
-            <div className="flex flex-col gap-2">
-              <label className="text-sm font-medium text-foreground">
-                {locale === "ar" ? "حالة النشر" : "Publish Status"}
-              </label>
-              <Select
-                value={newExamStatus}
-                onValueChange={(val) => setNewExamStatus(val as LessonPublishStatus)}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="published">
-                    {locale === "ar" ? "منشور" : "Published"}
-                  </SelectItem>
-                  <SelectItem value="draft">{locale === "ar" ? "مسودة" : "Draft"}</SelectItem>
-                  <SelectItem value="scheduled">
-                    {locale === "ar" ? "مجدول" : "Scheduled"}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Schedule Dates (Only if status is scheduled) */}
-            {newExamStatus === "scheduled" && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-in fade-in slide-in-from-top-1">
-                <div className="flex flex-col gap-2">
-                  <label
-                    htmlFor="exam-schedule-date"
-                    className="text-sm font-medium text-foreground flex items-center gap-1"
-                  >
-                    {locale === "ar" ? "تاريخ النشر المجدول" : "Scheduled Publish Date"}{" "}
-                    <span className="text-destructive">*</span>
-                  </label>
-                  <Input
-                    id="exam-schedule-date"
-                    type="date"
-                    value={newExamScheduledDate}
-                    onChange={(e) => setNewExamScheduledDate(e.target.value)}
-                    required
-                  />
-                </div>
-                <div className="flex flex-col gap-2">
-                  <label
-                    htmlFor="exam-schedule-end-date"
-                    className="text-sm font-medium text-foreground"
-                  >
-                    {locale === "ar" ? "تاريخ الانتهاء المجدول" : "Scheduled End Date"}
-                  </label>
-                  <Input
-                    id="exam-schedule-end-date"
-                    type="date"
-                    value={newExamScheduledEndDate}
-                    onChange={(e) => setNewExamScheduledEndDate(e.target.value)}
-                  />
-                </div>
-              </div>
-            )}
-
-            {/* 4. Toggle: Passing Required */}
+            {/* 3. Toggle: Passing Required */}
             <FormToggleSetting
               id="exam-req-pass-toggle"
               title={t("step2.addSectionDialog.isRequiredPassExam")}

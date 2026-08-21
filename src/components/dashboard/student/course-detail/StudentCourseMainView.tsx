@@ -107,6 +107,12 @@ export function StudentCourseMainView({
     return () => window.removeEventListener("rewaa_exams_updated", handleExamsUpdate);
   }, [locale]);
 
+  const isExamPublished = (examId?: string) => {
+    if (!examId) return false;
+    const found = exams.find((e) => e.id === examId);
+    return found ? found.publishStatus === "published" : false;
+  };
+
   const getExamTitle = (examId?: string, fallbackTitle?: string) => {
     if (!examId) return fallbackTitle || t("lesson.linkedExam");
     const found = exams.find((e) => e.id === examId);
@@ -478,7 +484,8 @@ export function StudentCourseMainView({
               if (
                 !currentSection ||
                 !currentSection.isLinkedToExam ||
-                !currentSection.linkedExamId
+                !currentSection.linkedExamId ||
+                !isExamPublished(currentSection.linkedExamId)
               ) {
                 return null;
               }
@@ -572,6 +579,7 @@ export function StudentCourseMainView({
             {/* Lesson-specific Linked Exam Button Banner (if lesson itself has a linked exam distinct from section) */}
             {selectedLesson.isLinkedToExam &&
               selectedLesson.linkedExamId &&
+              isExamPublished(selectedLesson.linkedExamId) &&
               (() => {
                 const currentSection = course.sections.find((s) =>
                   s.lessons.some((l) => l.id === selectedLesson.id),
