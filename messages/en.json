@@ -651,6 +651,12 @@
           "passingScore": "Passing Score (%)",
           "totalGrade": "Total Grade"
         },
+        "confirmLeaveForExam": {
+          "title": "Create New Exam",
+          "description": "Your current course will be automatically saved as a draft so you can return to it later. Do you want to proceed to the exam creation page now?",
+          "confirm": "Proceed to Create Exam",
+          "cancel": "Stay on Page"
+        },
         "pleaseAddExamBadge": "Please add at least 1 exam",
         "arrangeDialog": {
           "title": "Arrange Sections & Lessons",
@@ -2195,9 +2201,70 @@
         "showing": "Showing {start} to {end} of {total, plural, =0 {no courses} one {1 course} other {{total} courses}}"
       }
     },
+    "lessonsPage": {
+      "title": "Independent Lessons",
+      "subtitle": "Explore general lectures and standalone lessons available across the platform",
+      "searchPlaceholder": "Search by lesson title, subject, or teacher...",
+      "clearFilters": "Clear Filters",
+      "totalAvailable": "{count, plural, =0 {No lessons available} one {1 lesson available} other {{count} lessons available}}",
+      "allTypes": "All Lesson Types",
+      "videoLessons": "Video Lessons",
+      "textLessons": "Text Lessons",
+      "allSubjects": "All Subjects",
+      "sort": {
+        "newest": "Newest First",
+        "oldest": "Oldest First",
+        "titleAsc": "Title: A to Z",
+        "titleDesc": "Title: Z to A"
+      },
+      "card": {
+        "viewLesson": "View Lesson",
+        "startLesson": "Start Lesson",
+        "independent": "Standalone Lesson",
+        "textOnly": "Text Only",
+        "videoText": "Video & Text",
+        "examLinked": "Linked Exam",
+        "pdfsCount": "{count, plural, =0 {No files} one {1 file} other {{count} files}}"
+      },
+      "empty": {
+        "title": "No standalone lessons available yet",
+        "description": "No independent lessons have been published yet. Check back soon for new content."
+      },
+      "pagination": {
+        "showing": "Showing {start} to {end} of {total, plural, =0 {no lessons} one {1 lesson} other {{total} lessons}}"
+      }
+    },
+    "lessonDetailsPage": {
+      "backToLessons": "Back to Lessons",
+      "lessonNotFoundTitle": "Lesson Unavailable",
+      "lessonNotFoundDesc": "Sorry, the requested lesson is either unavailable or unpublished.",
+      "videoLecture": "Video Lecture",
+      "writtenNotes": "Written Explanation & Notes",
+      "attachments": "Attachments & Files",
+      "downloadPdf": "Download File",
+      "linkedExam": "Lesson Linked Exam",
+      "takeExam": "Take Exam",
+      "openExternal": "Open External Video Link",
+      "metadata": "Lesson Information",
+      "category": "Category",
+      "subjectAndGrade": "Subject & Grade",
+      "teacher": "Teacher",
+      "venue": "Attendance Format"
+    },
+    "generalExamsPage": {
+      "title": "General & Independent Exams",
+      "subtitle": "Explore and take open general exams available to all students",
+      "backToExams": "Back to Exams",
+      "totalAvailable": "{count, plural, =0 {No general exams} one {1 general exam} other {{count} general exams}}",
+      "empty": {
+        "title": "No general exams available yet",
+        "description": "No independent general exams have been published yet. Check back soon."
+      }
+    },
     "examsPage": {
       "title": "Exams & Tests",
       "subtitle": "View your required assignments and past exam results",
+      "viewGeneralExams": "View General Exams",
       "searchPlaceholder": "Search by exam title, course, subject, or teacher...",
       "clearFilters": "Clear Filters",
       "tabs": {

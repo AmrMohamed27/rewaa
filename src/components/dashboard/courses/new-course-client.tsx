@@ -855,7 +855,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { getStoredExams, saveStoredExams } from "@/lib/exams-storage";
+import { getStoredExams } from "@/lib/exams-storage";
 import { CourseSection, CourseVenue, Lesson, LessonPublishStatus } from "@/types/course";
 import { Exam } from "@/types/exam";
 import {
@@ -887,6 +887,7 @@ function Step2CurriculumView({
   onBackToStep1,
   onFinish,
 }: Step2CurriculumViewProps) {
+  const router = useRouter();
   const t = useTranslations("courses.new");
 
   // State for sections list
@@ -972,11 +973,10 @@ function Step2CurriculumView({
   const [newSecIsReqPass, setNewSecIsReqPass] = useState(false);
 
   // Dialog Form states: Exam
-  const [isCreatingNewExam, setIsCreatingNewExam] = useState(false);
   const [newExamTargetSecId, setNewExamTargetSecId] = useState("");
   const [newExamSelectedId, setNewExamSelectedId] = useState("");
-  const [newExamTitle, setNewExamTitle] = useState("");
   const [newExamIsReqPass, setNewExamIsReqPass] = useState(false);
+  const [isConfirmExamRedirectOpen, setIsConfirmExamRedirectOpen] = useState(false);
 
   // Sync sections to localStorage course object
   const syncSectionsToStorage = (updatedSections: CourseSection[]) => {
@@ -989,12 +989,22 @@ function Step2CurriculumView({
           ...courses[targetIndex],
           sections: updatedSections,
           numberOfLessons: totalLessonsCount,
+          isDraft: true,
         };
         saveStoredCourses(locale, courses);
       }
     } catch (err) {
       console.error("Failed to sync sections:", err);
     }
+  };
+
+  // Triggered when user confirms leaving course to build a new exam
+  const handleConfirmCreateNewExam = () => {
+    // Ensure current course draft state is saved with current sections
+    syncSectionsToStorage(sections);
+    setIsConfirmExamRedirectOpen(false);
+    setActiveDialog(null);
+    router.push(`/${locale}/dashboard/exams/new`);
   };
 
   // Handlers for creating objects
@@ -1089,57 +1099,16 @@ function Step2CurriculumView({
   };
 
   const handleAddExam = () => {
-    if (!newExamTargetSecId) return;
+    if (!newExamTargetSecId || !newExamSelectedId) return;
 
-    let examIdToLink = newExamSelectedId;
-    let examTitleToLink = availableExams.find((e) => e.id === newExamSelectedId)?.title;
-
-    if (isCreatingNewExam) {
-      if (!newExamTitle.trim()) return;
-      const createdExamId = `exam-${Math.floor(1000 + Math.random() * 9000)}`;
-      const createdExam: Exam = {
-        id: createdExamId,
-        title: newExamTitle.trim(),
-        description: "",
-        subject: parentCourseContext.subject || "General",
-        grade: parentCourseContext.grade || "General",
-        teacherName: parentCourseContext.teacherName || "Teacher",
-        venue: parentCourseContext.venue || "all",
-        category: "test",
-        examType: "course-dependent",
-        courseId: courseId,
-        sectionId: newExamTargetSecId,
-        triesAllowed: 1,
-        durationMinutes: 60,
-        passingPercentage: 70,
-        showModelAnswers: true,
-        randomizeQuestionsOrder: false,
-        randomizeMCQChoices: false,
-        examSections: [],
-        numberOfQuestions: 0,
-        numberOfStudents: 0,
-        successRate: 0,
-        timesUsed: 0,
-        publishStatus: "published",
-        createdAt: new Date().toISOString(),
-      };
-
-      const updatedExams = [createdExam, ...availableExams];
-      saveStoredExams(locale, updatedExams);
-      setAvailableExams(updatedExams);
-
-      examIdToLink = createdExamId;
-      examTitleToLink = createdExam.title;
-    }
-
-    if (!examIdToLink) return;
+    const examTitleToLink = availableExams.find((e) => e.id === newExamSelectedId)?.title;
 
     const updatedSections = sections.map((sec) => {
       if (sec.id === newExamTargetSecId) {
         return {
           ...sec,
           isLinkedToExam: true,
-          linkedExamId: examIdToLink,
+          linkedExamId: newExamSelectedId,
           linkedExamTitle: examTitleToLink,
           isRequiredPassExamForNextSection: newExamIsReqPass,
         };
@@ -1151,8 +1120,6 @@ function Step2CurriculumView({
     syncSectionsToStorage(updatedSections);
 
     // Reset state
-    setIsCreatingNewExam(false);
-    setNewExamTitle("");
     setNewExamSelectedId("");
     setNewExamTargetSecId("");
     setNewExamIsReqPass(false);
@@ -1505,8 +1472,6 @@ function Step2CurriculumView({
         open={activeDialog === "exam"}
         onOpenChange={(open) => {
           if (!open) {
-            setIsCreatingNewExam(false);
-            setNewExamTitle("");
             setNewExamSelectedId("");
             setNewExamTargetSecId("");
             setNewExamIsReqPass(false);
@@ -1516,20 +1481,8 @@ function Step2CurriculumView({
       >
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>
-              {isCreatingNewExam
-                ? locale === "ar"
-                  ? "إنشاء امتحان جديد"
-                  : "Create New Exam"
-                : t("step2.addExamDialog.title")}
-            </DialogTitle>
-            <DialogDescription>
-              {isCreatingNewExam
-                ? locale === "ar"
-                  ? "أدخل تفاصيل الامتحان الجديد لإنشائه وربطه بالقسم"
-                  : "Enter details for the new exam to create and link to section"
-                : t("step2.addExamDialog.subtitle")}
-            </DialogDescription>
+            <DialogTitle>{t("step2.addExamDialog.title")}</DialogTitle>
+            <DialogDescription>{t("step2.addExamDialog.subtitle")}</DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 py-2">
@@ -1552,60 +1505,35 @@ function Step2CurriculumView({
               </Select>
             </div>
 
-            {/* 2. Exam Select + Plus Button (or New Exam Title Input if creating new) */}
-            {!isCreatingNewExam ? (
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center gap-2">
-                  <div className="flex-1">
-                    <ExamSelect
-                      value={newExamSelectedId}
-                      onValueChange={setNewExamSelectedId}
-                      label={locale === "ar" ? "اختر الامتحان" : "Select Exam"}
-                      placeholder={
-                        t("step2.addLessonDialog.selectExam") ||
-                        (locale === "ar" ? "اختر الامتحان..." : "Select exam...")
-                      }
-                      required
-                      exams={availableExams}
-                      emptyLabel={locale === "ar" ? "لا توجد امتحانات متاحة" : "No exams available"}
-                    />
-                  </div>
-                  <Button
-                    type="button"
-                    variant="default"
-                    size="icon"
-                    className="shrink-0 h-9 w-9 mt-6"
-                    onClick={() => setIsCreatingNewExam(true)}
-                    title={locale === "ar" ? "إنشاء امتحان جديد" : "Create new exam"}
-                  >
-                    <Plus className="h-4 w-4" />
-                  </Button>
+            {/* 2. Exam Select + Plus Button */}
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center gap-2">
+                <div className="flex-1">
+                  <ExamSelect
+                    value={newExamSelectedId}
+                    onValueChange={setNewExamSelectedId}
+                    label={locale === "ar" ? "اختر الامتحان" : "Select Exam"}
+                    placeholder={
+                      t("step2.addLessonDialog.selectExam") ||
+                      (locale === "ar" ? "اختر الامتحان..." : "Select exam...")
+                    }
+                    required
+                    exams={availableExams}
+                    emptyLabel={locale === "ar" ? "لا توجد امتحانات متاحة" : "No exams available"}
+                  />
                 </div>
+                <Button
+                  type="button"
+                  variant="default"
+                  size="icon"
+                  className="shrink-0 h-9 w-9 mt-6"
+                  onClick={() => setIsConfirmExamRedirectOpen(true)}
+                  title={locale === "ar" ? "إنشاء امتحان جديد" : "Create new exam"}
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
               </div>
-            ) : (
-              <div className="flex flex-col gap-2 animate-in fade-in slide-in-from-top-1">
-                <div className="flex items-center justify-between">
-                  <label htmlFor="exam-title" className="text-sm font-medium text-foreground">
-                    {t("step2.addExamDialog.examTitle")} <span className="text-destructive">*</span>
-                  </label>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="h-7 text-xs text-primary"
-                    onClick={() => setIsCreatingNewExam(false)}
-                  >
-                    {locale === "ar" ? "اختيار من الموجود" : "Select existing"}
-                  </Button>
-                </div>
-                <Input
-                  id="exam-title"
-                  value={newExamTitle}
-                  onChange={(e) => setNewExamTitle(e.target.value)}
-                  placeholder={t("step2.addExamDialog.examTitlePlaceholder")}
-                />
-              </div>
-            )}
+            </div>
 
             {/* 3. Toggle: Passing Required */}
             <FormToggleSetting
@@ -1623,7 +1551,6 @@ function Step2CurriculumView({
               type="button"
               onClick={() => {
                 setActiveDialog(null);
-                setIsCreatingNewExam(false);
               }}
             >
               {t("actions.cancel")}
@@ -1631,12 +1558,33 @@ function Step2CurriculumView({
             <Button
               type="button"
               onClick={handleAddExam}
-              disabled={
-                !newExamTargetSecId ||
-                (isCreatingNewExam ? !newExamTitle.trim() : !newExamSelectedId)
-              }
+              disabled={!newExamTargetSecId || !newExamSelectedId}
             >
               {t("actions.create")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* CONFIRMATION DIALOG: LEAVE COURSE TO CREATE NEW EXAM */}
+      <Dialog open={isConfirmExamRedirectOpen} onOpenChange={setIsConfirmExamRedirectOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{t("step2.confirmLeaveForExam.title")}</DialogTitle>
+            <DialogDescription className="leading-relaxed pt-1">
+              {t("step2.confirmLeaveForExam.description")}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2 sm:gap-0 mt-4">
+            <Button
+              variant="outline"
+              type="button"
+              onClick={() => setIsConfirmExamRedirectOpen(false)}
+            >
+              {t("step2.confirmLeaveForExam.cancel")}
+            </Button>
+            <Button type="button" onClick={handleConfirmCreateNewExam}>
+              {t("step2.confirmLeaveForExam.confirm")}
             </Button>
           </DialogFooter>
         </DialogContent>

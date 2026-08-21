@@ -383,6 +383,17 @@ export function StudentExamsClient() {
           </div>
           <p className="text-sm text-muted-foreground mt-1">{t("subtitle")}</p>
         </div>
+
+        <Button
+          asChild
+          variant="outline"
+          className="gap-2 font-semibold self-start sm:self-auto rounded-xl border-primary/30 text-primary hover:bg-primary/5 hover:text-primary"
+        >
+          <Link href="/student-dashboard/exams/general">
+            <FileQuestion className="h-4 w-4" />
+            <span>{t("viewGeneralExams")}</span>
+          </Link>
+        </Button>
       </div>
 
       {/* ── Filter Bar & Tabs ────────────────────────────────────────────────── */}

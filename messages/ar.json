@@ -651,6 +651,12 @@
           "passingScore": "نسبة النجاح (%)",
           "totalGrade": "الدرجة الكلية"
         },
+        "confirmLeaveForExam": {
+          "title": "إنشاء امتحان جديد",
+          "description": "سيتم حفظ الدورة التدريبية الحالية كمسودة تلقائياً لتتمكن من العودة إليها لاحقاً وإكمالها. هل تريد الانتقال إلى صفحة إنشاء الامتحان الآن؟",
+          "confirm": "الانتقال لإنشاء الامتحان",
+          "cancel": "البقاء في الصفحة"
+        },
         "pleaseAddExamBadge": "يرجى إضافة امتحان واحد على الأقل",
         "arrangeDialog": {
           "title": "ترتيب الأقسام والدروس",
@@ -2195,9 +2201,70 @@
         "showing": "عرض {start} إلى {end} من إجمالي {total, plural, =0 {لا دورات} zero {لا دورات} one {دورة واحدة} two {دورتين} few {{total} دورات} many {{total} دورة} other {{total} دورة}}"
       }
     },
+    "lessonsPage": {
+      "title": "الدروس المستقلة",
+      "subtitle": "استعرض واشرح الدروس العامة والمحاضرات المستقلة المتاحة لك على المنصة",
+      "searchPlaceholder": "بحث باسم الدرس أو المادة أو المعلم...",
+      "clearFilters": "مسح الفلاتر",
+      "totalAvailable": "{count, plural, =0 {لا دروس متاحة} zero {لا دروس متاحة} one {درس واحد متاح} two {درسين متاحين} few {{count} دروس متاحة} many {{count} درساً متاحاً} other {{count} درس متاح}}",
+      "allTypes": "كافة أنواع الدروس",
+      "videoLessons": "دروس فيديو",
+      "textLessons": "دروس مقروءة",
+      "allSubjects": "كافة المواد",
+      "sort": {
+        "newest": "الأحدث أولاً",
+        "oldest": "الأقدم أولاً",
+        "titleAsc": "العنوان: أ إلى ي",
+        "titleDesc": "العنوان: ي إلى أ"
+      },
+      "card": {
+        "viewLesson": "مشاهدة الدرس",
+        "startLesson": "بدء الدرس",
+        "independent": "درس مستقل",
+        "textOnly": "درس نصي",
+        "videoText": "فيديو وشرح",
+        "examLinked": "امتحان مرفق",
+        "pdfsCount": "{count, plural, =0 {لا ملفات} zero {لا ملفات} one {ملف واحد} two {ملفين} few {{count} ملفات} many {{count} ملفاً} other {{count} ملف}}"
+      },
+      "empty": {
+        "title": "لا توجد دروس مستقلة متاحة حالياً",
+        "description": "لم يتم إضافة أي دروس مستقلة عامة حتى الآن، تابع معنا للإطلاع على الدروس الجديدة."
+      },
+      "pagination": {
+        "showing": "عرض {start} إلى {end} من إجمالي {total, plural, =0 {لا دروس} zero {لا دروس} one {درس واحد} two {درسين} few {{total} دروس} many {{total} درساً} other {{total} درس}}"
+      }
+    },
+    "lessonDetailsPage": {
+      "backToLessons": "العودة إلى قائمة الدروس",
+      "lessonNotFoundTitle": "الدرس غير متاح",
+      "lessonNotFoundDesc": "عذراً، الدرس المطلوب غير موجود أو غير منشور حالياً.",
+      "videoLecture": "المحاضرة المرئية",
+      "writtenNotes": "الشرح والملاحظات المكتوبة",
+      "attachments": "الملحقات والملفات المرفقة",
+      "downloadPdf": "تحميل الملف",
+      "linkedExam": "امتحان ملحق بالدرس",
+      "takeExam": "بدء الامتحان",
+      "openExternal": "فتح رابط الفيديو الخارجي",
+      "metadata": "تفاصيل الدرس",
+      "category": "نوع الدرس",
+      "subjectAndGrade": "المادة والصف الدراسي",
+      "teacher": "المعلم",
+      "venue": "طبيعة الحضور"
+    },
+    "generalExamsPage": {
+      "title": "الامتحانات العامة المستقلة",
+      "subtitle": "استعرض وأدِّ الامتحانات والاختبارات الشاملة المتاحة للجميع على المنصة",
+      "backToExams": "العودة إلى الامتحانات",
+      "totalAvailable": "{count, plural, =0 {لا امتحانات عامة} zero {لا امتحانات عامة} one {امتحان عام واحد} two {امتحانين عامين} few {{count} امتحانات عامة} many {{count} امتحاناً عاماً} other {{count} امتحان عام}}",
+      "empty": {
+        "title": "لا توجد امتحانات عامة متاحة حالياً",
+        "description": "لم يتم نشر أي امتحانات عامة مستقلة في الوقت الحالي. تفقد الصفحة لاحقاً."
+      }
+    },
     "examsPage": {
       "title": "الامتحانات والاختبارات",
       "subtitle": "استعرض الواجبات والاختبارات المطلوبة منك ونتائج اختباراتك السابقة",
+      "viewGeneralExams": "عرض الامتحانات العامة",
       "searchPlaceholder": "بحث باسم الامتحان أو الدورة أو المادة أو المعلم...",
       "clearFilters": "مسح الفلاتر",
       "tabs": {

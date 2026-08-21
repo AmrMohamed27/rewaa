@@ -252,7 +252,7 @@ export function GradeSelect({
   triggerClassName,
   showAllOption = false,
   allOptionLabel,
-  allowAdd = true,
+  allowAdd = false,
 }: GradeSelectProps) {
   const tGrades = useTranslations("courses.new.grades");
   const [storedGradesList, setStoredGradesList] = React.useState<
@@ -340,7 +340,7 @@ export function SubjectSelect({
   triggerClassName,
   showAllOption = false,
   allOptionLabel,
-  allowAdd = true,
+  allowAdd = false,
 }: SubjectSelectProps) {
   const tSubjects = useTranslations("courses.new.subjects");
   const [storedSubjectsList, setStoredSubjectsList] = React.useState<
@@ -430,7 +430,7 @@ export function TeacherSelect({
   triggerClassName,
   showIcon = false,
   teachers,
-  allowAdd = true,
+  allowAdd = false,
 }: TeacherSelectProps) {
   const [internalTeachers, setInternalTeachers] = React.useState<Teacher[]>([]);
 

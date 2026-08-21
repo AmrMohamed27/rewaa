@@ -337,6 +337,24 @@ export function QuestionFormContent({
 
       {/* 2. Basic Information Group */}
       <FormSectionCard title={t("basicInfoGroup")} icon={BookOpen} contentClassName="space-y-4">
+        {/* Target Section Selection if sections provided */}
+        {(sections && sections.length > 0) || combinedSections.length > 0 ? (
+          <div className="pb-2 border-b border-border/40">
+            <SelectWithAdd
+              value={sectionId}
+              onValueChange={setSectionId}
+              label={t("targetSection")}
+              placeholder={t("selectSectionPlaceholder")}
+              options={combinedSections}
+              allowAdd
+              onAddNewOption={handleAddSection}
+              addDialogTitle="إضافة قسم جديد"
+              addInputLabel="اسم القسم"
+              addInputPlaceholder="مثال: القسم الأول - الأسئلة التمهيدية"
+            />
+          </div>
+        ) : null}
+
         {/* Question Name / Title */}
         <div className="flex flex-col gap-2">
           <Label htmlFor="q-name" className="text-sm font-medium text-foreground">
@@ -361,24 +379,6 @@ export function QuestionFormContent({
             placeholder={t("questionContentPlaceholder")}
           />
         </div>
-
-        {/* Target Section Selection if sections provided */}
-        {(sections && sections.length > 0) || combinedSections.length > 0 ? (
-          <div className="pt-2 border-t border-border/40">
-            <SelectWithAdd
-              value={sectionId}
-              onValueChange={setSectionId}
-              label={t("targetSection")}
-              placeholder={t("selectSectionPlaceholder")}
-              options={combinedSections}
-              allowAdd
-              onAddNewOption={handleAddSection}
-              addDialogTitle="إضافة قسم جديد"
-              addInputLabel="اسم القسم"
-              addInputPlaceholder="مثال: القسم الأول - الأسئلة التمهيدية"
-            />
-          </div>
-        ) : null}
 
         {/* Question Kind Classification & Difficulty Dropdowns */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

@@ -541,6 +541,29 @@ export function LessonDialog({
                   {t("groups.mainInfo")}
                 </h3>
 
+                {/* Target Section Selection */}
+                <div className="flex flex-col gap-2 pb-2 border-b border-border/40">
+                  <label htmlFor="les-target-sec" className="text-sm font-semibold text-foreground">
+                    {t("targetSection")} <span className="text-destructive">*</span>
+                  </label>
+                  <Select
+                    value={targetSectionId}
+                    onValueChange={setTargetSectionId}
+                    required={activeTab === "create"}
+                  >
+                    <SelectTrigger id="les-target-sec" className="w-full">
+                      <SelectValue placeholder={t("selectSection")} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {sections.map((s) => (
+                        <SelectItem key={s.id} value={s.id}>
+                          {s.title}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
                 {/* Title */}
                 <div className="flex flex-col gap-2">
                   <label htmlFor="les-title-input" className="text-sm font-medium text-foreground">
@@ -565,29 +588,6 @@ export function LessonDialog({
                     onChange={setDescription}
                     placeholder={t("descriptionPlaceholder")}
                   />
-                </div>
-
-                {/* Target Section Selection */}
-                <div className="flex flex-col gap-2 pt-2 border-t border-border/40">
-                  <label htmlFor="les-target-sec" className="text-sm font-semibold text-foreground">
-                    {t("targetSection")} <span className="text-destructive">*</span>
-                  </label>
-                  <Select
-                    value={targetSectionId}
-                    onValueChange={setTargetSectionId}
-                    required={activeTab === "create"}
-                  >
-                    <SelectTrigger id="les-target-sec" className="w-full">
-                      <SelectValue placeholder={t("selectSection")} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {sections.map((s) => (
-                        <SelectItem key={s.id} value={s.id}>
-                          {s.title}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
                 </div>
               </div>
 
