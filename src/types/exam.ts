@@ -73,6 +73,7 @@ export interface Exam {
   courseTitle?: string; // denormalized
   sectionId?: string; // FK → CourseSection.id
   lessonId?: string; // FK → Lesson.id for fast display
+  coursesCount?: number; // how many courses include this exam (from backend)
 
   // ── Settings (not shown in list page) ────────────────────────────────────
   triesAllowed: number; // default 1
@@ -81,8 +82,6 @@ export interface Exam {
   showModelAnswers: boolean;
   randomizeQuestionsOrder: boolean;
   randomizeMCQChoices: boolean;
-  hasExpiration?: boolean;
-  expirationDays?: number;
 
   // ── Content ───────────────────────────────────────────────────────────────
   examSections: ExamSection[];

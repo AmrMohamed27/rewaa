@@ -1,5 +1,6 @@
 export type CoursePeriod = "monthly" | "yearly" | "termBased" | (string & {});
 export type CourseVenue = "center" | "online" | "all";
+export type CourseBadge = "featured" | "revision" | "new" | "bestseller" | "limited";
 export type LessonType = "videoAndText" | "text";
 export type LessonCategory = "independent" | "course-dependent";
 export type LessonPublishStatus = "draft" | "published" | "scheduled";
@@ -41,6 +42,7 @@ export interface Lesson {
   courseId?: string; // FK → Course.id
   courseTitle?: string; // denormalized
   sectionId?: string; // FK → CourseSection.id
+  coursesCount?: number; // how many courses include this lesson (from backend)
   publishStatus?: LessonPublishStatus;
   scheduledPublishDate?: string;
   scheduledEndDate?: string;
@@ -108,4 +110,7 @@ export interface Course {
   averageRating?: number;
   totalRatingsCount?: number;
   durationHours?: number;
+  badge?: CourseBadge;
+  scheduledPublishDate?: string;
+  scheduledEndDate?: string;
 }

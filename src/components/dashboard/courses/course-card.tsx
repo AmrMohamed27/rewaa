@@ -7,10 +7,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Course } from "@/types/course";
 import {
   Barcode,
   BookOpen,
+  Calendar,
   Globe,
   Globe2,
   House,
@@ -59,12 +61,31 @@ export function CourseCard({
       : gradeKey;
   };
 
+  const formatSubject = (subjectKey: string) => {
+    return tNew.has(`subjects.${subjectKey}` as Parameters<typeof tNew.has>[0])
+      ? tNew(`subjects.${subjectKey}` as Parameters<typeof tNew>[0])
+      : subjectKey;
+  };
+
   // Format currency
   const formatPrice = (price: number, currency: string, isFree: boolean) => {
     if (isFree || price === 0) {
       return t("card.free");
     }
     return `${price.toLocaleString(isAr ? "ar-EG" : "en-US")} ${isAr ? (currency === "EGP" ? t("card.egp") : currency) : currency}`;
+  };
+
+  // Format a date string for display
+  const formatScheduleDate = (dateStr: string) => {
+    try {
+      return new Intl.DateTimeFormat(isAr ? "ar-EG" : "en-GB", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      }).format(new Date(dateStr));
+    } catch {
+      return dateStr;
+    }
   };
 
   return (
@@ -82,7 +103,7 @@ export function CourseCard({
 
         {/* Status Badge on top-start (hidden in student mode) */}
         {mode !== "student" && (
-          <div className="absolute top-2.5 inset-s-2.5">
+          <div className="absolute top-2.5 inset-e-2.5">
             {!course.isDraft ? (
               <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-success-bg text-success shadow-xs">
                 {t("status.published")}
@@ -95,36 +116,54 @@ export function CourseCard({
           </div>
         )}
 
-        {/* Venue Badge on top-end */}
-        <div className="absolute top-2.5 inset-e-2.5">
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-medium bg-black/60 text-white backdrop-blur-xs">
-            {course.venue === "online" ? (
-              <Globe className="h-3 w-3" />
-            ) : course.venue === "center" ? (
-              <House className="h-3 w-3" />
-            ) : (
-              <Globe2 className="h-3 w-3" />
-            )}
-            {course.venue === "all"
-              ? t("venue.all")
-              : course.venue === "online"
-                ? t("venue.online")
-                : t("venue.center")}
-          </span>
-        </div>
+        {/* Course Badge on top-end */}
+        {course.badge &&
+          (() => {
+            const badgeStyles: Record<string, string> = {
+              featured: "bg-amber-500/90 text-white",
+              revision: "bg-blue-500/90 text-white",
+              new: "bg-emerald-500/90 text-white",
+              bestseller: "bg-orange-500/90 text-white",
+              limited: "bg-rose-500/90 text-white",
+            };
+            return (
+              <div className="absolute top-2.5 inset-s-2.5">
+                <span
+                  className={`inline-flex items-center px-2.5 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wide shadow-xs backdrop-blur-xs ${badgeStyles[course.badge!] ?? "bg-primary/90 text-primary-foreground"}`}
+                >
+                  {t(`badge.${course.badge}` as Parameters<typeof t>[0])}
+                </span>
+              </div>
+            );
+          })()}
+        {/* Schedule Dates Strip — bottom of image, only when scheduledPublishDate is set */}
+        {course.scheduledPublishDate && (
+          <div className="absolute bottom-0 inset-x-0 flex items-center gap-1.5 px-3 py-1.5 bg-black/55 backdrop-blur-xs text-white">
+            <Calendar className="h-3 w-3 shrink-0 opacity-80" />
+            <span className="text-[10px] font-medium truncate">
+              {formatScheduleDate(course.scheduledPublishDate)}
+              {course.scheduledEndDate && (
+                <>
+                  {" "}
+                  <span className="opacity-60 mx-0.5">{isAr ? "←" : "→"}</span>{" "}
+                  {formatScheduleDate(course.scheduledEndDate)}
+                </>
+              )}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Card Body */}
       <div className="flex flex-col flex-1 p-4">
-        {/* Grade */}
-        <div className="text-xs font-semibold text-primary/80 mb-1">
-          {formatGrade(course.grade)}
-        </div>
-
         {/* Course Title */}
         <h3 className="font-bold text-foreground line-clamp-2 text-base leading-snug mb-2 group-hover:text-primary transition-colors">
           {course.title}
         </h3>
+        {/* Grade */}
+        <div className="text-xs font-semibold text-primary/80 mb-1">
+          {course.subject ? formatSubject(course.subject) : ""} / {formatGrade(course.grade)}
+        </div>
 
         {/* Teacher Info */}
         {course.teacherName &&
@@ -161,31 +200,55 @@ export function CourseCard({
 
         {/* Info Row */}
         <div className="mt-auto pt-3 border-t border-border/40 flex flex-row gap-1 justify-between text-xs text-muted-foreground">
-          {/* 1. Students Enrolled */}
-          <div
-            className="flex items-center gap-1.5 truncate"
-            title={t("card.students", { count: course.numberOfParticipants })}
-          >
-            <Users className="h-3.5 w-3.5 text-primary shrink-0" />
-            <span className="truncate font-medium">
-              {t("card.students", { count: course.numberOfParticipants })}
-            </span>
+          <div className="flex flex-row gap-2">
+            {/* 1. Students Enrolled */}
+            <div
+              className="flex items-center gap-1.5 truncate"
+              title={t("card.students", { count: course.numberOfParticipants })}
+            >
+              <Users className="h-3.5 w-3.5 text-primary shrink-0" />
+              <span className="truncate font-medium">{course.numberOfParticipants}</span>
+            </div>
+
+            {/* 2. Number of Lessons */}
+            <div
+              className="flex items-center gap-1.5 truncate"
+              title={t("card.lessons", { count: course.numberOfLessons })}
+            >
+              <BookOpen className="h-3.5 w-3.5 text-primary shrink-0" />
+              <span className="truncate font-medium">
+                {t("card.lessonsShort", { count: course.numberOfLessons })}
+              </span>
+            </div>
+
+            {/* 3. Venue icon with tooltip */}
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="flex items-center gap-1.5 cursor-default">
+                    {course.venue === "online" ? (
+                      <Globe className="h-3.5 w-3.5 text-primary shrink-0" />
+                    ) : course.venue === "center" ? (
+                      <House className="h-3.5 w-3.5 text-primary shrink-0" />
+                    ) : (
+                      <Globe2 className="h-3.5 w-3.5 text-primary shrink-0" />
+                    )}
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="top">
+                  {course.venue === "all"
+                    ? t("venue.all")
+                    : course.venue === "online"
+                      ? t("venue.online")
+                      : t("venue.center")}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
 
-          {/* 2. Number of Lessons */}
-          <div
-            className="flex items-center gap-1.5 truncate"
-            title={t("card.lessons", { count: course.numberOfLessons })}
-          >
-            <BookOpen className="h-3.5 w-3.5 text-primary shrink-0" />
-            <span className="truncate font-medium">
-              {t("card.lessonsShort", { count: course.numberOfLessons })}
-            </span>
-          </div>
-
-          {/* 3. Formatted Price (only for dashboard mode to avoid duplicate in student mode) */}
+          {/* 4. Formatted Price (only for dashboard mode to avoid duplicate in student mode) */}
           {mode !== "student" && (
-            <div className="flex items-center justify-end font-bold text-foreground truncate">
+            <div className="flex items-center justify-end font-bold text-primary text-base truncate">
               <span>{formatPrice(course.price, course.currency, course.isFree)}</span>
             </div>
           )}

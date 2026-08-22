@@ -1,6 +1,6 @@
 "use client";
 
-import { BookOpen, Eye, FileText, Video } from "lucide-react";
+import { BookOpen, FileText, Pencil, Video } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import {
@@ -135,11 +135,11 @@ export function CourseSections({ course }: CourseSectionsProps) {
                       )}
 
                       <Link
-                        href={`/${locale}/dashboard/lessons/${lesson.id}`}
+                        href={`/${locale}/dashboard/lessons/${lesson.id}/edit`}
                         className="inline-flex items-center gap-1 text-[11px] text-primary hover:underline font-semibold"
                       >
-                        <Eye className="size-3.5" />
-                        <span>{t("card.viewDetails")}</span>
+                        <Pencil className="size-3.5" />
+                        <span>{t("card.edit")}</span>
                       </Link>
                     </div>
                   </div>

@@ -322,6 +322,20 @@
       "online": "Online",
       "center": "Center"
     },
+    "badge": {
+      "featured": "Featured",
+      "featuredDesc": "A curated course recommended by the platform.",
+      "revision": "Revision",
+      "revisionDesc": "Specifically designed as a revision course.",
+      "new": "New",
+      "newDesc": "A newly added course.",
+      "bestseller": "Bestseller",
+      "bestsellerDesc": "The most popular and in-demand course.",
+      "limited": "Limited Offer",
+      "limitedDesc": "Available for a limited time only.",
+      "none": "No Badge",
+      "noneDesc": "No badge will be shown on the course card."
+    },
     "period": {
       "monthly": "Monthly",
       "yearly": "Yearly",
@@ -513,7 +527,9 @@
         "isSplitToSections": "Split Lessons into Sections",
         "isSplitToSectionsSubtitle": "Enable to organize course lessons into multiple sections instead of a single main section.",
         "venue": "Attendance Venue",
-        "venueSubtitle": "Choose whether this course is taught online, in an educational center, or both."
+        "venueSubtitle": "Choose whether this course is taught online, in an educational center, or both.",
+        "badge": "Course Badge",
+        "badgeSubtitle": "Select a badge to display on the course card to highlight it in the course listing."
       },
       "actions": {
         "createCourse": "Create Course",
@@ -630,8 +646,11 @@
           "publishStatus": "Publishing Status",
           "statusOptions": {
             "draft": "Draft",
+            "draftDesc": "Save as work-in-progress, not visible to students.",
             "published": "Published",
-            "scheduled": "Scheduled"
+            "publishedDesc": "Live and visible to all enrolled students.",
+            "scheduled": "Scheduled",
+            "scheduledDesc": "Goes live automatically at a set date and time."
           },
           "scheduledPublishDate": "Publish Date & Time",
           "scheduledPublishDatePlaceholder": "Select publish date and time",
@@ -856,6 +875,15 @@
         "isIndependentDesc": "Toggle on if this exam is not linked to any specific course or lesson.",
         "venue": "Attendance Venue",
         "selectVenue": "Select venue...",
+        "publishStatus": "Publishing Status",
+        "statusOptions": {
+          "published": "Published",
+          "publishedDesc": "Live and visible to all enrolled students.",
+          "draft": "Draft",
+          "draftDesc": "Save as work-in-progress, not visible to students.",
+          "scheduled": "Scheduled",
+          "scheduledDesc": "Goes live automatically at a set date and time."
+        },
         "linkedCourse": "Linked Course",
         "selectCourse": "Select course...",
         "linkedSection": "Linked Course Section",
@@ -871,7 +899,12 @@
         "saving": "Saving...",
         "nextStep": "Next: Sections & Questions",
         "backToStep1": "Back to Exam Settings"
-      }
+      },
+      "performedWarning": {
+        "title": "Warning: Exam already taken by students",
+        "description": "{count, plural, =1 {1 student has} other {{count} students have}} already completed this exam. Modifying exam settings, questions, or scoring will directly alter their results and grade records."
+      },
+      "inCoursesInfo": "{count, plural, =0 {This exam is not linked to any courses.} one {This exam is included in 1 course.} other {This exam is included in {count} courses.}}"
     },
     "step2": {
       "title": "Exam Sections & Questions",
@@ -1263,6 +1296,7 @@
       "examLinked": "Exam Linked",
       "viewDetails": "View Details",
       "editLesson": "Edit Lesson",
+      "publishNow": "Publish Now",
       "copyLink": "Copy Link",
       "copied": "Copied!",
       "deleteLesson": "Delete Lesson",
@@ -1301,7 +1335,8 @@
       "selectCourse": "Select Parent Course",
       "selectCoursePlaceholder": "Choose a course to link this lesson to...",
       "selectSection": "Select Section",
-      "selectSectionPlaceholder": "Choose section..."
+      "selectSectionPlaceholder": "Choose section...",
+      "inCoursesInfo": "{count, plural, =0 {This lesson is not linked to any courses.} one {This lesson is included in 1 course.} other {This lesson is included in {count} courses.}}"
     },
     "pagination": {
       "showing": "Showing {start} to {end} of {total} lessons"

@@ -1,10 +1,10 @@
 "use client";
 
 import {
+  AlertTriangle,
   ArrowLeft,
   BookOpen,
   CheckCircle2,
-  Clock,
   Edit2,
   Eye,
   FileQuestion,
@@ -12,8 +12,11 @@ import {
   FolderPlus,
   GraduationCap,
   HelpCircle,
+  Info,
   ListOrdered,
+  MapPin,
   Plus,
+  Radio,
   Settings,
   Shuffle,
   Trash2,
@@ -38,17 +41,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { FormMarkdownEditor } from "@/components/ui/form-markdown-editor";
+import { FormRadioGroup } from "@/components/ui/form-radio-group";
 import { FormSectionCard } from "@/components/ui/form-section-card";
 import { FormToggleSetting } from "@/components/ui/form-toggle-setting";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { getStoredExams, saveStoredExams } from "@/lib/exams-storage";
 import { GradeSelect, SubjectSelect, TeacherSelect } from "@/components/ui/academic-selects";
 import { SelectWithAdd } from "@/components/ui/select-with-add";
@@ -166,10 +163,6 @@ export function ExamFormClient({ mode, initialData }: ExamFormClientProps) {
   const [randomizeMCQChoices, setRandomizeMCQChoices] = React.useState(
     initialData?.randomizeMCQChoices ?? false,
   );
-  const [hasExpiration, setHasExpiration] = React.useState(initialData?.hasExpiration ?? false);
-  const [expirationDays, setExpirationDays] = React.useState<number | string>(
-    initialData?.expirationDays ?? "",
-  );
 
   // Classification & Venue / Publish Status
   const [isIndependent, setIsIndependent] = React.useState<boolean>(
@@ -179,6 +172,9 @@ export function ExamFormClient({ mode, initialData }: ExamFormClientProps) {
   const [publishStatus, setPublishStatus] = React.useState<ExamPublishStatus>(
     initialData?.publishStatus || "published",
   );
+
+  // coursesCount comes directly from the exam record (populated by backend)
+  const [coursesCount] = React.useState<number>(initialData?.coursesCount ?? 0);
 
   // Form State - Step 2 (Exam Sections & Questions)
   const [examSections, setExamSections] = React.useState<ExamSection[]>(
@@ -233,8 +229,6 @@ export function ExamFormClient({ mode, initialData }: ExamFormClientProps) {
       showModelAnswers,
       randomizeQuestionsOrder,
       randomizeMCQChoices,
-      hasExpiration,
-      expirationDays: hasExpiration && expirationDays ? Number(expirationDays) : undefined,
 
       examSections,
       numberOfStudents: initialData?.numberOfStudents || 0,
@@ -400,7 +394,22 @@ export function ExamFormClient({ mode, initialData }: ExamFormClientProps) {
         </div>
 
         {/* Main Form Content Area */}
-        <main className="lg:col-span-8 order-1 lg:order-2">
+        <main className="lg:col-span-8 order-1 lg:order-2 space-y-6">
+          {/* Warning banner when editing an exam that has already been taken by students */}
+          {mode === "edit" && (initialData?.numberOfStudents ?? 0) > 0 && (
+            <div className="flex items-start gap-3 p-4 rounded-xl border bg-amber-500/10 border-amber-500/30 text-amber-900 ">
+              <AlertTriangle className="size-5 shrink-0 text-amber-600  mt-0.5" />
+              <div className="space-y-1 text-sm">
+                <h4 className="font-bold text-amber-800 ">{tForm("performedWarning.title")}</h4>
+                <p className="text-xs sm:text-sm text-amber-700  leading-relaxed">
+                  {tForm("performedWarning.description", {
+                    count: initialData?.numberOfStudents ?? 0,
+                  })}
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* ── STEP 1: EXAM SETTINGS & BASIC INFO ──────────────────────────────────── */}
           {currentStep === 1 && (
             <div className="space-y-6">
@@ -579,36 +588,6 @@ export function ExamFormClient({ mode, initialData }: ExamFormClientProps) {
                     checked={randomizeMCQChoices}
                     onCheckedChange={setRandomizeMCQChoices}
                   />
-                  <FormToggleSetting
-                    id="has-expiration-toggle"
-                    title={tForm("fields.hasExpiration")}
-                    subtitle={tForm("fields.hasExpirationDesc")}
-                    icon={Clock}
-                    checked={hasExpiration}
-                    onCheckedChange={setHasExpiration}
-                  />
-
-                  {hasExpiration && (
-                    <div className="flex flex-col gap-2 animate-in fade-in slide-in-from-top-1 max-w-sm pt-1">
-                      <Label
-                        htmlFor="exam-expiration-days"
-                        className="font-semibold text-foreground"
-                      >
-                        {tForm("fields.expirationDays")} <span className="text-destructive">*</span>
-                      </Label>
-                      <Input
-                        id="exam-expiration-days"
-                        type="number"
-                        min="1"
-                        value={expirationDays}
-                        onChange={(e) =>
-                          setExpirationDays(e.target.value ? Number(e.target.value) : "")
-                        }
-                        placeholder={tForm("fields.expirationDaysPlaceholder")}
-                        required={hasExpiration}
-                      />
-                    </div>
-                  )}
                 </div>
               </FormSectionCard>
 
@@ -619,6 +598,14 @@ export function ExamFormClient({ mode, initialData }: ExamFormClientProps) {
                 icon={FileQuestion}
               >
                 <div className="space-y-6">
+                  {/* Info badge: number of courses this exam is in (edit mode only) */}
+                  {mode === "edit" && (
+                    <div className="flex items-center gap-2 px-3 py-2.5 rounded-lg bg-muted/60 border border-border/60 text-xs text-muted-foreground">
+                      <Info className="size-3.5 shrink-0 text-primary" />
+                      <span>{tForm("inCoursesInfo", { count: coursesCount })}</span>
+                    </div>
+                  )}
+
                   <FormToggleSetting
                     id="is-independent-exam"
                     title={tForm("fields.isIndependent")}
@@ -628,48 +615,61 @@ export function ExamFormClient({ mode, initialData }: ExamFormClientProps) {
                     onCheckedChange={setIsIndependent}
                   >
                     {isIndependent && (
-                      <div className="space-y-6 pt-2 animate-in fade-in slide-in-from-top-1">
-                        {/* Venue selection for independent exam */}
-                        <div className="space-y-2 max-w-sm">
-                          <Label htmlFor="exam-standalone-venue" className="font-semibold">
-                            {tForm("fields.venue")}
-                          </Label>
-                          <Select value={venue} onValueChange={(v) => setVenue(v as ExamVenue)}>
-                            <SelectTrigger id="exam-standalone-venue">
-                              <SelectValue placeholder={tForm("fields.selectVenue")} />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="online">{tCourses("venue.online")}</SelectItem>
-                              <SelectItem value="center">{tCourses("venue.center")}</SelectItem>
-                              <SelectItem value="all">{tCourses("venue.all")}</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
+                      <div className="space-y-4 pt-2 animate-in fade-in slide-in-from-top-1">
+                        {/* Venue */}
+                        <FormRadioGroup
+                          name="exam-venue"
+                          title={tForm("fields.venue")}
+                          icon={MapPin}
+                          value={venue}
+                          onValueChange={(v) => setVenue(v as ExamVenue)}
+                          gridClassName="sm:grid-cols-3"
+                          options={[
+                            {
+                              id: "online",
+                              label: tCourses("new.venues.online.label"),
+                              desc: tCourses("new.venues.online.desc"),
+                            },
+                            {
+                              id: "center",
+                              label: tCourses("new.venues.center.label"),
+                              desc: tCourses("new.venues.center.desc"),
+                            },
+                            {
+                              id: "all",
+                              label: tCourses("new.venues.all.label"),
+                              desc: tCourses("new.venues.all.desc"),
+                            },
+                          ]}
+                        />
 
                         {/* Publish status */}
-                        <div className="space-y-2 max-w-sm pt-2 border-t border-border/40">
-                          <Label htmlFor="exam-standalone-publish-status" className="font-semibold">
-                            {locale === "ar" ? "حالة النشر" : "Publish Status"}
-                          </Label>
-                          <Select
+                        <div className="pt-2 border-t border-border/40">
+                          <FormRadioGroup
+                            name="exam-publish-status"
+                            title={tForm("fields.publishStatus")}
+                            icon={Radio}
                             value={publishStatus}
                             onValueChange={(v) => setPublishStatus(v as ExamPublishStatus)}
-                          >
-                            <SelectTrigger id="exam-standalone-publish-status">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="published">
-                                {locale === "ar" ? "منشور" : "Published"}
-                              </SelectItem>
-                              <SelectItem value="draft">
-                                {locale === "ar" ? "مسودة" : "Draft"}
-                              </SelectItem>
-                              <SelectItem value="scheduled">
-                                {locale === "ar" ? "مجدول" : "Scheduled"}
-                              </SelectItem>
-                            </SelectContent>
-                          </Select>
+                            gridClassName="sm:grid-cols-3"
+                            options={[
+                              {
+                                id: "published",
+                                label: tForm("fields.statusOptions.published"),
+                                desc: tForm("fields.statusOptions.publishedDesc"),
+                              },
+                              {
+                                id: "draft",
+                                label: tForm("fields.statusOptions.draft"),
+                                desc: tForm("fields.statusOptions.draftDesc"),
+                              },
+                              {
+                                id: "scheduled",
+                                label: tForm("fields.statusOptions.scheduled"),
+                                desc: tForm("fields.statusOptions.scheduledDesc"),
+                              },
+                            ]}
+                          />
                         </div>
                       </div>
                     )}
@@ -684,14 +684,6 @@ export function ExamFormClient({ mode, initialData }: ExamFormClientProps) {
                 </Button>
 
                 <div className="flex items-center gap-3">
-                  <Button
-                    variant="outline"
-                    onClick={() => handleSave("draft")}
-                    disabled={isSubmitting || !title.trim()}
-                  >
-                    <span>{tForm("actions.saveDraft")}</span>
-                  </Button>
-
                   <Button
                     onClick={handleProceedToStep2}
                     disabled={isSubmitting || !title.trim()}
@@ -890,14 +882,6 @@ export function ExamFormClient({ mode, initialData }: ExamFormClientProps) {
                 </Button>
 
                 <div className="flex items-center gap-3">
-                  <Button
-                    variant="outline"
-                    onClick={() => handleSave("draft")}
-                    disabled={isSubmitting || !title.trim()}
-                  >
-                    <span>{tForm("actions.saveDraft")}</span>
-                  </Button>
-
                   <Button
                     type="button"
                     onClick={() => handleSave("published")}

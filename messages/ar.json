@@ -143,7 +143,7 @@
     "questions": "بنك الأسئلة",
     "students": "الطلاب",
     "lessons": "الدروس",
-    "billing": "المالية",
+    "billing": "المالية والاشتراكات",
     "userSettings": "إعدادات المستخدم",
     "expandSidebar": "توسيع الشريط الجانبي",
     "roles": {
@@ -322,6 +322,20 @@
       "online": "أونلاين",
       "center": "سنتر"
     },
+    "badge": {
+      "featured": "مميز",
+      "featuredDesc": "دورة مُختارة وموصى بها.",
+      "revision": "مراجعة",
+      "revisionDesc": "خاصة لتشغيل دورة مراجعة.",
+      "new": "جديد",
+      "newDesc": "دورة جديدة تم إضافتها مؤخراً.",
+      "bestseller": "الأكثر مبيعاً",
+      "bestsellerDesc": "أكثر دورة مُستحسنة ومطلوبة.",
+      "limited": "عروض محدودة",
+      "limitedDesc": "عرض لفترة محدودة فقط.",
+      "none": "لا شارة",
+      "noneDesc": "لا تظهر شارة على بطاقة الدورة."
+    },
     "period": {
       "monthly": "شهري",
       "yearly": "سنوي",
@@ -370,7 +384,7 @@
       "grade": "المرحلة الدراسية",
       "subject": "المادة",
       "period": "تصنيف الكورسات",
-      "venue": "مكان الحضور",
+      "venue": "مكان النشر",
       "createdAt": "تاريخ الإنشاء",
       "timeLimit": "مدة الصلاحية",
       "timeLimitDays": "{days, plural, =0 {لا أيام} zero {لا أيام} one {يوم واحد} two {يومين} few {{days} أيام} many {{days} يوماً} other {{days} يوم}}",
@@ -475,7 +489,7 @@
         },
         "advancedSettings": {
           "title": "إعدادات متقدمة",
-          "description": "تحديد مدة صلاحية الوصول، تقسيم الطلاب إلى مجموعات، ومكان الحضور."
+          "description": "تحديد مدة صلاحية الوصول، تقسيم الطلاب إلى مجموعات، ومكان النشر."
         }
       },
       "fields": {
@@ -512,8 +526,10 @@
         "timeLimitDaysSuffix": "أيام",
         "isSplitToSections": "تقسيم الدروس إلى أقسام",
         "isSplitToSectionsSubtitle": "قم بالتفعيل لتقسيم دروس الدورة إلى أقسام متعددة بدلاً من قسم واحد رئيسي.",
-        "venue": "مكان الحضور",
-        "venueSubtitle": "اختر ما إذا كانت الدورة تدرس أونلاين فقط، أم في السنتر، أم متاحة بالخيارين."
+        "venue": "مكان النشر",
+        "venueSubtitle": "اختر ما إذا كانت الدورة تدرس أونلاين فقط، أم في السنتر، أم متاحة بالخيارين.",
+        "badge": "شارة الدورة",
+        "badgeSubtitle": "اختر شارة تظهر على بطاقة الدورة لتمييزها في قائمة الدورات."
       },
       "actions": {
         "createCourse": "إنشاء الدورة",
@@ -573,7 +589,7 @@
             "type": "اختر ما إذا كان الدرس يحتوي على محاضرة فيديو أو شرح نصي.",
             "mainInfo": "عنوان الدرس والوصف المفصل.",
             "media": "أدخل رابط الفيديو ورابط صورة الغلاف التوضيحية.",
-            "academic": "المرحلة الدراسية، المادة، اسم المعلم، ومكان الحضور.",
+            "academic": "المرحلة الدراسية، المادة، اسم المعلم، ومكان النشر.",
             "attachmentsAndExams": "ملفات PDF، الصور التوضيحية، والامتحانات المرتبطة.",
             "organization": "حدد حالة النشر وتاريخ ووقت الجدولة.",
             "category": "اختر ما إذا كان الدرس مستقلاً أو يتبع دورة تعليمية."
@@ -619,7 +635,7 @@
           "noExamsAvailable": "لا توجد امتحانات متاحة من النظام",
           "isRequiredPassExam": "إلزامية اجتياز الامتحان للانتقال للدرس التالي",
           "isRequiredPassExamSubtitle": "منع فتح الدرس التالي حتى يقوم الطالب باجتياز هذا الامتحان.",
-          "venue": "مكان الحضور",
+          "venue": "مكان النشر",
           "lessonCategory": "تصنيف الدرس",
           "categoryOptions": {
             "courseDependent": "مرتبط بدورة تعليمية",
@@ -630,8 +646,11 @@
           "publishStatus": "حالة النشر",
           "statusOptions": {
             "draft": "مسودة",
+            "draftDesc": "احفظه كمسودة، غير مرئي للطلاب.",
             "published": "منشور",
-            "scheduled": "جدولة النشر"
+            "publishedDesc": "متاح ومرئي لجميع الطلاب المسجلين.",
+            "scheduled": "جدولة النشر",
+            "scheduledDesc": "ينشر تلقائياً في التاريخ والوقت المحددين."
           },
           "scheduledPublishDate": "تاريخ ووقت النشر",
           "scheduledPublishDatePlaceholder": "اختر تاريخ ووقت النشر",
@@ -753,10 +772,10 @@
     "table": {
       "columns": {
         "title": "العنوان",
-        "subjectGrade": "المادة والمرحلة",
+        "subjectGrade": "المادة/المرحلة",
         "category": "الفئة",
         "typeVenue": "النطاق",
-        "questionsStudents": "الأسئلة والطلاب",
+        "questionsStudents": "الأسئلة/الطلاب",
         "successRate": "معدل النجاح",
         "timesUsed": "الاستخدام",
         "status": "الحالة",
@@ -854,8 +873,17 @@
         "expirationDaysPlaceholder": "مثال: 30",
         "isIndependent": "امتحان مستقل",
         "isIndependentDesc": "قم بالتفعيل إذا كان هذا الامتحان مستقلاً وغير مرتبط بدورة أو درس معين.",
-        "venue": "مكان الحضور",
-        "selectVenue": "اختر مكان الحضور...",
+        "venue": "مكان النشر",
+        "selectVenue": "اختر مكان النشر...",
+        "publishStatus": "حالة النشر",
+        "statusOptions": {
+          "published": "منشور",
+          "publishedDesc": "متاح ومرئي لجميع الطلاب المسجلين.",
+          "draft": "مسودة",
+          "draftDesc": "احفظه كمسودة، غير مرئي للطلاب.",
+          "scheduled": "مجدول",
+          "scheduledDesc": "ينشر تلقائياً في التاريخ والوقت المحددين."
+        },
         "linkedCourse": "الدورة التعليمية المرتبطة",
         "selectCourse": "اختر الدورة...",
         "linkedSection": "القسم المرتبط بالدورة",
@@ -871,7 +899,12 @@
         "saving": "جاري الحفظ...",
         "nextStep": "التالي: الأقسام والأسئلة",
         "backToStep1": "العودة لإعدادات الامتحان"
-      }
+      },
+      "performedWarning": {
+        "title": "تنبيه: تم أداء هذا الامتحان بواسطة الطلاب",
+        "description": "قام {count, plural, =1 {طالب واحد} =2 {طالبان} few {{count} طلاب} many {{count} طالباً} other {{count} طالب}} بأداء هذا الامتحان بالفعل. أي تعديل على إعدادات الامتحان أو أسئلته ودرجاته سيؤثر مباشرةً على نتائجهم وسجلات درجاتهم."
+      },
+      "inCoursesInfo": "{count, plural, =0 {هذا الامتحان غير مرتبط بأي دورات.} zero {هذا الامتحان غير مرتبط بأي دورات.} one {هذا الامتحان مضمَّن في دورة واحدة.} two {هذا الامتحان مضمَّن في دورتين.} few {هذا الامتحان مضمَّن في {count} دورات.} many {هذا الامتحان مضمَّن في {count} دورةً.} other {هذا الامتحان مضمَّن في {count} دورة.}}"
     },
     "step2": {
       "title": "أقسام وأسئلة الامتحان",
@@ -988,7 +1021,7 @@
         "teacher": "المعلم / المحاضر",
         "category": "تصنيف الامتحان",
         "type": "نوع الامتحان",
-        "venue": "مكان الحضور",
+        "venue": "مكان النشر",
         "linkedCourse": "الدورة المرتبطة",
         "triesAllowed": "المحاولات المتاحة",
         "duration": "المدة بالدقائق",
@@ -1164,7 +1197,7 @@
         "category": "تصنيف السؤال",
         "type": "نوع السؤال",
         "difficulty": "الصعوبة",
-        "timesUsed": "مرات الاستخدام بالامتحانات",
+        "timesUsed": "الاستخدام",
         "actions": "الإجراءات"
       },
       "timesUsedCount": "{count, plural, =0 {لم يستخدم} zero {لم يستخدم} one {مرة واحدة} two {مرتان} few {{count} مرات} many {{count} مرة} other {{count} مرة}}"
@@ -1263,6 +1296,7 @@
       "examLinked": "مرتبط بامتحان",
       "viewDetails": "عرض التفاصيل",
       "editLesson": "تعديل الدرس",
+      "publishNow": "نشر الآن",
       "copyLink": "نسخ الرابط",
       "copied": "تم النسخ!",
       "deleteLesson": "حذف الدرس",
@@ -1288,7 +1322,7 @@
       "passingScore": "نسبة النجاح المطلوب: {score}%",
       "teacherInfo": "المحاضر",
       "subjectAndGrade": "المادة والمرحلة الدراسية",
-      "venue": "مكان الحضور",
+      "venue": "مكان النشر",
       "status": "الحالة",
       "category": "تصنيف الدرس",
       "linkedCourse": "الدورة المرتبطة",
@@ -1301,7 +1335,8 @@
       "selectCourse": "اختر الدورة التعليمية",
       "selectCoursePlaceholder": "اختر الدورة التي يتبع لها هذا الدرس...",
       "selectSection": "اختر القسم",
-      "selectSectionPlaceholder": "اختر القسم داخل الدورة..."
+      "selectSectionPlaceholder": "اختر القسم داخل الدورة...",
+      "inCoursesInfo": "{count, plural, =0 {هذا الدرس غير مرتبط بأي دورات.} zero {هذا الدرس غير مرتبط بأي دورات.} one {هذا الدرس مضمَّن في دورة واحدة.} two {هذا الدرس مضمَّن في دورتين.} few {هذا الدرس مضمَّن في {count} دورات.} many {هذا الدرس مضمَّن في {count} دورةً.} other {هذا الدرس مضمَّن في {count} دورة.}}"
     },
     "pagination": {
       "showing": "{total, plural, =0 {عرض 0 درس} zero {عرض 0 درس} one {عرض درس واحد من أصل درس واحد} two {عرض درسين من أصل درسين} few {عرض {start} إلى {end} من أصل {total} دروس} many {عرض {start} إلى {end} من أصل {total} درساً} other {عرض {start} إلى {end} من أصل {total} درس}}"
@@ -1600,7 +1635,7 @@
     }
   },
   "billingRequestsPage": {
-    "title": "إدارة المالية",
+    "title": "إدارة المالية والاشتراكات",
     "description": "إدارة وتدقيق طلبات إثبات الدفع وسداد الفواتير المقدمة من الطلاب",
     "stats": {
       "totalPayments": "إجمالي المدفوعات",
@@ -1634,7 +1669,7 @@
         "grade": "الصف الدراسي",
         "amount": "المبلغ",
         "course": "الدورة التعليمية",
-        "venue": "مكان الحضور",
+        "venue": "مكان النشر",
         "status": "الحالة",
         "actions": "الإجراءات"
       },
@@ -2286,12 +2321,12 @@
       "table": {
         "columns": {
           "title": "عنوان الامتحان",
-          "subjectGrade": "المادة والصف",
+          "subjectGrade": "المادة/الصف",
           "sourceCourse": "الدورة / النطاق",
-          "category": "النوع والتصنيف",
-          "questionsDuration": "الأسئلة والمدة",
+          "category": "النوع/التصنيف",
+          "questionsDuration": "الأسئلة/المدة",
           "passingGrade": "درجة النجاح",
-          "score": "النتيجة والدرجة",
+          "score": "النتيجة/الدرجة",
           "status": "الحالة",
           "completedDate": "تاريخ الإنجاز",
           "actions": "الإجراءات"
@@ -2373,7 +2408,7 @@
         "category": "نوع الامتحان",
         "sourceCourse": "الدورة المرتبطة",
         "independent": "امتحان عام للمنصة",
-        "venue": "مكان الحضور",
+        "venue": "مكان النشر",
         "triesAllowed": "المحاولات المتاحة",
         "duration": "مدة الامتحان",
         "passingPercentage": "نسبة النجاح",
@@ -2403,7 +2438,7 @@
         "passingPercentage": "{percent}٪",
         "triesAllowed": "المحاولات المسموحة",
         "triesCount": "{count, plural, =0 {لا محاولات} zero {لا محاولات} one {محاولة واحدة} two {محاولتان} few {{count} محاولات} many {{count} محاولة} other {{count} محاولة}}",
-        "venue": "مكان الحضور",
+        "venue": "مكان النشر",
         "teacher": "المعلم"
       },
       "timerBar": {

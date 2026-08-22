@@ -242,8 +242,19 @@ export function QuestionFormContent({
     ]);
   };
 
+  const isAcademicValid =
+    !allowEditableAcademicProps ||
+    (Boolean(selectedGrade) && Boolean(selectedSubject) && Boolean(teacherNameInput.trim()));
+
+  const isValid =
+    Boolean(questionName.trim()) &&
+    Boolean(questionContent.trim()) &&
+    Boolean(questionType) &&
+    Boolean(difficulty) &&
+    isAcademicValid;
+
   const handleSaveInternal = (keepOpen: boolean = false) => {
-    if (!questionName.trim()) return;
+    if (!isValid) return;
 
     const questionData: Question = {
       id: initialQuestion?.id || `q-${Date.now()}`,
@@ -371,7 +382,7 @@ export function QuestionFormContent({
         {/* Question Content Body */}
         <div className="flex flex-col gap-2">
           <Label htmlFor="q-content" className="text-sm font-medium text-foreground">
-            {t("questionContent")}
+            {t("questionContent")} <span className="text-destructive">*</span>
           </Label>
           <FormMarkdownEditor
             value={questionContent}
@@ -386,6 +397,7 @@ export function QuestionFormContent({
             value={questionType}
             onValueChange={(v) => setQuestionType(v as QuestionKind)}
             label={t("questionKind")}
+            required
             options={allQuestionKindOptions}
             allowAdd
             onAddNewOption={handleAddQuestionKind}
@@ -395,7 +407,10 @@ export function QuestionFormContent({
           />
 
           <div className="flex flex-col gap-2">
-            <Label className="text-sm font-medium text-foreground">{t("difficulty")}</Label>
+            <Label className="text-sm font-medium text-foreground flex items-center gap-1.5">
+              <span>{t("difficulty")}</span>
+              <span className="text-destructive">*</span>
+            </Label>
             <Select
               value={difficulty}
               onValueChange={(v) => setDifficulty(v as QuestionDifficulty)}
@@ -446,12 +461,14 @@ export function QuestionFormContent({
                 onValueChange={setSelectedGrade}
                 label={tNew("selectGrade")}
                 placeholder={tNew("selectGradePlaceholder")}
+                required
               />
               <SubjectSelect
                 value={selectedSubject}
                 onValueChange={setSelectedSubject}
                 label={tNew("selectSubject")}
                 placeholder={tNew("selectSubjectPlaceholder")}
+                required
               />
               <TeacherSelect
                 value={teacherNameInput}
@@ -459,6 +476,7 @@ export function QuestionFormContent({
                 label={tNew("teacherName")}
                 placeholder={tNew("teacherNamePlaceholder")}
                 teachers={availableTeachers}
+                required
               />
             </div>
           ) : (
@@ -648,7 +666,7 @@ export function QuestionFormContent({
             type="button"
             variant="outline"
             onClick={() => handleSaveInternal(true)}
-            disabled={!questionName.trim()}
+            disabled={!isValid}
           >
             {t("actions.saveAndAddAnother")}
           </Button>
@@ -657,7 +675,7 @@ export function QuestionFormContent({
         <Button
           type="button"
           onClick={() => handleSaveInternal(false)}
-          disabled={!questionName.trim()}
+          disabled={!isValid}
           className="font-semibold min-w-32"
         >
           {submitLabel || (initialQuestion ? t("actions.saveChanges") : t("actions.saveQuestion"))}

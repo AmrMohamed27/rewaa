@@ -235,7 +235,7 @@ export function ManageCoursesClient() {
 
       {/* Courses Grid or Skeleton Loader */}
       {isLoading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-8">
           {Array.from({ length: 8 }).map((_, index) => (
             <div
               key={index}
@@ -260,7 +260,7 @@ export function ManageCoursesClient() {
           <p className="text-sm text-muted-foreground mt-1 max-w-md">{t("empty.description")}</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-8">
           {paginatedCourses.map((course) => (
             <CourseCard
               key={course.id}

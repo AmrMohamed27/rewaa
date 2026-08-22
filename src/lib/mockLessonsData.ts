@@ -177,7 +177,7 @@ export const mockLessonsData: Record<"ar" | "en", Lesson[]> = {
       courseId: "course-002",
       courseTitle: "الكيمياء العضوية والتفوق فيها",
       sectionId: "sec-003",
-      publishStatus: "published",
+      publishStatus: "draft",
     },
     {
       id: "les-008",
@@ -238,6 +238,7 @@ export const mockLessonsData: Record<"ar" | "en", Lesson[]> = {
       ],
       venue: "center",
       lessonCategory: "independent",
+      coursesCount: 3,
       publishStatus: "published",
     },
   ],
@@ -417,7 +418,7 @@ export const mockLessonsData: Record<"ar" | "en", Lesson[]> = {
       courseId: "course-002",
       courseTitle: "Organic Chemistry Mastery",
       sectionId: "sec-003",
-      publishStatus: "published",
+      publishStatus: "draft",
     },
     {
       id: "les-008",
@@ -478,6 +479,7 @@ export const mockLessonsData: Record<"ar" | "en", Lesson[]> = {
       ],
       venue: "center",
       lessonCategory: "independent",
+      coursesCount: 3,
       publishStatus: "published",
     },
   ],

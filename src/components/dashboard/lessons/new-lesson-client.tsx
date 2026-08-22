@@ -9,17 +9,11 @@ import {
 } from "@/components/ui/academic-selects";
 import { Button } from "@/components/ui/button";
 import { FormMarkdownEditor } from "@/components/ui/form-markdown-editor";
+import { FormRadioGroup } from "@/components/ui/form-radio-group";
 import { FormSectionCard } from "@/components/ui/form-section-card";
 import { FormToggleSetting } from "@/components/ui/form-toggle-setting";
 import { ImageUploadField } from "@/components/ui/image-upload-field";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { getStoredLessons, saveStoredLessons } from "@/lib/lessons-storage";
 import { getStoredTeachers } from "@/lib/settings-storage";
 import { cn } from "@/lib/utils";
@@ -41,8 +35,10 @@ import {
   FileText,
   GraduationCap,
   ImageIcon,
+  Info,
   Layers,
   MapPin,
+  Radio,
   Trash2,
   Upload,
   Video,
@@ -113,6 +109,9 @@ export function NewLessonClient({ initialLessonId }: NewLessonClientProps = {}) 
   const [scheduledPublishDate, setScheduledPublishDate] = useState("");
   const [scheduledEndDate, setScheduledEndDate] = useState("");
 
+  // coursesCount comes directly from the lesson record (populated by backend)
+  const [coursesCount, setCoursesCount] = useState<number>(0);
+
   const [isLoaded, setIsLoaded] = useState(false);
 
   // Fetch existing lesson data on mount
@@ -154,6 +153,8 @@ export function NewLessonClient({ initialLessonId }: NewLessonClientProps = {}) 
         setPublishStatus(existing.publishStatus || "published");
         setScheduledPublishDate(existing.scheduledPublishDate || "");
         setScheduledEndDate(existing.scheduledEndDate || "");
+
+        setCoursesCount(existing.coursesCount ?? 0);
       }
     }
     setIsLoaded(true);
@@ -597,6 +598,14 @@ export function NewLessonClient({ initialLessonId }: NewLessonClientProps = {}) 
           icon={Layers}
           contentClassName="space-y-6"
         >
+          {/* Info badge: number of courses this lesson is in (edit mode only) */}
+          {initialLessonId && (
+            <div className="flex items-center gap-2 px-3 py-2.5 rounded-lg bg-muted/60 border border-border/60 text-xs text-muted-foreground">
+              <Info className="size-3.5 shrink-0 text-primary" />
+              <span>{t("inCoursesInfo", { count: coursesCount })}</span>
+            </div>
+          )}
+
           <FormToggleSetting
             id="standalone-is-independent-toggle"
             title={tDialog("categoryOptions.independent")}
@@ -605,55 +614,61 @@ export function NewLessonClient({ initialLessonId }: NewLessonClientProps = {}) 
             onCheckedChange={setIsIndependent}
           >
             {isIndependent && (
-              <div className="space-y-6 pt-2 animate-in fade-in slide-in-from-top-1">
+              <div className="space-y-4 pt-2 animate-in fade-in slide-in-from-top-1">
                 {/* Venue */}
-                <div className="flex flex-col gap-2 max-w-sm">
-                  <label
-                    htmlFor="academic-venue"
-                    className="text-sm font-medium text-foreground flex items-center gap-1.5"
-                  >
-                    <MapPin className="size-4 text-muted-foreground" />
-                    {tDialog("venue")}
-                  </label>
-                  <Select value={venue} onValueChange={(v) => setVenue(v as CourseVenue)}>
-                    <SelectTrigger id="academic-venue">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="online">{tCourses("venue.online")}</SelectItem>
-                      <SelectItem value="center">{tCourses("venue.center")}</SelectItem>
-                      <SelectItem value="all">{tCourses("venue.all")}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                <FormRadioGroup
+                  name="lesson-venue"
+                  title={tDialog("venue")}
+                  icon={MapPin}
+                  value={venue}
+                  onValueChange={(val) => setVenue(val as CourseVenue)}
+                  gridClassName="sm:grid-cols-3"
+                  options={[
+                    {
+                      id: "online",
+                      label: tCourses("new.venues.online.label"),
+                      desc: tCourses("new.venues.online.desc"),
+                    },
+                    {
+                      id: "center",
+                      label: tCourses("new.venues.center.label"),
+                      desc: tCourses("new.venues.center.desc"),
+                    },
+                    {
+                      id: "all",
+                      label: tCourses("new.venues.all.label"),
+                      desc: tCourses("new.venues.all.desc"),
+                    },
+                  ]}
+                />
 
                 {/* Publish Status */}
                 <div className="space-y-4 pt-2 border-t border-border/40">
-                  <div className="flex flex-col gap-2 max-w-sm">
-                    <label
-                      htmlFor="standalone-publish-status"
-                      className="text-sm font-medium text-foreground"
-                    >
-                      {tDialog("publishStatus")}
-                    </label>
-                    <Select
-                      value={publishStatus}
-                      onValueChange={(val) => setPublishStatus(val as LessonPublishStatus)}
-                    >
-                      <SelectTrigger id="standalone-publish-status">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="published">
-                          {tDialog("statusOptions.published")}
-                        </SelectItem>
-                        <SelectItem value="draft">{tDialog("statusOptions.draft")}</SelectItem>
-                        <SelectItem value="scheduled">
-                          {tDialog("statusOptions.scheduled")}
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  <FormRadioGroup
+                    name="lesson-publish-status"
+                    title={tDialog("publishStatus")}
+                    icon={Radio}
+                    value={publishStatus}
+                    onValueChange={(val) => setPublishStatus(val as LessonPublishStatus)}
+                    gridClassName="sm:grid-cols-3"
+                    options={[
+                      {
+                        id: "published",
+                        label: tDialog("statusOptions.published"),
+                        desc: tDialog("statusOptions.publishedDesc"),
+                      },
+                      {
+                        id: "draft",
+                        label: tDialog("statusOptions.draft"),
+                        desc: tDialog("statusOptions.draftDesc"),
+                      },
+                      {
+                        id: "scheduled",
+                        label: tDialog("statusOptions.scheduled"),
+                        desc: tDialog("statusOptions.scheduledDesc"),
+                      },
+                    ]}
+                  />
 
                   {publishStatus === "scheduled" && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 animate-in fade-in slide-in-from-top-1 pt-2">

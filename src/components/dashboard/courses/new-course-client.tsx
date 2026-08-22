@@ -153,6 +153,7 @@ export function NewCourseClient({ initialCourseId }: NewCourseClientProps = {}) 
   const [timeLimitValue, setTimeLimitValue] = useState<number | "">("");
   const [isSplitToSections, setIsSplitToSections] = useState(true);
   const [venue, setVenue] = useState<"online" | "center" | "all">("all");
+  const [badge, setBadge] = useState<CourseBadge | "none">("none");
 
   // Active step state: 1 = Info & Price, 2 = Curriculum & Lectures
   const [currentStep, setCurrentStep] = useState<1 | 2>(1);
@@ -209,6 +210,7 @@ export function NewCourseClient({ initialCourseId }: NewCourseClientProps = {}) 
         existing.isSplitToSections !== undefined ? Boolean(existing.isSplitToSections) : true,
       );
       setVenue(existing.venue || "all");
+      setBadge((existing.badge as CourseBadge) || "none");
 
       // Matching for Grade
       const knownGrades: Record<string, string[]> = {
@@ -328,6 +330,7 @@ export function NewCourseClient({ initialCourseId }: NewCourseClientProps = {}) 
       timeLimitValue: hasTimeLimit && timeLimitValue ? Number(timeLimitValue) : undefined,
       isSplitToSections: isSplitToSections,
       venue: venue,
+      badge: badge !== "none" ? badge : undefined,
       numberOfParticipants: existingCourse?.numberOfParticipants || 0,
       isDraft: existingCourse ? existingCourse.isDraft : true,
       sections: finalSections,
@@ -772,6 +775,28 @@ export function NewCourseClient({ initialCourseId }: NewCourseClientProps = {}) 
                     },
                   ]}
                 />
+
+                {/* Course Badge (Radio Group) */}
+                <FormRadioGroup
+                  name="badge-option"
+                  title={t("fields.badge")}
+                  subtitle={t("fields.badgeSubtitle")}
+                  icon={Tag}
+                  value={badge}
+                  onValueChange={(val) => setBadge(val as typeof badge)}
+                  options={[
+                    { id: "none", label: t("badge.none"), desc: t("badge.noneDesc") },
+                    { id: "featured", label: t("badge.featured"), desc: t("badge.featuredDesc") },
+                    { id: "new", label: t("badge.new"), desc: t("badge.newDesc") },
+                    { id: "revision", label: t("badge.revision"), desc: t("badge.revisionDesc") },
+                    {
+                      id: "bestseller",
+                      label: t("badge.bestseller"),
+                      desc: t("badge.bestsellerDesc"),
+                    },
+                    { id: "limited", label: t("badge.limited"), desc: t("badge.limitedDesc") },
+                  ]}
+                />
               </FormSectionCard>
 
               {/* CTA Buttons */}
@@ -856,7 +881,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { getStoredExams } from "@/lib/exams-storage";
-import { CourseSection, CourseVenue, Lesson, LessonPublishStatus } from "@/types/course";
+import {
+  CourseSection,
+  CourseBadge,
+  CourseVenue,
+  Lesson,
+  LessonPublishStatus,
+} from "@/types/course";
 import { Exam } from "@/types/exam";
 import {
   ArrowDown,

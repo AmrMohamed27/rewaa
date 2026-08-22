@@ -197,7 +197,7 @@ export function ManageLessonsClient() {
   };
 
   const handleCopyLink = (lessonId: string) => {
-    const link = `${window.location.origin}/${locale}/dashboard/lessons/${lessonId}`;
+    const link = `${window.location.origin}/${locale}/student-dashboard/lessons/${lessonId}`;
     navigator.clipboard.writeText(link);
     setCopiedId(lessonId);
     setTimeout(() => setCopiedId(null), 2000);

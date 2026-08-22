@@ -7,6 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Lesson } from "@/types/course";
 import {
   BookOpen,
@@ -141,23 +142,65 @@ export function LessonCard({
       {/* Card Body */}
       <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
         <div>
-          {/* Category & Course Tag */}
-          <div className="flex items-center justify-between text-xs text-muted-foreground mb-1.5 gap-2">
-            <span className="font-semibold text-primary truncate max-w-52">
+          {/* Category & Course Tag with Quick Metadata Icons */}
+          <div className="flex items-start justify-between text-xs text-muted-foreground mb-1.5 gap-2">
+            <span className="font-semibold text-primary wrap-break-word leading-tight">
               {lesson.lessonCategory === "course-dependent" && lesson.courseTitle
                 ? t("card.courseDependent", { courseTitle: lesson.courseTitle })
                 : t("card.independent")}
             </span>
-            <span className="text-[11px] font-medium flex items-center gap-1 shrink-0">
-              {lesson.venue === "online" ? (
-                <Globe className="h-3 w-3" />
-              ) : lesson.venue === "center" ? (
-                <House className="h-3 w-3" />
-              ) : (
-                <Globe2 className="h-3 w-3" />
-              )}
-              {formatVenue(lesson.venue)}
-            </span>
+
+            {/* Quick Metadata Icons: Venue, PDFs, Exam */}
+            <TooltipProvider>
+              <div className="flex items-center gap-2 shrink-0 pt-0.5 text-muted-foreground">
+                {/* Venue */}
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="flex items-center cursor-default transition-colors hover:text-foreground">
+                      {lesson.venue === "online" ? (
+                        <Globe className="h-3.5 w-3.5 text-primary" />
+                      ) : lesson.venue === "center" ? (
+                        <House className="h-3.5 w-3.5 text-primary" />
+                      ) : (
+                        <Globe2 className="h-3.5 w-3.5 text-primary" />
+                      )}
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent side="top">{formatVenue(lesson.venue)}</TooltipContent>
+                </Tooltip>
+
+                {/* PDF Attachments */}
+                {pdfCount > 0 && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="flex items-center gap-1 cursor-default text-primary hover:text-primary/80 transition-colors">
+                        <Paperclip className="h-3.5 w-3.5 shrink-0" />
+                        <span className="text-[11px] font-semibold">{pdfCount}</span>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="top">
+                      {t("card.pdfsCount", { count: pdfCount })}
+                    </TooltipContent>
+                  </Tooltip>
+                )}
+
+                {/* Linked Exam */}
+                {lesson.isLinkedToExam && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="flex items-center cursor-default text-amber-500 hover:text-amber-600 transition-colors">
+                        <FileQuestion className="h-3.5 w-3.5" />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="top">
+                      {lesson.linkedExamTitle
+                        ? `${t("card.examLinked")}: ${lesson.linkedExamTitle}`
+                        : t("card.examLinked")}
+                    </TooltipContent>
+                  </Tooltip>
+                )}
+              </div>
+            </TooltipProvider>
           </div>
 
           {/* Title */}
@@ -196,38 +239,31 @@ export function LessonCard({
           </div>
         </div>
 
-        {/* Additional Metadata Badges: PDFs & Exam */}
-        <div className="flex items-center gap-2 flex-wrap text-[11px]">
-          {pdfCount > 0 && (
-            <span
-              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-blue-500/10 text-blue-600 border border-blue-500/20 font-medium"
-              title={t("card.pdfsCount", { count: pdfCount })}
-            >
-              <Paperclip className="h-3 w-3" />
-              <span>{pdfCount}</span>
-            </span>
-          )}
-
-          {lesson.isLinkedToExam && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-600 border border-amber-500/20 font-medium">
-              <FileQuestion className="h-3 w-3" />
-              {t("card.examLinked")}
-            </span>
-          )}
-        </div>
-
-        {/* Card Footer: View Details CTA & Actions Dropdown */}
+        {/* Card Footer: CTA & Actions Dropdown */}
         <div className="pt-3 border-t border-border/40 flex items-center justify-between gap-2">
-          <Button
-            asChild
-            variant="default"
-            size="sm"
-            className="h-8 gap-1.5 text-xs font-semibold flex-1"
-          >
-            <Link href={`/${locale}/dashboard/lessons/${lesson.id}`}>
-              <span>{t("card.viewDetails")}</span>
-            </Link>
-          </Button>
+          {lesson.publishStatus === "draft" ? (
+            <Button
+              onClick={() => onPublishToggle(lesson.id)}
+              variant="default"
+              size="sm"
+              className="h-8 gap-1.5 text-xs font-semibold flex-1 cursor-pointer"
+            >
+              <BookOpen className="h-3.5 w-3.5" />
+              <span>{t("card.publishNow")}</span>
+            </Button>
+          ) : (
+            <Button
+              asChild
+              variant="default"
+              size="sm"
+              className="h-8 gap-1.5 text-xs font-semibold flex-1"
+            >
+              <Link href={`/${locale}/dashboard/lessons/${lesson.id}/edit`}>
+                <Pencil className="h-3.5 w-3.5" />
+                <span>{t("card.editLesson")}</span>
+              </Link>
+            </Button>
+          )}
 
           {/* Action Menu */}
           <DropdownMenu>
@@ -241,12 +277,14 @@ export function LessonCard({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align={isAr ? "start" : "end"} className="w-44">
-              <DropdownMenuItem asChild>
-                <Link href={`/${locale}/dashboard/lessons/${lesson.id}/edit`}>
-                  <Pencil className="h-3.5 w-3.5 me-2" />
-                  <span>{t("card.editLesson")}</span>
-                </Link>
-              </DropdownMenuItem>
+              {lesson.publishStatus === "draft" && (
+                <DropdownMenuItem asChild>
+                  <Link href={`/${locale}/dashboard/lessons/${lesson.id}/edit`}>
+                    <Pencil className="h-3.5 w-3.5 me-2" />
+                    <span>{t("card.editLesson")}</span>
+                  </Link>
+                </DropdownMenuItem>
+              )}
 
               <DropdownMenuItem onClick={() => onCopyLink(lesson.id)}>
                 {copiedId === lesson.id ? (
@@ -262,12 +300,14 @@ export function LessonCard({
                 )}
               </DropdownMenuItem>
 
-              <DropdownMenuItem onClick={() => onPublishToggle(lesson.id)}>
-                <BookOpen className="h-3.5 w-3.5 me-2" />
-                <span>
-                  {lesson.publishStatus === "published" ? t("card.unpublish") : t("card.publish")}
-                </span>
-              </DropdownMenuItem>
+              {lesson.publishStatus !== "draft" && (
+                <DropdownMenuItem onClick={() => onPublishToggle(lesson.id)}>
+                  <BookOpen className="h-3.5 w-3.5 me-2" />
+                  <span>
+                    {lesson.publishStatus === "published" ? t("card.unpublish") : t("card.publish")}
+                  </span>
+                </DropdownMenuItem>
+              )}
 
               <DropdownMenuItem
                 onClick={() => onDeleteRequest(lesson)}
