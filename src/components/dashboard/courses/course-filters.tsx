@@ -5,11 +5,10 @@ import { ContentFilters, SortOptionItem, TabItem } from "../common/content-filte
 
 export type FilterTab = "all" | "published" | "draft";
 export type SortOption =
-  | "title-asc"
-  | "title-desc"
   | "date-newest"
   | "date-oldest"
-  | "students-desc"
+  | "sales-desc"
+  | "sales-asc"
   | "price-asc"
   | "price-desc";
 
@@ -49,9 +48,8 @@ export function CourseFilters({
   const sortOptions: SortOptionItem<SortOption>[] = [
     { value: "date-newest", label: t("sort.newest") },
     { value: "date-oldest", label: t("sort.oldest") },
-    { value: "title-asc", label: t("sort.titleAsc") },
-    { value: "title-desc", label: t("sort.titleDesc") },
-    { value: "students-desc", label: t("sort.studentsDesc") },
+    { value: "sales-desc", label: t("sort.salesDesc") },
+    { value: "sales-asc", label: t("sort.salesAsc") },
     { value: "price-asc", label: t("sort.priceAsc") },
     { value: "price-desc", label: t("sort.priceDesc") },
   ];

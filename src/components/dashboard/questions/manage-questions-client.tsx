@@ -25,10 +25,17 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { QuestionWithContext, getAllQuestions } from "@/lib/questions-storage";
-import { QuestionDifficulty, QuestionKind } from "@/types/exam";
+import { QuestionDifficulty, QuestionKind, QuestionType } from "@/types/exam";
 import { ContentPagination } from "../common/content-pagination";
 
 const DIFFICULTY_COLORS: Record<QuestionDifficulty, string> = {
@@ -37,7 +44,8 @@ const DIFFICULTY_COLORS: Record<QuestionDifficulty, string> = {
   hard: "bg-red-100 text-red-700 border-red-300/40",
 };
 
-export type QuestionSortOption = "name-asc" | "name-desc" | "times-used-desc" | "times-used-asc";
+export type QuestionSortOption = "times-used-desc" | "times-used-asc";
+export type QuestionTypeFilter = "all" | QuestionType;
 
 export function ManageQuestionsClient() {
   const locale = useLocale();
@@ -54,7 +62,8 @@ export function ManageQuestionsClient() {
   const searchQuery = searchParams.get("search") || "";
   const selectedGrade = searchParams.get("grade") || "all";
   const selectedSubject = searchParams.get("subject") || "all";
-  const sortBy = (searchParams.get("sort") as QuestionSortOption) || "name-asc";
+  const selectedType = (searchParams.get("type") as QuestionTypeFilter) || "all";
+  const sortBy = (searchParams.get("sort") as QuestionSortOption) || "times-used-desc";
   const currentPage = parseInt(searchParams.get("page") || "1", 10) || 1;
   const itemsPerPage = 10;
 
@@ -67,7 +76,8 @@ export function ManageQuestionsClient() {
           value === "" ||
           (key === "grade" && value === "all") ||
           (key === "subject" && value === "all") ||
-          (key === "sort" && value === "name-asc") ||
+          (key === "type" && value === "all") ||
+          (key === "sort" && value === "times-used-desc") ||
           (key === "page" && value === 1)
         ) {
           params.delete(key);
@@ -110,6 +120,9 @@ export function ManageQuestionsClient() {
       if (selectedSubject !== "all" && q.subject !== selectedSubject) {
         return false;
       }
+      if (selectedType !== "all" && q.type !== selectedType) {
+        return false;
+      }
 
       if (searchQuery.trim()) {
         const query = searchQuery.toLowerCase();
@@ -133,24 +146,20 @@ export function ManageQuestionsClient() {
 
       return true;
     });
-  }, [questions, selectedGrade, selectedSubject, searchQuery]);
+  }, [questions, selectedGrade, selectedSubject, selectedType, searchQuery]);
 
   // Sort Logic
   const sortedQuestions = React.useMemo(() => {
     return [...filteredQuestions].sort((a, b) => {
       switch (sortBy) {
-        case "name-desc":
-          return b.questionName.localeCompare(a.questionName, locale);
-        case "times-used-desc":
-          return (b.timesUsed || 0) - (a.timesUsed || 0);
         case "times-used-asc":
           return (a.timesUsed || 0) - (b.timesUsed || 0);
-        case "name-asc":
+        case "times-used-desc":
         default:
-          return a.questionName.localeCompare(b.questionName, locale);
+          return (b.timesUsed || 0) - (a.timesUsed || 0);
       }
     });
-  }, [filteredQuestions, sortBy, locale]);
+  }, [filteredQuestions, sortBy]);
 
   // Pagination calculation
   const totalItems = sortedQuestions.length;
@@ -165,10 +174,13 @@ export function ManageQuestionsClient() {
 
   const handleSubjectChange = (val: string) => updateUrlParams({ subject: val, page: 1 });
 
+  const handleTypeChange = (val: string) =>
+    updateUrlParams({ type: val === "all" ? null : val, page: 1 });
+
   const handleSortChange = (sort: QuestionSortOption) => updateUrlParams({ sort, page: 1 });
 
   const handleResetFilters = () =>
-    updateUrlParams({ search: null, grade: null, subject: null, sort: null, page: 1 });
+    updateUrlParams({ search: null, grade: null, subject: null, type: null, sort: null, page: 1 });
 
   const formatGrade = (g?: string) => {
     if (!g) return "";
@@ -219,11 +231,10 @@ export function ManageQuestionsClient() {
     searchQuery.trim() !== "" ||
     selectedGrade !== "all" ||
     selectedSubject !== "all" ||
-    sortBy !== "name-asc";
+    selectedType !== "all" ||
+    sortBy !== "times-used-desc";
 
   const sortOptions: { value: QuestionSortOption; label: string }[] = [
-    { value: "name-asc", label: t("sort.nameAsc") },
-    { value: "name-desc", label: t("sort.nameDesc") },
     { value: "times-used-desc", label: t("sort.timesUsedDesc") },
     { value: "times-used-asc", label: t("sort.timesUsedAsc") },
   ];
@@ -249,9 +260,9 @@ export function ManageQuestionsClient() {
         </Button>
       </div>
 
-      {/* Filters Bar: Search Box, Grade Select, Subject Select, Sort Dropdown & Reset button */}
-      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 bg-card p-4 rounded-xl border border-border/60 shadow-xs">
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-1">
+      {/* Filters Bar: Search Box, Grade Select, Subject Select, Type Select, Sort Dropdown & Reset button */}
+      <div className="flex flex-col xl:flex-row items-stretch xl:items-center justify-between gap-4 bg-card p-4 rounded-xl border border-border/60 shadow-xs">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-1 flex-wrap">
           {/* Search Box */}
           <div className="relative flex-1 min-w-55">
             <Search className="absolute inset-s-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -285,10 +296,27 @@ export function ManageQuestionsClient() {
               allOptionLabel={t("allSubjects")}
             />
           </div>
+
+          {/* Question Type Select */}
+          <div className="w-full sm:w-44">
+            <Select value={selectedType} onValueChange={handleTypeChange}>
+              <SelectTrigger className="h-8 text-xs bg-background">
+                <SelectValue placeholder={t("allTypes")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{t("allTypes")}</SelectItem>
+                <SelectItem value="mcq">{tExams("questionDialog.types.mcq")}</SelectItem>
+                <SelectItem value="true/false">
+                  {tExams("questionDialog.types.trueFalse")}
+                </SelectItem>
+                <SelectItem value="text">{tExams("questionDialog.types.text")}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
         {/* Right Controls: Clear Filters & Sort Dropdown */}
-        <div className="flex items-center gap-2 self-start md:self-auto">
+        <div className="flex items-center gap-2 self-start xl:self-auto shrink-0">
           {isFilterActive && (
             <Button
               variant="ghost"

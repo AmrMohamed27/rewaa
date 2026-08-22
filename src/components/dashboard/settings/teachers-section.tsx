@@ -22,7 +22,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { PhoneLink } from "@/components/ui/phone-link";
+import { PhoneLink, WhatsAppIcon } from "@/components/ui/phone-link";
 import { Teacher } from "@/types/settings";
 import {
   getStoredTeachers,
@@ -156,13 +156,18 @@ export function TeachersSection() {
                   <TableCell className="font-medium text-sm">{teacher.name}</TableCell>
 
                   {/* Phone Number */}
-                  <TableCell
-                    className="text-xs text-muted-foreground font-mono rtl:text-end"
-                    dir="ltr"
-                  >
+                  <TableCell className="">
                     {teacher.phone ? (
-                      <PhoneLink phone={teacher.phone} className="hover:text-emerald-600">
-                        {teacher.phone}
+                      <PhoneLink
+                        phone={teacher.phone}
+                        className="inline-flex items-center gap-1.5 text-xs text-foreground font-medium w-fit hover:text-emerald-600 transition-colors"
+                      >
+                        <span className="flex items-center justify-center size-4 rounded bg-emerald-500/10 text-emerald-600 shrink-0">
+                          <WhatsAppIcon className="size-3" />
+                        </span>
+                        <span dir="ltr" className="tracking-tight">
+                          {teacher.phone}
+                        </span>
                       </PhoneLink>
                     ) : (
                       "—"

@@ -41,8 +41,10 @@ export interface Lesson {
   lessonCategory?: LessonCategory;
   courseId?: string; // FK → Course.id
   courseTitle?: string; // denormalized
+  courseIds?: string[]; // IDs of all courses containing this lesson
   sectionId?: string; // FK → CourseSection.id
   coursesCount?: number; // how many courses include this lesson (from backend)
+  viewsCount?: number; // how many times this lesson has been viewed
   publishStatus?: LessonPublishStatus;
   scheduledPublishDate?: string;
   scheduledEndDate?: string;

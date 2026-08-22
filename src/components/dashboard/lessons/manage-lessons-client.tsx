@@ -25,7 +25,7 @@ import { DeleteLessonDialog } from "./delete-lesson-dialog";
 
 export type LessonFilterTab = "all" | "published" | "draft";
 export type LessonTypeFilter = "all" | "independent" | "course-dependent";
-export type LessonSortOption = "date-newest" | "date-oldest" | "title-asc" | "title-desc";
+export type LessonSortOption = "date-newest" | "date-oldest";
 
 export function ManageLessonsClient() {
   const locale = useLocale();
@@ -133,10 +133,6 @@ export function ManageLessonsClient() {
   const sortedLessons = React.useMemo(() => {
     return [...filteredLessons].sort((a, b) => {
       switch (sortBy) {
-        case "title-asc":
-          return a.title.localeCompare(b.title, locale);
-        case "title-desc":
-          return b.title.localeCompare(a.title, locale);
         case "date-oldest":
           return a.id.localeCompare(b.id);
         case "date-newest":
@@ -144,7 +140,7 @@ export function ManageLessonsClient() {
           return b.id.localeCompare(a.id);
       }
     });
-  }, [filteredLessons, sortBy, locale]);
+  }, [filteredLessons, sortBy]);
 
   // Pagination Logic
   const totalItems = sortedLessons.length;
@@ -231,8 +227,6 @@ export function ManageLessonsClient() {
   const sortOptions: SortOptionItem<LessonSortOption>[] = [
     { value: "date-newest", label: t("sort.newest") },
     { value: "date-oldest", label: t("sort.oldest") },
-    { value: "title-asc", label: t("sort.titleAsc") },
-    { value: "title-desc", label: t("sort.titleDesc") },
   ];
 
   const showingText = t("pagination.showing", {
@@ -302,7 +296,7 @@ export function ManageLessonsClient() {
 
       {/* Lessons Grid or Skeleton Loader */}
       {isLoading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {Array.from({ length: 8 }).map((_, index) => (
             <div
               key={index}
@@ -327,7 +321,7 @@ export function ManageLessonsClient() {
           <p className="text-sm text-muted-foreground mt-1 max-w-md">{t("empty.description")}</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {paginatedLessons.map((lesson) => (
             <LessonCard
               key={lesson.id}

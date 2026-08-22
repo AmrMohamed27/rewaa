@@ -4,8 +4,10 @@ import { Lesson } from "@/types/course";
 const STORAGE_KEY_PREFIX = "rewaa_lessons_";
 
 export function getStoredLessons(locale: string): Lesson[] {
+  const initialData = mockLessonsData[locale as "ar" | "en"] || mockLessonsData.ar;
+
   if (typeof window === "undefined") {
-    return mockLessonsData[locale as "ar" | "en"] || mockLessonsData.ar;
+    return initialData;
   }
 
   try {
@@ -13,16 +15,26 @@ export function getStoredLessons(locale: string): Lesson[] {
     const stored = localStorage.getItem(key);
     if (stored) {
       const parsed = JSON.parse(stored);
-      if (Array.isArray(parsed)) {
-        return parsed;
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed.map((lesson: Lesson) => {
+          const fresh = initialData.find((m) => m.id === lesson.id);
+          if (fresh) {
+            return {
+              ...fresh,
+              ...lesson,
+              courseIds: lesson.courseIds ?? fresh.courseIds,
+              coursesCount: lesson.coursesCount ?? fresh.coursesCount,
+              viewsCount: lesson.viewsCount ?? fresh.viewsCount,
+            };
+          }
+          return lesson;
+        });
       }
     }
   } catch (error) {
     console.error("Failed to load lessons from localStorage:", error);
   }
 
-  // Initial load: seed localStorage with default mock data
-  const initialData = mockLessonsData[locale as "ar" | "en"] || mockLessonsData.ar;
   saveStoredLessons(locale, initialData);
   return initialData;
 }

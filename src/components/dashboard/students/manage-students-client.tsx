@@ -11,11 +11,9 @@ import {
   GraduationCap,
   MapPin,
   MoreVertical,
-  Phone,
   Plus,
   RotateCcw,
   Search,
-  Shield,
   Trash2,
   UserCheck,
   Users,
@@ -39,7 +37,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { PhoneLink } from "@/components/ui/phone-link";
+import { PhoneLink, WhatsAppIcon } from "@/components/ui/phone-link";
 import {
   Select,
   SelectContent,
@@ -72,6 +70,8 @@ export type StudentSortOption =
   | "name-asc"
   | "name-desc"
   | "grade-asc"
+  | "rating-high"
+  | "rating-low"
   | "registration-type";
 
 const REGISTRATION_TYPE_BADGES: Record<RegistrationType, string> = {
@@ -266,6 +266,16 @@ export function ManageStudentsClient() {
         }
         case "grade-asc":
           return (a.grade || "").localeCompare(b.grade || "", locale);
+        case "rating-high": {
+          const ratingA = a.averageRating ?? (a.gpa ? parseFloat(a.gpa) : 3.85);
+          const ratingB = b.averageRating ?? (b.gpa ? parseFloat(b.gpa) : 3.85);
+          return ratingB - ratingA;
+        }
+        case "rating-low": {
+          const ratingA = a.averageRating ?? (a.gpa ? parseFloat(a.gpa) : 3.85);
+          const ratingB = b.averageRating ?? (b.gpa ? parseFloat(b.gpa) : 3.85);
+          return ratingA - ratingB;
+        }
         case "registration-type":
           return a.registrationType.localeCompare(b.registrationType);
         default:
@@ -351,6 +361,8 @@ export function ManageStudentsClient() {
     { value: "name-asc", label: t("sort.nameAsc") },
     { value: "name-desc", label: t("sort.nameDesc") },
     { value: "grade-asc", label: t("sort.gradeAsc") },
+    { value: "rating-high", label: t("sort.ratingHigh") },
+    { value: "rating-low", label: t("sort.ratingLow") },
     { value: "registration-type", label: t("sort.registrationType") },
   ];
 
@@ -614,8 +626,8 @@ export function ManageStudentsClient() {
                                   phone={student.phoneNumber}
                                   className="inline-flex items-center gap-1.5 text-xs text-foreground font-medium w-fit hover:text-emerald-600 transition-colors"
                                 >
-                                  <span className="flex items-center justify-center size-4 rounded bg-primary/10 text-primary shrink-0">
-                                    <Phone className="size-2.5" />
+                                  <span className="flex items-center justify-center size-4 rounded bg-emerald-500/10 text-emerald-600 shrink-0">
+                                    <WhatsAppIcon className="size-3" />
                                   </span>
                                   <span dir="ltr" className="tracking-tight">
                                     {student.phoneNumber}
@@ -632,10 +644,10 @@ export function ManageStudentsClient() {
                                 <TooltipTrigger asChild>
                                   <PhoneLink
                                     phone={student.parentPhoneNumber}
-                                    className="inline-flex items-center gap-1.5 text-[11px] text-muted-foreground w-fit hover:text-amber-600 transition-colors"
+                                    className="inline-flex items-center gap-1.5 text-[11px] text-muted-foreground w-fit hover:text-emerald-600 transition-colors"
                                   >
-                                    <span className="flex items-center justify-center size-4 rounded bg-amber-500/10 text-amber-600 shrink-0">
-                                      <Shield className="size-2.5" />
+                                    <span className="flex items-center justify-center size-4 rounded bg-emerald-500/10 text-emerald-600 shrink-0">
+                                      <WhatsAppIcon className="size-3" />
                                     </span>
                                     <span dir="ltr" className="tracking-tight">
                                       {student.parentPhoneNumber}

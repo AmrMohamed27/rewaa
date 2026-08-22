@@ -15,7 +15,6 @@ import {
   Mail,
   MapPin,
   MessageSquare,
-  Phone,
   Users,
   Wallet,
 } from "lucide-react";
@@ -45,7 +44,7 @@ import { RegistrationType, Student, StudentTransaction, TransactionType } from "
 import { BalanceTransactionDialog } from "./balance-transaction-dialog";
 import { StudentInvoiceModal } from "./student-invoice-modal";
 import { StudentReportModal } from "./student-report-modal";
-import { PhoneLink, getWhatsAppUrl } from "@/components/ui/phone-link";
+import { PhoneLink, WhatsAppIcon, getWhatsAppUrl } from "@/components/ui/phone-link";
 
 interface StudentDetailsClientProps {
   studentId: string;
@@ -298,17 +297,17 @@ export function StudentDetailsClient({ studentId }: StudentDetailsClientProps) {
               <div className="flex flex-wrap items-center justify-center sm:justify-start gap-4 pt-1 text-xs text-muted-foreground">
                 <PhoneLink
                   phone={student.phoneNumber}
-                  className="flex items-center gap-1 text-muted-foreground hover:text-emerald-600 "
+                  className="flex items-center gap-1 text-muted-foreground hover:text-emerald-600"
                 >
-                  <Phone className="size-3 text-muted-foreground" />
+                  <WhatsAppIcon className="size-3.5" />
                   <span dir="ltr">{student.phoneNumber}</span>
                 </PhoneLink>
                 {student.parentPhoneNumber && (
                   <PhoneLink
                     phone={student.parentPhoneNumber}
-                    className="flex items-center gap-1 text-muted-foreground hover:text-amber-600 "
+                    className="flex items-center gap-1 text-muted-foreground hover:text-emerald-600"
                   >
-                    <Phone className="size-3 text-amber-500/80" />
+                    <WhatsAppIcon className="size-3.5" />
                     <span dir="ltr">{student.parentPhoneNumber}</span>
                   </PhoneLink>
                 )}

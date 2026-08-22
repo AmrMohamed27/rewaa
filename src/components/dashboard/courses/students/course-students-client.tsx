@@ -8,12 +8,10 @@ import {
   GraduationCap,
   MapPin,
   MoreVertical,
-  Phone,
   Plus,
   RotateCcw,
   Search,
   Trash2,
-  UserCheck,
   Users,
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
@@ -41,7 +39,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
-import { PhoneLink } from "@/components/ui/phone-link";
+import { PhoneLink, WhatsAppIcon } from "@/components/ui/phone-link";
 
 import { getStoredCourses } from "@/lib/courses-storage";
 import {
@@ -508,7 +506,7 @@ export function CourseStudentsClient({ courseId }: CourseStudentsClientProps) {
                             phone={student.phoneNumber}
                             className="text-xs text-foreground flex items-center gap-1 hover:text-emerald-600"
                           >
-                            <Phone className="size-3 text-muted-foreground shrink-0" />
+                            <WhatsAppIcon className="size-3 shrink-0" />
                             <span dir="ltr">{student.phoneNumber}</span>
                           </PhoneLink>
                           {student.parentPhoneNumber && (
@@ -516,7 +514,7 @@ export function CourseStudentsClient({ courseId }: CourseStudentsClientProps) {
                               phone={student.parentPhoneNumber}
                               className="text-[11px] text-muted-foreground mt-0.5 flex items-center gap-1 hover:text-emerald-600"
                             >
-                              <UserCheck className="size-3 text-muted-foreground/70 shrink-0" />
+                              <WhatsAppIcon className="size-3 shrink-0" />
                               <span dir="ltr">{student.parentPhoneNumber}</span>
                             </PhoneLink>
                           )}

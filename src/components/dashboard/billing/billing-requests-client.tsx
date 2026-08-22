@@ -8,7 +8,7 @@ import { DashboardCard } from "@/components/dashboard/overview/dashboard-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { PhoneLink } from "@/components/ui/phone-link";
+import { PhoneLink, WhatsAppIcon } from "@/components/ui/phone-link";
 import {
   Select,
   SelectContent,
@@ -34,19 +34,22 @@ import { BillingRequestItem, BillingRequestStatus } from "@/types/billing-reques
 import {
   ArrowUpDown,
   BarChart3,
+  Barcode,
   CheckCircle2,
   Clock,
   CreditCard,
   Eye,
+  MapPin,
   Receipt,
   RotateCcw,
   Search,
+  X,
   XCircle,
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { RequestDetailsModal } from "./request-details-modal";
 
 export function BillingRequestsClient() {
@@ -61,31 +64,45 @@ export function BillingRequestsClient() {
   // Read URL query params
   const searchQuery = searchParams.get("search") || "";
   const statusTab = (searchParams.get("status") as "all" | BillingRequestStatus) || "all";
+  const venueFilter = (searchParams.get("venue") as "all" | "center" | "online") || "all";
   const sortBy =
     (searchParams.get("sort") as "newest" | "oldest" | "amountDesc" | "amountAsc") || "newest";
 
-  const updateUrlParams = useCallback(
-    (updates: Record<string, string | null>) => {
-      const params = new URLSearchParams(searchParams.toString());
-      Object.entries(updates).forEach(([key, value]) => {
-        if (
-          value === null ||
-          value === "" ||
-          (key === "status" && value === "pending") ||
-          (key === "sort" && value === "newest")
-        ) {
-          params.delete(key);
-        } else {
-          params.set(key, value);
-        }
-      });
-      const queryString = params.toString();
-      router.push(queryString ? `${pathname}?${queryString}` : pathname, {
-        scroll: false,
-      });
-    },
-    [searchParams, pathname, router],
-  );
+  const isFilterActive =
+    Boolean(searchQuery.trim()) ||
+    (statusTab !== "all" && statusTab !== "pending") ||
+    venueFilter !== "all" ||
+    sortBy !== "newest";
+
+  const updateUrlParams = (updates: Record<string, string | null>) => {
+    const params = new URLSearchParams(searchParams.toString());
+    Object.entries(updates).forEach(([key, value]) => {
+      if (
+        value === null ||
+        value === "" ||
+        (key === "status" && value === "pending") ||
+        (key === "venue" && value === "all") ||
+        (key === "sort" && value === "newest")
+      ) {
+        params.delete(key);
+      } else {
+        params.set(key, value);
+      }
+    });
+    const queryString = params.toString();
+    router.push(queryString ? `${pathname}?${queryString}` : pathname, {
+      scroll: false,
+    });
+  };
+
+  const handleResetFilters = () => {
+    updateUrlParams({
+      search: null,
+      status: null,
+      venue: null,
+      sort: null,
+    });
+  };
 
   const [requests, setRequests] = useState<BillingRequestItem[]>([]);
   const [selectedRequest, setSelectedRequest] = useState<BillingRequestItem | null>(null);
@@ -181,6 +198,11 @@ export function BillingRequestsClient() {
           return false;
         }
 
+        // Venue filter
+        if (venueFilter !== "all" && req.venue !== venueFilter) {
+          return false;
+        }
+
         // Search query
         if (searchQuery.trim()) {
           const q = searchQuery.toLowerCase().trim();
@@ -210,7 +232,7 @@ export function BillingRequestsClient() {
         }
         return 0;
       });
-  }, [requests, statusTab, searchQuery, sortBy]);
+  }, [requests, statusTab, venueFilter, searchQuery, sortBy]);
 
   const handleReset = () => {
     const fresh = resetStoredBillingRequests();
@@ -231,12 +253,18 @@ export function BillingRequestsClient() {
           <Button
             variant="outline"
             onClick={handleReset}
-            className="self-start sm:self-auto text-xs font-semibold"
+            className="self-start sm:self-auto font-semibold"
           >
             <RotateCcw className="size-3.5 me-1.5" />
             {locale === "ar" ? "إعادة ضبط البيانات" : "Reset Mock Data"}
           </Button>
-          <Button asChild className="text-xs font-semibold">
+          <Button asChild variant="outline" className="font-semibold">
+            <Link href={`/${locale}/dashboard/courses/codes`}>
+              <Barcode className="size-3.5 me-1.5" />
+              {t("actions.codeGroups")}
+            </Link>
+          </Button>
+          <Button asChild className="font-semibold">
             <Link href="/dashboard/billing/report">
               <BarChart3 className="size-3.5 me-1.5" />
               {t("actions.viewFinancialReport")}
@@ -338,8 +366,20 @@ export function BillingRequestsClient() {
             />
           </div>
 
-          {/* Status Tabs & Sort Container */}
+          {/* Status Tabs, Venue, Sort & Clear Container */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            {isFilterActive && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleResetFilters}
+                className="text-muted-foreground hover:text-foreground hover:bg-muted text-xs h-9 px-2.5 shrink-0 self-start sm:self-auto"
+              >
+                <X className="h-3.5 w-3.5 me-1.5" />
+                {t("filters.resetFilters")}
+              </Button>
+            )}
+
             {/* Status Tabs */}
             <Tabs
               defaultValue="pending"
@@ -347,7 +387,7 @@ export function BillingRequestsClient() {
               onValueChange={(v) => updateUrlParams({ status: v })}
               className="w-full sm:w-auto"
             >
-              <TabsList className="grid grid-cols-4 w-full sm:w-auto">
+              <TabsList className="grid grid-cols-4 w-full sm:w-auto *:py-2">
                 <TabsTrigger value="pending" className="text-xs font-medium">
                   {t("filters.tabs.pending")}
                 </TabsTrigger>
@@ -362,6 +402,27 @@ export function BillingRequestsClient() {
                 </TabsTrigger>
               </TabsList>
             </Tabs>
+
+            {/* Venue Filter Select */}
+            <Select value={venueFilter} onValueChange={(v) => updateUrlParams({ venue: v })}>
+              <SelectTrigger className="h-9 text-xs w-full sm:w-36 shrink-0">
+                <div className="flex items-center gap-2">
+                  <MapPin className="size-3.5 text-muted-foreground" />
+                  <SelectValue placeholder={t("filters.venue.all")} />
+                </div>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all" className="text-xs">
+                  {t("filters.venue.all")}
+                </SelectItem>
+                <SelectItem value="center" className="text-xs">
+                  {t("filters.venue.center")}
+                </SelectItem>
+                <SelectItem value="online" className="text-xs">
+                  {t("filters.venue.online")}
+                </SelectItem>
+              </SelectContent>
+            </Select>
 
             {/* Sort Select */}
             <Select value={sortBy} onValueChange={(v) => updateUrlParams({ sort: v })}>
@@ -451,15 +512,17 @@ export function BillingRequestsClient() {
                       </TableCell>
 
                       {/* Student Phone Number */}
-                      <TableCell
-                        className="text-xs text-muted-foreground font-mono rtl:text-end"
-                        dir="ltr"
-                      >
+                      <TableCell className="text-xs text-muted-foreground font-mono">
                         <PhoneLink
                           phone={req.studentPhoneNumber}
-                          className="hover:text-emerald-600"
+                          className="inline-flex items-center gap-1.5 text-xs text-foreground font-medium w-fit hover:text-emerald-600 transition-colors"
                         >
-                          {req.studentPhoneNumber}
+                          <span className="flex items-center justify-center size-4 rounded bg-emerald-500/10 text-emerald-600 shrink-0">
+                            <WhatsAppIcon className="size-3" />
+                          </span>
+                          <span dir="ltr" className="tracking-tight">
+                            {req.studentPhoneNumber}
+                          </span>
                         </PhoneLink>
                       </TableCell>
 

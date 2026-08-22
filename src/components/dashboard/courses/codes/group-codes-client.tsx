@@ -461,7 +461,7 @@ export function GroupCodesClient({ courseId: _courseId, groupId }: GroupCodesCli
           onValueChange={(val) => updateUrlParams({ status: val as CodeStatus | "all", page: 1 })}
           className="w-full"
         >
-          <TabsList className="grid grid-cols-4 w-full max-w-md">
+          <TabsList className="grid grid-cols-4 w-full max-w-md *:py-2">
             <TabsTrigger value="all">{t("tabs.all")}</TabsTrigger>
             <TabsTrigger value="available">{t("tabs.available")}</TabsTrigger>
             <TabsTrigger value="sold">{t("tabs.sold")}</TabsTrigger>
@@ -581,17 +581,19 @@ export function GroupCodesClient({ courseId: _courseId, groupId }: GroupCodesCli
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          {/* Modify info */}
-                          <DropdownMenuItem
-                            onClick={() => {
-                              setEditingCode(item);
-                              setIsEditDialogOpen(true);
-                            }}
-                            className="gap-2 cursor-pointer"
-                          >
-                            <Pencil className="size-4" />
-                            <span>{t("actions.modifyInfo")}</span>
-                          </DropdownMenuItem>
+                          {/* Modify info (only if available) */}
+                          {item.status === "available" && (
+                            <DropdownMenuItem
+                              onClick={() => {
+                                setEditingCode(item);
+                                setIsEditDialogOpen(true);
+                              }}
+                              className="gap-2 cursor-pointer"
+                            >
+                              <Pencil className="size-4" />
+                              <span>{t("actions.modifyInfo")}</span>
+                            </DropdownMenuItem>
+                          )}
 
                           {/* Mark as (if available -> sold, if sold -> used) */}
                           {item.status === "available" && (

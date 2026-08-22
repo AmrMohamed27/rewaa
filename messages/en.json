@@ -300,6 +300,8 @@
     "sort": {
       "newest": "Date: Newest first",
       "oldest": "Date: Oldest first",
+      "salesDesc": "Highest Selling",
+      "salesAsc": "Lowest Selling",
       "titleAsc": "Title: A to Z",
       "titleDesc": "Title: Z to A",
       "studentsDesc": "Students: Highest",
@@ -724,7 +726,7 @@
       },
       "columns": {
         "fullName": "Full Name",
-        "phoneNumbers": "Phone Numbers",
+        "phoneNumbers": "Student / Parent Phone",
         "gender": "Gender",
         "location": "Governorate / Country",
         "grade": "Grade",
@@ -766,6 +768,8 @@
     "sort": {
       "newest": "Newest First",
       "oldest": "Oldest First",
+      "ratingHigh": "Rating / Success Rate (Highest)",
+      "ratingLow": "Rating / Success Rate (Lowest)",
       "titleAsc": "Title (A-Z)",
       "titleDesc": "Title (Z-A)"
     },
@@ -1180,12 +1184,12 @@
     "searchPlaceholder": "Search by question name, content, model answer, or teacher...",
     "filterGrade": "All Grades",
     "filterSubject": "All Subjects",
+    "filterType": "All Types",
     "allGrades": "All Grade Levels",
     "allSubjects": "All Subjects",
+    "allTypes": "All Question Types",
     "clearFilters": "Clear Filters",
     "sort": {
-      "nameAsc": "Name (A - Z)",
-      "nameDesc": "Name (Z - A)",
       "timesUsedDesc": "Most Used",
       "timesUsedAsc": "Least Used"
     },
@@ -1301,7 +1305,12 @@
       "copied": "Copied!",
       "deleteLesson": "Delete Lesson",
       "publish": "Publish",
-      "unpublish": "Unpublish"
+      "unpublish": "Unpublish",
+      "viewsCount": "{count, plural, =0 {No views} one {1 view} other {{count} views}}",
+      "coursesCount": "{count, plural, =0 {No courses} one {1 course} other {{count} courses}}",
+      "viewCourses": "View Courses",
+      "coursesPopupTitle": "Courses Including This Lesson",
+      "multipleCourses": "Multiple Courses"
     },
     "deleteDialog": {
       "title": "Delete Lesson",
@@ -1397,11 +1406,13 @@
       "nameAsc": "Name (A-Z)",
       "nameDesc": "Name (Z-A)",
       "gradeAsc": "Grade",
+      "ratingHigh": "Rating / GPA (Highest)",
+      "ratingLow": "Rating / GPA (Lowest)",
       "registrationType": "Registration Type"
     },
     "columns": {
       "fullNameAndId": "Student Name",
-      "phoneNumber": "Phone Number",
+      "phoneNumber": "Student / Parent Phone",
       "parentPhoneNumber": "Parent Phone",
       "studentPhoneTooltip": "Student's Phone Number",
       "parentPhoneTooltip": "Parent's Phone Number",
@@ -1644,7 +1655,8 @@
       "rejectedRequests": "Rejected Requests"
     },
     "actions": {
-      "viewFinancialReport": "Financial Summary Report"
+      "viewFinancialReport": "Financial Summary Report",
+      "codeGroups": "Code Groups"
     },
     "filters": {
       "searchPlaceholder": "Search by student name, phone, or transaction ID...",
@@ -1660,7 +1672,13 @@
         "oldest": "Oldest First",
         "amountDesc": "Amount: High to Low",
         "amountAsc": "Amount: Low to High"
-      }
+      },
+      "venue": {
+        "all": "All Venues",
+        "center": "Center",
+        "online": "Online"
+      },
+      "resetFilters": "Reset Filters"
     },
     "table": {
       "columns": {

@@ -105,16 +105,14 @@ export function ManageCoursesClient() {
   const sortedCourses = React.useMemo(() => {
     return [...filteredCourses].sort((a, b) => {
       switch (sortBy) {
-        case "title-asc":
-          return a.title.localeCompare(b.title, locale);
-        case "title-desc":
-          return b.title.localeCompare(a.title, locale);
+        case "sales-desc":
+          return (b.numberOfParticipants || 0) - (a.numberOfParticipants || 0);
+        case "sales-asc":
+          return (a.numberOfParticipants || 0) - (b.numberOfParticipants || 0);
         case "date-newest":
           return new Date(b.date).getTime() - new Date(a.date).getTime();
         case "date-oldest":
           return new Date(a.date).getTime() - new Date(b.date).getTime();
-        case "students-desc":
-          return b.numberOfParticipants - a.numberOfParticipants;
         case "price-asc":
           return a.price - b.price;
         case "price-desc":
@@ -123,7 +121,7 @@ export function ManageCoursesClient() {
           return 0;
       }
     });
-  }, [filteredCourses, sortBy, locale]);
+  }, [filteredCourses, sortBy]);
 
   // Pagination Logic
   const totalItems = sortedCourses.length;
@@ -235,7 +233,7 @@ export function ManageCoursesClient() {
 
       {/* Courses Grid or Skeleton Loader */}
       {isLoading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {Array.from({ length: 8 }).map((_, index) => (
             <div
               key={index}
@@ -260,7 +258,7 @@ export function ManageCoursesClient() {
           <p className="text-sm text-muted-foreground mt-1 max-w-md">{t("empty.description")}</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {paginatedCourses.map((course) => (
             <CourseCard
               key={course.id}

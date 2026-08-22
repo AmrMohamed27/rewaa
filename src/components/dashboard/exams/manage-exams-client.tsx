@@ -49,7 +49,7 @@ import { DeleteExamDialog } from "./delete-exam-dialog";
 
 export type ExamFilterTab = "all" | "published" | "draft";
 export type ExamTypeFilter = "all" | "independent" | "course-dependent";
-export type ExamSortOption = "date-newest" | "date-oldest" | "title-asc" | "title-desc";
+export type ExamSortOption = "date-newest" | "date-oldest" | "rating-high" | "rating-low";
 
 // ─── Success-rate colour ──────────────────────────────────────────────────────
 function successRateColor(rate: number) {
@@ -160,10 +160,10 @@ export function ManageExamsClient() {
   const sortedExams = React.useMemo(() => {
     return [...filteredExams].sort((a, b) => {
       switch (sortBy) {
-        case "title-asc":
-          return a.title.localeCompare(b.title, locale);
-        case "title-desc":
-          return b.title.localeCompare(a.title, locale);
+        case "rating-high":
+          return (b.successRate || 0) - (a.successRate || 0);
+        case "rating-low":
+          return (a.successRate || 0) - (b.successRate || 0);
         case "date-oldest":
           return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
         case "date-newest":
@@ -171,7 +171,7 @@ export function ManageExamsClient() {
           return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
       }
     });
-  }, [filteredExams, sortBy, locale]);
+  }, [filteredExams, sortBy]);
 
   // ─── Pagination ─────────────────────────────────────────────────────────────
   const totalItems = sortedExams.length;
@@ -257,8 +257,8 @@ export function ManageExamsClient() {
   const sortOptions: SortOptionItem<ExamSortOption>[] = [
     { value: "date-newest", label: t("sort.newest") },
     { value: "date-oldest", label: t("sort.oldest") },
-    { value: "title-asc", label: t("sort.titleAsc") },
-    { value: "title-desc", label: t("sort.titleDesc") },
+    { value: "rating-high", label: t("sort.ratingHigh") },
+    { value: "rating-low", label: t("sort.ratingLow") },
   ];
 
   const showingText = t("pagination.showing", {

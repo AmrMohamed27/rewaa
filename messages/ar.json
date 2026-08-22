@@ -300,6 +300,8 @@
     "sort": {
       "newest": "التاريخ: الأحدث أولاً",
       "oldest": "التاريخ: الأقدم أولاً",
+      "salesDesc": "الأكثر مبيعاً",
+      "salesAsc": "الأقل مبيعاً",
       "titleAsc": "العنوان: أ إلى ي",
       "titleDesc": "العنوان: ي إلى أ",
       "studentsDesc": "عدد الطلاب: الأكثر",
@@ -724,7 +726,7 @@
       },
       "columns": {
         "fullName": "الاسم الكامل",
-        "phoneNumbers": "أرقام الهاتف",
+        "phoneNumbers": "رقم الطالب / ولي الأمر",
         "gender": "النوع",
         "location": "المحافظة / الدولة",
         "grade": "المرحلة الدراسية",
@@ -766,6 +768,8 @@
     "sort": {
       "newest": "الأحدث أولاً",
       "oldest": "الأقدم أولاً",
+      "ratingHigh": "التقييم / معدل النجاح (الأعلى)",
+      "ratingLow": "التقييم / معدل النجاح (الأقل)",
       "titleAsc": "العنوان (أ - ي)",
       "titleDesc": "العنوان (ي - أ)"
     },
@@ -1180,12 +1184,12 @@
     "searchPlaceholder": "ابحث باسم السؤال، النص، الإجابة النموذجية أو اسم المعلم...",
     "filterGrade": "كل المراحل",
     "filterSubject": "كل المواد",
+    "filterType": "كل الأنواع",
     "allGrades": "جميع المراحل الدراسية",
     "allSubjects": "جميع المواد الدراسية",
+    "allTypes": "جميع أنواع الأسئلة",
     "clearFilters": "مسح الفلاتر",
     "sort": {
-      "nameAsc": "الاسم (أ - ي)",
-      "nameDesc": "الاسم (ي - أ)",
       "timesUsedDesc": "الأكثر استخداماً",
       "timesUsedAsc": "الأقل استخداماً"
     },
@@ -1301,7 +1305,12 @@
       "copied": "تم النسخ!",
       "deleteLesson": "حذف الدرس",
       "publish": "نشر",
-      "unpublish": "إلغاء النشر"
+      "unpublish": "إلغاء النشر",
+      "viewsCount": "{count, plural, =0 {لا مشاهدات} zero {لا مشاهدات} one {مشاهدة واحدة} two {مشاهدتين} few {{count} مشاهدات} many {{count} مشاهدة} other {{count} مشاهدة}}",
+      "coursesCount": "{count, plural, =0 {لا دورات} zero {لا دورات} one {دورة واحدة} two {دورتين} few {{count} دورات} many {{count} دورة} other {{count} دورة}}",
+      "viewCourses": "عرض الدورات",
+      "coursesPopupTitle": "الدورات التي تتضمن هذا الدرس",
+      "multipleCourses": "دورات متعددة"
     },
     "deleteDialog": {
       "title": "حذف الدرس",
@@ -1397,11 +1406,13 @@
       "nameAsc": "الاسم (أ-ي)",
       "nameDesc": "الاسم (ي-أ)",
       "gradeAsc": "الصف الدراسي",
+      "ratingHigh": "التقييم / المعدل (الأعلى)",
+      "ratingLow": "التقييم / المعدل (الأقل)",
       "registrationType": "نوع التسجيل"
     },
     "columns": {
       "fullNameAndId": "اسم الطالب",
-      "phoneNumber": "رقم الهاتف",
+      "phoneNumber": "رقم الطالب / ولي الأمر",
       "parentPhoneNumber": "رقم ولي الأمر",
       "studentPhoneTooltip": "رقم هاتف الطالب",
       "parentPhoneTooltip": "رقم هاتف ولي الأمر",
@@ -1644,7 +1655,8 @@
       "rejectedRequests": "طلبات مرفوضة"
     },
     "actions": {
-      "viewFinancialReport": "تقرير ملخص المالية"
+      "viewFinancialReport": "تقرير ملخص المالية",
+      "codeGroups": "مجموعات الأكواد"
     },
     "filters": {
       "searchPlaceholder": "بحث باسم الطالب أو رقم الهاتف أو المعاملة...",
@@ -1660,7 +1672,13 @@
         "oldest": "الأقدم أولاً",
         "amountDesc": "المبلغ: الأعلى أولاً",
         "amountAsc": "المبلغ: الأقل أولاً"
-      }
+      },
+      "venue": {
+        "all": "كل أماكن النشر",
+        "center": "سنتر",
+        "online": "أونلاين"
+      },
+      "resetFilters": "إعادة تعيين الفلاتر"
     },
     "table": {
       "columns": {
